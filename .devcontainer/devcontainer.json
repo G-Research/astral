@@ -11,14 +11,14 @@
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// This can be used to network with other containers or the host.
-	// "forwardPorts": [3000, 5432, 8200]
+	"forwardPorts": [3000, 5432, 8200],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bundle install && rake vault:setup"
+	"postCreateCommand": "bundle install && rake vault:setup",
 
 	// Configure tool-specific properties.
 	// "customizations": {},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	"remoteUser": "vscode"
 }
