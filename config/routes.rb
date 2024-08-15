@@ -12,5 +12,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "application#info"
 
-  resources :certificates, only: %i[index]
+  resources :certificates, only: %i[create]
 end

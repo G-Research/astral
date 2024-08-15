@@ -91,8 +91,8 @@ end
 
 def configure_intermediate_cert
   Vault.logical.write("pki_int/config/cluster",
-                      path: "#{ENV["VAULT_ADDR"]}/v1/pki_int",
-                      aia_path: "#{ENV["VAULT_ADDR"]}/v1/pki_int")
+                      path: "#{Vault.address}/v1/pki_int",
+                      aia_path: "#{Vault.address}/v1/pki_int")
 
   issuer_ref = Vault.logical.read("pki_int/config/issuers").data[:default]
   Vault.logical.write("pki_int/roles/learn",
