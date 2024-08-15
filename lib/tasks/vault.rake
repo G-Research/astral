@@ -11,10 +11,10 @@ namespace :vault do
     end
     Vault.address = ENV["VAULT_ADDR"]
     Vault.token = ENV["VAULT_TOKEN"]
-    enable_root_pki
-    configure_root_pki
-    enable_intermediate_pki
-    configure_intermediate_pki
+    ensure_root_cert
+    configure_root_cert
+    ensure_intermediate_cert
+    configure_intermediate_cert
   end
 end
 
@@ -29,7 +29,7 @@ rescue Vault::HTTPError => e
   puts "Error enabling pki, already enabled?: #{e}"
 end
 
-def enable_root_pki
+def ensure_root_cert
   enable_pki("pki", "87600h")
 
   # Generate root certificate
@@ -44,10 +44,10 @@ rescue Vault::HTTPError => e
   puts "Error enabling root pki, already enabled?: #{e}"
 end
 
-def configure_root_pki
+def configure_root_cert
   Vault.logical.write("pki/config/cluster",
-                      path: "http://10.1.10.100:8200/v1/pki",
-                      aia_path: "http://10.1.10.100:8200/v1/pki")
+                      path: "#{ENV["VAULT_ADDR"]}/v1/pki",
+                      aia_path: "#{ENV["VAULT_ADDR"]}/v1/pki")
 
   Vault.logical.write("pki/roles/2024-servers",
                       allow_any_name: true,
@@ -62,7 +62,7 @@ rescue Vault::HTTPError => e
   puts "Error configuring root pki, already enabled?: #{e}"
 end
 
-def enable_intermediate_pki
+def ensure_intermediate_cert
   enable_pki("pki_int", "43800h")
 
   # Generate intermediate CSR
@@ -89,10 +89,10 @@ rescue Vault::HTTPError => e
   puts "Error enabling intermediate pki, already enabled?: #{e}"
 end
 
-def configure_intermediate_pki
+def configure_intermediate_cert
   Vault.logical.write("pki_int/config/cluster",
-                      path: "http://10.1.10.100:8200/v1/pki_int",
-                      aia_path: "http://10.1.10.100:8200/v1/pki_int")
+                      path: "#{ENV["VAULT_ADDR"]}/v1/pki_int",
+                      aia_path: "#{ENV["VAULT_ADDR"]}/v1/pki_int")
 
   issuer_ref = Vault.logical.read("pki_int/config/issuers").data[:default]
   Vault.logical.write("pki_int/roles/learn",
