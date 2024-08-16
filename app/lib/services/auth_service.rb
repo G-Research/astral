@@ -7,5 +7,12 @@ module Services
    rescue
      nil
    end
+
+   def authenticate!(token)
+     identity = decode(token)
+     # TODO verify identity with authority
+     raise AuthError unless identity
+     identity
+   end
   end
 end
