@@ -7,7 +7,7 @@ module Services
       )
     end
 
-    def new_cert(common_name, ttl)
+    def get_cert(common_name, ttl)
       # Generate the TLS certificate using the intermediate CA
       tls_cert = @client.logical.write("pki_int/issue/learn",
           common_name: common_name,
