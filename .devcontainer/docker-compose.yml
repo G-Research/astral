@@ -20,6 +20,7 @@ services:
     environment:
       VAULT_ADDR: http://10.1.10.100:8200
       VAULT_TOKEN: root_token
+      JWT_SIGNING_KEY: jwt_secret
     
   vault:
     image: hashicorp/vault:latest

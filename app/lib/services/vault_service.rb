@@ -2,17 +2,17 @@ module Services
   class VaultService
     def initialize
       @client = Vault::Client.new(
-        address: ENV["VAULT_ADDR"],
-        token: ENV["VAULT_TOKEN"]
+        address: Rails.application.config.astral[:vault_addr],
+        token: Rails.application.config.astral[:vault_token]
       )
     end
 
-    def get_cert(common_name, ttl)
+    def get_cert_for(identity)
       # Generate the TLS certificate using the intermediate CA
       tls_cert = @client.logical.write("pki_int/issue/learn",
-          common_name: common_name,
-          ttl: ttl,
-          ip_sans: "192.168.1.1",
+          common_name: identity[:common_name],
+          ttl: Rails.application.config.astral[:cert_ttl],
+          ip_sans: identity[:ip_sans],
           format: "pem")
       tls_cert.data
     end
