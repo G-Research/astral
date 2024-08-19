@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
   rescue_from StandardError, with: :handle_standard_error
   rescue_from AuthError, with: :handle_auth_error
   attr_reader :identity # decoded and verified JWT
-  
+
   def info
     render json: {
       app: "astral",
