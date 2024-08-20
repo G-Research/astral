@@ -4,7 +4,8 @@ module Services
      # Decode a JWT access token using the configured base.
      body = JWT.decode(token, Rails.application.config.astral[:jwt_signing_key])[0]
      HashWithIndifferentAccess.new body
-   rescue
+   rescue => e
+     Rails.logger.warn "Unable to decode token: #{e}"
      nil
    end
 

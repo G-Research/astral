@@ -6,6 +6,12 @@ class CertificatesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "create with faulty token" do
+    jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcHBsaWNhdGlvbl9uYW1lIiwiY29tbW9uX25hbWUiOiJleGFtcGxlLmNvbSIsImlwX3NhbnMiOiIxMC4wLjEuMTAwIn1.61e0oQIj7vwGtOpFuPJDCI_Bqf8ZTpJxe_2kUwcbN7Y"
+    post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" }
+    assert_response :unauthorized
+  end
+
   test "create authorized" do
     jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcHBsaWNhdGlvbl9uYW1lIiwiY29tbW9uX25hbWUiOiJleGFtcGxlLmNvbSIsImlwX3NhbnMiOiIxMC4wLjEuMTAwIn0.61e0oQIj7vwGtOpFuPJDCI_Bqf8ZTpJxe_2kUwcbN7Y"
     post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" }
