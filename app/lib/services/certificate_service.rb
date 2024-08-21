@@ -5,8 +5,8 @@ module Services
       @impl = VaultService.new
     end
 
-    def get_cert_for(identity)
-      @impl.get_cert_for(identity)
+    def get_cert_for(identity, cert_issue_request)
+      @impl.get_cert_for(identity, cert_issue_request)
     end
   end
 end

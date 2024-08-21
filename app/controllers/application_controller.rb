@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::API
   rescue_from StandardError, with: :handle_standard_error
   rescue_from AuthError, with: :handle_auth_error
+  rescue_from ActionController::ParameterMissing, with: :handle_bad_request
+
   attr_reader :identity # decoded and verified JWT
 
   def info
@@ -25,5 +27,9 @@ class ApplicationController < ActionController::API
 
   def handle_auth_error(exception)
     render json: { error: "Unauthorized" }, status: :unauthorized
+  end
+
+  def handle_bad_request(exception)
+    render json: { error: exception }, status: :bad_request
   end
 end

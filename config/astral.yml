@@ -2,7 +2,7 @@ shared:
   vault_addr: <%= ENV["VAULT_ADDR"] %>
   vault_token: <%= ENV["VAULT_TOKEN"] %>
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
-  cert_ttl: 24h
+  cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
 
