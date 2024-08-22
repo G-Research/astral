@@ -13,11 +13,14 @@ services:
     command: sleep infinity
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
+    networks:
+      astral:
+        ipv4_address: "10.1.10.200"
 
     environment:
-      VAULT_ADDRESS: http://vault:8200
+      VAULT_ADDR: http://10.1.10.100:8200
       VAULT_TOKEN: root_token
+      JWT_SIGNING_KEY: jwt_secret
     
   vault:
     image: hashicorp/vault:latest
@@ -25,32 +28,13 @@ services:
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: root_token
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    networks:
+      astral:
+        ipv4_address: "10.1.10.100"
 
-  db:
-    image: postgres:latest
-    restart: unless-stopped
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./create-db-user.sql:/docker-entrypoint-initdb.d/create-db-user.sql
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres
-      # Your config/database.yml should use the user and password you set here,
-      # and host "db" (as that's the name of this service). You can use whatever
-      # database name you want. Use `bin/rails db:prepare` to create the database.
-      #
-      # Example:
-      #
-      #  development:
-      #    <<: *default
-      #    host: db
-      #    username: postgres
-      #    password: postgres
-      #    database: myapp_development
-
-    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
-
-volumes:
-  postgres-data:
+networks:
+  astral:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.1.10.0/24"
