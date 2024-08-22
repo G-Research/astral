@@ -12,8 +12,15 @@ module Services
    def authenticate!(token)
      identity = decode(token)
      raise AuthError unless identity
-     # TODO verify identity with authority
+     # TODO verify identity with authority?
      identity
+   end
+
+   def authorize!(identity, cert_req)
+     cert_req.fqdns.each do |fqdn|
+       domain = AppRegistryService.get_domain_name(fqdn)
+       raise AuthError unless (domain[:auto_approved_groups] & identity[:groups]).any?
+     end
    end
   end
 end
