@@ -15,7 +15,7 @@ module Services
     end
 
     private
-    
+
     def decode(token)
       # Decode a JWT access token using the configured base.
       body = JWT.decode(token, Rails.application.config.astral[:jwt_signing_key])[0]
@@ -24,7 +24,7 @@ module Services
       Rails.logger.warn "Unable to decode token: #{e}"
       nil
     end
-    
+
     def get_domain_name(fqdn)
       # TODO implement
     end
