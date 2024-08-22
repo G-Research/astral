@@ -6,7 +6,7 @@ class CertificatesController < ApplicationController
     if !req.valid?
       render json: { error: req.errors }, status: :bad_request
     else
-      cert = Services::CertificateService.new.get_cert_for identity, req
+      cert = Services::CertificateService.new.issue_cert(req)
       render json: cert
     end
   end
