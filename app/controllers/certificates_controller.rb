@@ -4,7 +4,7 @@ class CertificatesController < ApplicationController
   def create
     req = CertIssueRequest.new(params_permitted)
     if !req.valid?
-      render json: { error: req.errors}, status: :bad_request
+      render json: { error: req.errors }, status: :bad_request
     else
       cert = Services::CertificateService.new.get_cert_for identity, req
       render json: cert
@@ -14,8 +14,7 @@ class CertificatesController < ApplicationController
   private
 
   def params_permitted
-    attrs = %i[
-                common_name
+    attrs = %i[ common_name
                 alt_names
                 exclude_cn_from_sans
                 format
