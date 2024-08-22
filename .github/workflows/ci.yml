@@ -15,9 +15,8 @@ jobs:
 
       - name: Set up DevContainer
         uses: devcontainers/ci@v0.3
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        runCmd: bin/brakeman --no-pager
+        with:
+          runCmd: bin/brakeman --no-pager
 
   lint:
     runs-on: ubuntu-latest
