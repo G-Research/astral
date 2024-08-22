@@ -1,26 +1,16 @@
 module Services
   class AuthService
-   def decode(token)
-     # Decode a JWT access token using the configured base.
-     body = JWT.decode(token, Rails.application.config.astral[:jwt_signing_key])[0]
-     HashWithIndifferentAccess.new body
-   rescue => e
-     Rails.logger.warn "Unable to decode token: #{e}"
-     nil
-   end
+    def initialize
+      # TODO make this selectable
+      @impl = AppRegistryService.new
+    end
 
-   def authenticate!(token)
-     identity = decode(token)
-     raise AuthError unless identity
-     # TODO verify identity with authority?
-     identity
-   end
+    def authenticate!(token)
+      @impl.authenticate!(token)
+    end
 
-   def authorize!(identity, cert_req)
-     cert_req.fqdns.each do |fqdn|
-       domain = AppRegistryService.get_domain_name(fqdn)
-       raise AuthError unless (domain[:auto_approved_groups] & identity[:groups]).any?
-     end
-   end
+    def authorize!(token, cert_issue_req)
+      @impl.authorize!(token, cert_issue_req)
+    end
   end
 end

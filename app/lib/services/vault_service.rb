@@ -9,7 +9,7 @@ module Services
 
     def get_cert_for(identity, cert_issue_request)
       # Generate the TLS certificate using the intermediate CA
-      tls_cert = @client.logical.write("pki_int/issue/learn",
+      tls_cert = @client.logical.write(Rails.application.config.astral[:vault_cert_path],
           common_name: cert_issue_request.common_name,
           ttl: cert_issue_request.ttl,
           ip_sans: cert_issue_request.ip_sans,
