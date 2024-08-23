@@ -39,7 +39,9 @@ jobs:
       - name: Run brakeman
         uses: devcontainers/ci@v0.3
         with:
+          imageName: ghcr.io/gresearch/astral-devcontainer
           cacheFrom: ghcr.io/gresearch/astral-devcontainer
+          push: never
           runCmd: bin/brakeman --no-pager
 
   lint:
@@ -73,7 +75,9 @@ jobs:
       - name: Run tests
         uses: devcontainers/ci@v0.3
         with:
+          imageName: ghcr.io/gresearch/astral-devcontainer
           cacheFrom: ghcr.io/gresearch/astral-devcontainer
+          push: never
           runCmd: bin/rails test
 
       - name: Keep screenshots from failed system tests
