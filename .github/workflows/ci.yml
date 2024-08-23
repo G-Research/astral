@@ -22,9 +22,9 @@ jobs:
       - name: Build and run Dev Container task
         uses: devcontainers/ci@v0.3
         with:
-          # Change this to point to your image name
           imageName: ghcr.io/gresearch/astral-devcontainer
-          # Change this to be your CI task/script
+          cacheFrom: ghcr.io/gresearch/astral-devcontainer
+          push: always
           runCmd: |
             # Add multiple commands to run if needed
             bundle install
@@ -39,7 +39,7 @@ jobs:
       - name: Run brakeman
         uses: devcontainers/ci@v0.3
         with:
-          imageName: ghcr.io/gresearch/astral-devcontainer
+          cacheFrom: ghcr.io/gresearch/astral-devcontainer
           runCmd: bin/brakeman --no-pager
 
   lint:
@@ -73,7 +73,7 @@ jobs:
       - name: Run tests
         uses: devcontainers/ci@v0.3
         with:
-          imageName: ghcr.io/gresearch/astral-devcontainer
+          cacheFrom: ghcr.io/gresearch/astral-devcontainer
           runCmd: bin/rails test
 
       - name: Keep screenshots from failed system tests
