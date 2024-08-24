@@ -70,7 +70,6 @@ class CertIssueRequestTest < ActiveSupport::TestCase
     assert_not @cert_issue_request.valid?
   end
 
-
   test "fqdns should return alt_names plus common_name" do
     assert_equal [ "alt1.example.com", "alt2.example.com", "example.com" ], @cert_issue_request.fqdns
   end

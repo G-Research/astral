@@ -4,5 +4,5 @@ class DomainInfo
 
   attribute :owner, :string
   attribute :groups, array: :string, default: []
-  attribute :group_delegation, :bool, default: false
+  attribute :group_delegation, :boolean, default: false
 end

@@ -8,6 +8,7 @@ module Services
                                 (domain.group_delegation &&
                                 (domain.groups & identity.groups).any?))
       end
+      nil
     end
 
     private
