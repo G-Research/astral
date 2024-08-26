@@ -25,6 +25,5 @@ module Services
       Rails.logger.warn "Unable to decode token: #{e}"
       nil
     end
-
   end
 end
