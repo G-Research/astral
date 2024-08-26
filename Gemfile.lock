@@ -95,6 +95,7 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
+    interactor (3.1.2)
     io-console (0.7.2)
     irb (1.14.0)
       rdoc (>= 4.0.0)
@@ -270,6 +271,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  interactor (~> 3.0)
   jwt
   puma (>= 5.0)
   rails (~> 7.2.0)
