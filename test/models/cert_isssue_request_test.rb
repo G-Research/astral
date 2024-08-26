@@ -24,35 +24,35 @@ class CertIssueRequestTest < ActiveSupport::TestCase
     @cert_issue_request = CertIssueRequest.new(@attributes)
   end
 
-  test "should set attributes correctly" do
+  test "#new should set attributes from attributes argument" do
     @attributes.each do |key, value|
       assert_equal value, @cert_issue_request.send(key), "Attribute #{key} was not set correctly"
     end
   end
 
-  test "should be valid with valid attributes" do
+  test "#valid? should be valid with valid attributes" do
     assert @cert_issue_request.valid?
   end
 
-  test "should require a common_name" do
+  test "#valid? should require a common_name" do
     @cert_issue_request.common_name = nil
     assert_not @cert_issue_request.valid?
     assert_includes @cert_issue_request.errors[:common_name], "can't be blank"
   end
 
-  test "should require a valid format" do
+  test "#valid? should require a valid format" do
     @cert_issue_request.format = "invalid_format"
     assert_not @cert_issue_request.valid?
     assert_includes @cert_issue_request.errors[:format], "is not included in the list"
   end
 
-  test "should require a valid private_key_format" do
+  test "#valid? should require a valid private_key_format" do
     @cert_issue_request.private_key_format = "invalid_format"
     assert_not @cert_issue_request.valid?
     assert_includes @cert_issue_request.errors[:private_key_format], "is not included in the list"
   end
 
-  test "should have default values" do
+  test "#new should have default values" do
     @cert_issue_request = CertIssueRequest.new
     assert_equal false, @cert_issue_request.exclude_cn_from_sans
     assert_equal "pem", @cert_issue_request.format
@@ -65,12 +65,12 @@ class CertIssueRequestTest < ActiveSupport::TestCase
     assert_equal true, @cert_issue_request.server_flag
   end
 
-  test "should be invalid with default values" do
+  test "#valid? should be false with default values" do
     @cert_issue_request = CertIssueRequest.new
     assert_not @cert_issue_request.valid?
   end
 
-  test "fqdns should return alt_names plus common_name" do
+  test "#fqdns should return alt_names plus common_name" do
     assert_equal [ "alt1.example.com", "alt2.example.com", "example.com" ], @cert_issue_request.fqdns
   end
 end
