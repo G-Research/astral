@@ -1,5 +1,5 @@
 class IssueCert
   include Interactor::Organizer
 
-  organize CheckPolicy, ObtainCert
+  organize CheckPolicy, ObtainCert, Log
 end
