@@ -14,9 +14,12 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_request
-    token = request.headers["Authorization"]
-    token = token.split(" ").last if token
-    @identity = Services::AuthService.new.authenticate!(token)
+    result = AuthenticateIdentity.call(request: request)
+    if result.success?
+      @identity = result.identity
+    else
+      raise AuthError
+    end
   end
 
   private
