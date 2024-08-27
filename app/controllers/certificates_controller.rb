@@ -8,6 +8,7 @@ class CertificatesController < ApplicationController
     end
     result = IssueCert.call(request: req)
     if result.success?
+      # TODO use jbuilder to make the json
       render json: result.cert
     else
       raise StandardError.new result.message
