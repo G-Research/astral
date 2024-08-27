@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
     if result.success?
       @identity = result.identity
     else
-      raise AuthError
+      raise AuthError.new result.message
     end
   end
 
