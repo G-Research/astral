@@ -10,7 +10,9 @@ class AuthenticateIdentity
     if identity = Services::AuthService.new.authenticate!(context.token)
       context.identity = identity
     else
-      context.fail!
+      context.fail!(message: "Invalid token")
     end
+  rescue => e
+    context.fail!(message: e.message)
   end
 end
