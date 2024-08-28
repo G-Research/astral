@@ -7,7 +7,5 @@ class ObtainCert
     else
       context.fail!(message: "Failed to issue certificate")
     end
-  rescue => e
-    context.fail!(message: e.message)
   end
 end

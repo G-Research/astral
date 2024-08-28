@@ -12,7 +12,5 @@ class AuthenticateIdentity
     else
       context.fail!(message: "Invalid token")
     end
-  rescue => e
-    context.fail!(message: e.message)
   end
 end
