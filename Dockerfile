@@ -48,8 +48,8 @@ WORKDIR $RAILS_ROOT
 COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 # Add non-root user
-RUN addgroup -S rails && adduser -S rails -G rails # && \
-   # chown -R rails:rails db log storage tmp
+RUN addgroup -S rails && adduser -S rails -G rails && \
+    chown -R rails:rails db log storage tmp
 USER rails:rails
 
 # Start the server by default, this can be overwritten at runtime
