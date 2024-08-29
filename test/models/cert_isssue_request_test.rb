@@ -52,6 +52,30 @@ class CertIssueRequestTest < ActiveSupport::TestCase
     assert_includes @cert_issue_request.errors[:private_key_format], "is not included in the list"
   end
 
+  test "#valid? should require a ttl greater than 0" do
+    @cert_issue_request.ttl = -1
+    assert_not @cert_issue_request.valid?
+    assert_includes @cert_issue_request.errors[:ttl], "must be greater than 0"
+  end
+
+  test "#valid? should require a ttl less than configured max" do
+    @cert_issue_request.ttl = Rails.configuration.astral[:cert_ttl] + 1
+    assert_not @cert_issue_request.valid?
+    assert_includes @cert_issue_request.errors[:ttl], "must be less than or equal to #{Rails.configuration.astral[:cert_ttl]}"
+  end
+
+  test "#valid? should prevent wildcard common_name" do
+    @cert_issue_request.common_name = "*.example.com"
+    assert_not @cert_issue_request.valid?
+    assert_includes @cert_issue_request.errors[:common_name], "cannot be a wildcard"
+  end
+
+  test "#valid? should prevent wildcard alt_names" do
+    @cert_issue_request.alt_names = [ "www.example.com", "*.example.com" ]
+    assert_not @cert_issue_request.valid?
+    assert_includes @cert_issue_request.errors[:alt_names], "cannot include a wildcard"
+  end
+
   test "#new should have default values" do
     @cert_issue_request = CertIssueRequest.new
     assert_equal false, @cert_issue_request.exclude_cn_from_sans
