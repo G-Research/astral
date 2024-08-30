@@ -1,0 +1,30 @@
+require "test_helper"
+
+class ObtainCertTest < ActiveSupport::TestCase
+  def setup
+    @interactor = ObtainCert
+    @cert = OpenStruct.new(certificate: "certificate", ca_chain: "ca_chain")
+  end
+
+  test "successful call" do
+    request = CertIssueRequest.new
+    srv = Minitest::Mock.new
+    srv.expect :issue_cert, @cert, [ request ]
+    Services::CertificateService.stub :new, srv do
+      context = @interactor.call(request: request)
+      assert context.success?
+      assert_equal @cert, context.cert
+    end
+  end
+
+  test "unsuccessful call" do
+    request = CertIssueRequest.new
+    srv = Minitest::Mock.new
+    srv.expect :issue_cert, nil, [ request ]
+    Services::CertificateService.stub :new, srv do
+      context = @interactor.call(request: request)
+      assert context.failure?
+      assert_equal nil, context.cert
+    end
+  end
+end

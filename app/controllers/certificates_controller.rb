@@ -5,9 +5,13 @@ class CertificatesController < ApplicationController
     req = CertIssueRequest.new(params_permitted)
     if !req.valid?
       render json: { error: req.errors }, status: :bad_request
+    end
+    result = IssueCert.call(request: req)
+    if result.success?
+      # TODO use jbuilder to make the json
+      render json: result.cert
     else
-      cert = Services::CertificateService.new.issue_cert(req)
-      render json: cert
+      raise StandardError.new result.message
     end
   end
 

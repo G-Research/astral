@@ -29,6 +29,9 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"
 
+# High-level app logic
+gem "interactor", "~> 3.0"
+
 # Use the vault-ruby gem to interact with HashiCorp Vault
 gem "vault"
 

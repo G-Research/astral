@@ -22,9 +22,22 @@ class CertIssueRequest
   validates :common_name, presence: true
   validates :format, presence: true, inclusion: { in: %w[pem der pem_bundle] }
   validates :private_key_format, presence: true, inclusion: { in: %w[pem der pkcs8] }
-
+  validates :ttl, numericality: {
+              less_than_or_equal_to: Rails.configuration.astral[:cert_ttl],
+              greater_than: 0
+            }
+  validate :validate_no_wildcards
 
   def fqdns
     alt_names + [ common_name ]
+  end
+
+  def validate_no_wildcards
+    if common_name.present?
+      errors.add(:common_name, "cannot be a wildcard") if common_name.start_with? "*"
+    end
+    alt_names.each do |fqdn|
+      errors.add(:alt_names, "cannot include a wildcard") if fqdn.start_with? "*"
+    end
   end
 end
