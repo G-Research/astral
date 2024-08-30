@@ -20,8 +20,9 @@ rails s
 3) POST /certificates to acquire cert in another terminal (need to provide `common_name` param):
 ```
 curl -X POST http://localhost:3000/certificates \
--H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcHBsaWNhdGlvbl9uYW1lIiwiY29tbW9uX25hbWUiOiJleGFtcGxlLmNvbSIsImlwX3NhbnMiOiIxMC4wLjEuMTAwIn0.61e0oQIj7vwGtOpFuPJDCI_Bqf8ZTpJxe_2kUwcbN7Y" \
--H "Content-type: application/json" -d '{ "common_name": "example.com" }'
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI" \
+-H "Content-type: application/json" \
+-d "{ \"common_name\": \"example.com\" }"
 ```
 4) Run the tests from devcontainer terminal:
 ```
