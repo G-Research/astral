@@ -30,7 +30,12 @@ jobs:
             bundle install
 
       - name: Lint code for consistent style
-        run: bin/rubocop -f github
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/astral-devcontainer
+          cacheFrom: ghcr.io/astral-devcontainer
+          push: never
+          runCmd: bin/rubocop -f github
   
       - name: Run brakeman
         uses: devcontainers/ci@v0.3
