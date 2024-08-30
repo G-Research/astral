@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build_test:
+  build_test: # all steps run in dev container
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -24,7 +24,7 @@ jobs:
         with:
           imageName: ghcr.io/astral-devcontainer
           cacheFrom: ghcr.io/astral-devcontainer
-          push: always
+          push: never
           runCmd: |
             # Add multiple commands to run if needed
             bundle install
