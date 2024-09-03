@@ -9,12 +9,9 @@ module Services
     end
 
     def issue_cert(cert_issue_request)
+      opts = cert_issue_request.to_hash
       # Generate the TLS certificate using the intermediate CA
-      tls_cert = @client.logical.write(Rails.application.config.astral[:vault_cert_path],
-          common_name: cert_issue_request.common_name,
-          ttl: cert_issue_request.ttl,
-          ip_sans: cert_issue_request.ip_sans,
-          format: cert_issue_request.format)
+      tls_cert = @client.logical.write(Rails.application.config.astral[:vault_cert_path], opts)
       tls_cert.data
     end
   end
