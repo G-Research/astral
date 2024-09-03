@@ -3,16 +3,16 @@ class CertIssueRequest
   include ActiveModel::Attributes
 
   attribute :common_name, :string
-  attribute :alt_names, array: :string, default: []
+  attribute :alt_names, :string
   attribute :exclude_cn_from_sans, :boolean, default: false
   attribute :format, :string, default: "pem"
   attribute :not_after, :datetime
-  attribute :other_sans, array: :string, default: []
+  attribute :other_sans, :string
   attribute :private_key_format, :string, default: "pem"
   attribute :remove_roots_from_chain, :boolean, default: false
   attribute :ttl, :integer, default: Rails.configuration.astral[:cert_ttl]
-  attribute :uri_sans, array: :string, default: []
-  attribute :ip_sans, array: :string, default: []
+  attribute :uri_sans, :string
+  attribute :ip_sans, :string
   attribute :serial_number, :integer
   attribute :client_flag, :boolean, default: true
   attribute :code_signing_flag, :boolean, default: false
@@ -29,15 +29,19 @@ class CertIssueRequest
   validate :validate_no_wildcards
 
   def fqdns
-    alt_names + [ common_name ]
+    alt_names_array + [ common_name ]
   end
 
   def validate_no_wildcards
     if common_name.present?
       errors.add(:common_name, "cannot be a wildcard") if common_name.start_with? "*"
     end
-    alt_names.each do |fqdn|
+    alt_names_array.each do |fqdn|
       errors.add(:alt_names, "cannot include a wildcard") if fqdn.start_with? "*"
     end
+  end
+
+  def alt_names_array
+    (alt_names || "").split(",")
   end
 end

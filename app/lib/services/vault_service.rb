@@ -9,10 +9,10 @@ module Services
     end
 
     def issue_cert(cert_issue_request)
-      opts = cert_issue_request.to_hash
+      opts = cert_issue_request.attributes
       # Generate the TLS certificate using the intermediate CA
       tls_cert = @client.logical.write(Rails.application.config.astral[:vault_cert_path], opts)
-      tls_cert.data
+      OpenStruct.new tls_cert.data
     end
   end
 end

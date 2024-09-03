@@ -5,16 +5,16 @@ class CertIssueRequestTest < ActiveSupport::TestCase
   def setup
     @attributes = {
       common_name: "example.com",
-      alt_names: [ "alt1.example.com", "alt2.example.com" ],
+      alt_names: "alt1.example.com,alt2.example.com",
       exclude_cn_from_sans: true,
       format: "der",
       not_after: DateTime.now + 1.year,
-      other_sans: [ "other1", "other2" ],
+      other_sans: "other1,other2",
       private_key_format: "pkcs8",
       remove_roots_from_chain: true,
       ttl: 365,
-      uri_sans: [ "http://example.com" ],
-      ip_sans: [ "192.168.1.1" ],
+      uri_sans: "http://example.com",
+      ip_sans: "192.168.1.1",
       serial_number: 123456,
       client_flag: false,
       code_signing_flag: true,
@@ -71,7 +71,7 @@ class CertIssueRequestTest < ActiveSupport::TestCase
   end
 
   test "#valid? should prevent wildcard alt_names" do
-    @cert_issue_request.alt_names = [ "www.example.com", "*.example.com" ]
+    @cert_issue_request.alt_names = "www.example.com,*.example.com"
     assert_not @cert_issue_request.valid?
     assert_includes @cert_issue_request.errors[:alt_names], "cannot include a wildcard"
   end
