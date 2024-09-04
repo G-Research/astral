@@ -6,49 +6,51 @@ on:
     branches: [ main ]
 
 jobs:
-  scan_ruby:
+  build_test: # all steps run in dev container
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Dev Container task
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/astral-devcontainer
+          cacheFrom: ghcr.io/astral-devcontainer
+          push: never
+          runCmd: |
+            # Add multiple commands to run if needed
+            bundle install
+
+      - name: Lint code for consistent style
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/astral-devcontainer
+          cacheFrom: ghcr.io/astral-devcontainer
+          push: never
+          runCmd: bin/rubocop -f github
+  
       - name: Run brakeman
         uses: devcontainers/ci@v0.3
         with:
+          imageName: ghcr.io/astral-devcontainer
+          cacheFrom: ghcr.io/astral-devcontainer
+          push: never
           runCmd: bin/brakeman --no-pager
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
-
-  test:
-    runs-on: ubuntu-latest
-
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
       - name: Run tests
         uses: devcontainers/ci@v0.3
         with:
+          imageName: ghcr.io/astral-devcontainer
+          cacheFrom: ghcr.io/astral-devcontainer
+          push: never
           runCmd: bin/rails test
 
       - name: Keep screenshots from failed system tests
