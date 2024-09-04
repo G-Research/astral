@@ -12,7 +12,6 @@ class CertificatesController < ApplicationController
       raise StandardError.new result.message
     end
     @cert = result.cert
-    render formats: :json
   end
 
   private
