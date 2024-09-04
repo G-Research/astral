@@ -12,7 +12,7 @@ class CertificatesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test "#create authorized" do
+  test "#create authorized as owner" do
     jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
     post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" },
          params: { cert_issue_request: { common_name: "example.com" } }
@@ -26,5 +26,28 @@ class CertificatesControllerTest < ActionDispatch::IntegrationTest
         serial_number ].each do |key|
       assert_includes response.parsed_body.keys, key
     end
+  end
+
+  test "#create authorized by group" do
+    jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
+    post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" },
+         params: { cert_issue_request: { common_name: "example2.com" } }
+    assert_response :success
+    %w[ ca_chain
+        certificate
+        expiration
+        issuing_ca
+        private_key
+        private_key_type
+        serial_number ].each do |key|
+      assert_includes response.parsed_body.keys, key
+    end
+  end
+
+  test "#create not authorized by group" do
+    jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
+    post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" },
+         params: { cert_issue_request: { common_name: "example3.com" } }
+    assert_response :unauthorized
   end
 end

@@ -1,0 +1,18 @@
+owner_match:
+  fqdn: example.com
+  owner: john.doe@example.com
+  group_delegation: false
+
+group_match:
+  fqdn: example2.com
+  owner: some.other@example2.com
+  group_delegation: true
+  groups:
+    - "group1"
+
+no_match:
+  fqdn: example3.com
+  owner: some.other@example2.com
+  group_delegation: true
+  groups:
+    - "group3"

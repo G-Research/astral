@@ -1,5 +1,5 @@
 class Domain < ApplicationRecord
-  serialize :groups, coder: JSON, type: Array
+  serialize :groups, coder: YAML, type: Array
   before_save :clean_groups
 
   def clean_groups
