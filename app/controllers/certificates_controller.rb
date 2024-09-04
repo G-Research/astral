@@ -5,36 +5,19 @@ class CertificatesController < ApplicationController
     req = CertIssueRequest.new(params_permitted)
     if !req.valid?
       render json: { error: req.errors }, status: :bad_request
+      return
     end
     result = IssueCert.call(request: req)
-    if result.success?
-      # TODO use jbuilder to make the json
-      render json: result.cert
-    else
+    if result.failure?
       raise StandardError.new result.message
     end
+    @cert = result.cert
   end
 
   private
 
   def params_permitted
-    attrs = %i[ common_name
-                alt_names
-                exclude_cn_from_sans
-                format
-                not_after
-                other_sans
-                private_key_format
-                remove_roots_from_chain
-                ttl
-                uri_sans
-                ip_sans
-                serial_number
-                client_flag
-                code_signing_flag
-                email_protection_flag
-                server_flag
-              ]
-    params.permit(attrs)
+    attrs = CertIssueRequest.new.attributes.keys
+    params.require(:cert_issue_request).permit(attrs)
   end
 end
