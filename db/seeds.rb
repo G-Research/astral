@@ -7,3 +7,8 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+# this is seed is for development only
+if Rails.env.development?
+  Domain.first_or_create!(fqdn: "example.com", owner: "john.doe@example.com")
+end

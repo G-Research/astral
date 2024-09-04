@@ -3,6 +3,6 @@ class Domain < ApplicationRecord
   before_save :clean_groups
 
   def clean_groups
-    this.groups = groups.sort.uniq
+    self.groups = groups.sort.uniq
   end
 end
