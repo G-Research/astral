@@ -3,7 +3,7 @@ require "test_helper"
 class DomainOwnershipServiceTest < ActiveSupport::TestCase
   def setup
     @identity = Identity.new(subject: "test@example.com", groups: [ "admin_group" ])
-    @domain = DomainInfo.new(owner: "test@example.com", group_delegation: false, groups: [ "admin_group" ])
+    @domain = Domain.new(owner: "test@example.com", group_delegation: false, groups: [ "admin_group" ])
   end
 
   test "#authorize! with matching owner" do

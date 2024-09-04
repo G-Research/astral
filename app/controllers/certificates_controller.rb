@@ -4,10 +4,9 @@ class CertificatesController < ApplicationController
   def create
     req = CertIssueRequest.new(params_permitted)
     if !req.valid?
-      render json: { error: req.errors }, status: :bad_request
-      return
+      raise BadRequestError.new req.errors.full_messages
     end
-    result = IssueCert.call(request: req)
+    result = IssueCert.call(request: req, identity: @identity)
     if result.failure?
       raise StandardError.new result.message
     end
