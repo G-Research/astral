@@ -34,7 +34,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 FROM ruby:$RUBY_VERSION-alpine
 
 # Install runtime dependencies
-RUN apk add --no-cache curl jemalloc sqlite-libs vips tzdata
+RUN apk add --no-cache curl gcompat jemalloc sqlite-libs vips tzdata
 
 ENV RAILS_ENV="production" \
     RAILS_ROOT="/app" \

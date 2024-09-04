@@ -24,7 +24,7 @@ class ObtainCertTest < ActiveSupport::TestCase
     Services::CertificateService.stub :new, srv do
       context = @interactor.call(request: request)
       assert context.failure?
-      assert_equal nil, context.cert
+      assert_nil context.cert
     end
   end
 end
