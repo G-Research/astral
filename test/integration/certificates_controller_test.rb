@@ -15,7 +15,7 @@ class CertificatesControllerTest < ActionDispatch::IntegrationTest
   test "#create authorized" do
     jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
     post certificates_path, headers: { "Authorization" => "Bearer #{jwt}" },
-         params: { common_name: "example.com" }
+         params: { cert_issue_request: {common_name: "example.com" } }
     assert_response :success
     %w[ ca_chain
         certificate

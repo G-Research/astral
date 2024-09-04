@@ -18,23 +18,7 @@ class CertificatesController < ApplicationController
   private
 
   def params_permitted
-    attrs = %i[ common_name
-                alt_names
-                exclude_cn_from_sans
-                format
-                not_after
-                other_sans
-                private_key_format
-                remove_roots_from_chain
-                ttl
-                uri_sans
-                ip_sans
-                serial_number
-                client_flag
-                code_signing_flag
-                email_protection_flag
-                server_flag
-              ]
-    params.permit(attrs)
+    attrs = CertIssueRequest.new.attributes.keys
+    params.require(:cert_issue_request).permit(attrs)
   end
 end
