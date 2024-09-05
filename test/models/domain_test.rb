@@ -5,7 +5,7 @@ class DomainTest < ActiveSupport::TestCase
   def setup
     @attributes = {
       fqdn: "example4.com",
-      owner: "john.doe@example.com",
+      owner: "john.doe@example.com"
     }
     @domain = Domain.new(@attributes)
   end
