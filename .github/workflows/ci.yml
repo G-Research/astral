@@ -60,3 +60,34 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+
+  docker:
+    name: Publish Docker Image
+    runs-on: ubuntu-latest
+    environment: docker
+    needs: [build_test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compute repo name
+        id: repo
+        run: echo name=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_OUTPUT
+
+      - name: Build & Push Docker Image
+        run: |
+          # Docker login to GitHub Container Registry
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+          # Build image
+          docker pull ghcr.io/${{ steps.repo.outputs.name }}:latest || :
+          docker build -f Dockerfile -t ghcr.io/${{ steps.repo.outputs.name }}:latest . \
+            --cache-from ghcr.io/${{ steps.repo.outputs.name }}:latest \
+            --build-arg RUBY_VERSION=${{ vars.RUBY_VERSION }} \
+            --build-arg RAILS_ROOT=${{ vars.RAILS_ROOT }}
+
+          # Push image
+          docker push ghcr.io/${{ steps.repo.outputs.name }}:latest
