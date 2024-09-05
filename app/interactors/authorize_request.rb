@@ -1,4 +1,4 @@
-class AuthenticateRequest
+class AuthorizeRequest
   include Interactor
 
   def call

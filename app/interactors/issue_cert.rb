@@ -1,5 +1,5 @@
 class IssueCert
   include Interactor::Organizer
 
-  organize AuthenticateRequest, ObtainCert, Log
+  organize AuthorizeRequest, ObtainCert, Log
 end
