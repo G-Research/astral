@@ -33,5 +33,4 @@ class ApplicationController < ActionController::API
   def handle_bad_request_error(exception)
     render json: { error: exception.message }, status: :bad_request
   end
-
 end
