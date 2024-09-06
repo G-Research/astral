@@ -71,9 +71,7 @@ env:
     value: "XXX"
   - name: JWT_SIGNING_KEY
     value: "XXX"
-  - name: SHARED_VAULT_CERT_PATH
-    value: "pki_int/issue/learn"
-  - name: SHARED_CERT_TTL
+  - name: CERT_TTL
     value: "86400"
 
 # livenessProbe:
