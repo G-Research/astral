@@ -1,9 +1,12 @@
 shared:
   vault_addr: <%= ENV["VAULT_ADDR"] %>
   vault_token: <%= ENV["VAULT_TOKEN"] %>
-  vault_cert_path: <%= ENV["SHARED_VAULT_CERT_PATH"] %>
+  vault_cert_path: "pki_int/issue/learn"
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
   cert_ttl: <%= ENV["SHARED_CERT_TTL"] %>
+
+test:
+  cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
 
