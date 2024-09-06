@@ -6,9 +6,9 @@ class CertificatesController < ApplicationController
     if !req.valid?
       raise BadRequestError.new req.errors.full_messages
     end
-    result = IssueCert.call(request: req, identity: @identity)
+    result = IssueCert.call(request: req, identity: identity)
     if result.failure?
-      raise StandardError.new result.message
+      raise (result.error || StandardError.new(result.message))
     end
     @cert = result.cert
   end
