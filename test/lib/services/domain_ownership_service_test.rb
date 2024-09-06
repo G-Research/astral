@@ -2,44 +2,34 @@ require "test_helper"
 
 class DomainOwnershipServiceTest < ActiveSupport::TestCase
   def setup
-    @identity = Identity.new(subject: "test@example.com", groups: [ "admin_group" ])
-    @domain = DomainInfo.new(owner: "test@example.com", group_delegation: false, groups: [ "admin_group" ])
+    @domain = domains(:group_match)
+    @identity = Identity.new(subject: @domain.owner)
+    @cr = CertIssueRequest.new(common_name: @domain.fqdn)
+    @ds = Services::DomainOwnershipService.new
   end
 
   test "#authorize! with matching owner" do
-    ds = Services::DomainOwnershipService.new
-    ds.stub :get_domain_name, @domain do
-      assert_nil(ds.authorize!(@identity, CertIssueRequest.new))
-    end
+    assert_nil(@ds.authorize!(@identity, @cr))
   end
 
   test "#authorize! with non-matching owner" do
-    ds = Services::DomainOwnershipService.new
-    @domain.owner = "different_owner@example.com"
-    ds.stub :get_domain_name, @domain do
-      assert_raises(AuthError) do
-        ds.authorize!(@identity, CertIssueRequest.new)
-      end
+    @identity.subject = "different_owner@example.com"
+    assert_raises(AuthError) do
+      @ds.authorize!(@identity, @cr)
     end
   end
 
   test "#authorize! with matching group" do
-    ds = Services::DomainOwnershipService.new
-    @domain.owner = "different_owner@example.com"
-    @domain.group_delegation = true
-    ds.stub :get_domain_name, @domain do
-      assert_nil(ds.authorize!(@identity, CertIssueRequest.new))
-    end
+    @domain.update(owner: "different_owner@example.com")
+    @identity.groups = @domain.groups
+    assert_nil(@ds.authorize!(@identity, @cr))
   end
 
   test "#authorize! with non-matching group" do
-    ds = Services::DomainOwnershipService.new
-    @domain.owner = "different_owner@example.com"
+    @domain.update(owner: "different_owner@example.com")
     @identity.groups = [ "different_group" ]
-    ds.stub :get_domain_name, @domain do
-      assert_raises(AuthError) do
-        ds.authorize!(@identity, CertIssueRequest.new)
-      end
+    assert_raises(AuthError) do
+      @ds.authorize!(@identity, @cr)
     end
   end
 end

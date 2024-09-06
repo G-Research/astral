@@ -5,18 +5,16 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-
     volumes:
       - ../..:/workspaces:cached
-
+    ports:
+      - 3000:3000
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
-
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     networks:
       astral:
         ipv4_address: "10.1.10.200"
-
     environment:
       VAULT_ADDR: http://10.1.10.100:8200
       VAULT_TOKEN: root_token
@@ -25,6 +23,8 @@ services:
   vault:
     image: hashicorp/vault:latest
     restart: unless-stopped
+    ports:
+      - 8200:8200
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: root_token
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
