@@ -48,7 +48,7 @@ WORKDIR $RAILS_ROOT
 COPY --from=builder $RAILS_ROOT $RAILS_ROOT
 
 # Add non-root user
-RUN addgroup -S rails && adduser -S rails -G rails && \
+RUN addgroup -g 1000 -S rails && adduser -u 1000 -S rails -G rails && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
