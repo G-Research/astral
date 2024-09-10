@@ -1,11 +1,11 @@
 class Domain < ApplicationRecord
-  serialize :groups, :users, coder: YAML, type: Array
-  before_save :clean_users_groups
-
   validates :fqdn, presence: true
 
-  def clean_users_groups
-    self.groups = groups.sort.uniq
-    self.users = users.sort.uniq
+  def groups_array
+    (groups || "").split(",").sort.uniq
+  end
+
+  def users_array
+    (users || "").split(",").sort.uniq
   end
 end

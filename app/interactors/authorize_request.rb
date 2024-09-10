@@ -3,20 +3,12 @@ class AuthorizeRequest
   include FailOnError
 
   def call
-    authorize!(context.identity, context.request)
-  end
-
-  private
-
-  def authorize!(identity, cert_req)
-    cert_req.fqdns.each do |fqdn|
+    context.request.fqdns.each do |fqdn|
       domain = Domain.where(fqdn: fqdn).first
-      raise AuthError unless domain.present? &&
-                             (domain.owner == identity.subject ||
-                              (domain.group_delegation &&
-                               (domain.groups & identity.groups).any?))
+      raise AuthError unless domain.present?
+      raise AuthError unless (domain.users_array & [ context.identity.subject ]).any? ||
+        (domain.group_delegation && (domain.groups_array & context.identity.groups).any?)
     end
     nil
   end
-
 end

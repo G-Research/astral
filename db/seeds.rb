@@ -10,5 +10,5 @@
 
 # this seed is for development only
 if Rails.env.development?
-  Domain.first_or_create!(fqdn: "example.com", owner: "john.doe@example.com")
+  Domain.first_or_create!(fqdn: "example.com", users: "john.doe@example.com")
 end

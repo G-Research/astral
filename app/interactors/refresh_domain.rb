@@ -3,9 +3,16 @@ class RefreshDomain
 
   def call
     domain_info = Services::DomainOwnershipService.new.get_domain_info(context.request.fqdn)
-    Domain.first_or_create(fqdn: context.request.fqdn).update!(
-      group_delegation: domain_info["ownerDelegatedRequestsToTeam"]
-      groups: domain_info["autoApprovedGroups"]
+    domain_record = Domain.first_or_create(fqdn: context.request.fqdn)
+
+    if !domain_info || domain_info["isDeleted"]
+      domain_record.delete
+      return
+    end
+
+    domain_record.update!(
+      group_delegation: domain_info["ownerDelegatedRequestsToTeam"],
+      groups: domain_info["autoApprovedGroups"],
       users: domain_info["autoApprovedServiceAccounts"]
     )
   rescue => e
