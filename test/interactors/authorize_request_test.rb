@@ -22,7 +22,7 @@ class AuthorizeRequestTest < ActiveSupport::TestCase
 
   test ".call with matching group" do
     @domain.update(users: "different_owner@example.com")
-    @identity.groups = @domain.groups_array
+    @identity.groups = [ @domain.groups_array.first ]
     rslt = @interactor.call(identity: @identity, request: @cr)
     assert rslt.success?
   end

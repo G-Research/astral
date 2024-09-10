@@ -26,12 +26,12 @@ class DomainTest < ActiveSupport::TestCase
     assert_includes @domain.errors[:fqdn], "can't be blank"
   end
 
-  test "#groups_array should sort dedupe groups" do
+  test "#groups_array should convert to array, sort, and dedupe groups" do
     @domain.groups = "two,two,one"
     assert_equal [ "one", "two" ], @domain.groups_array
   end
 
-  test "#users_array should sort dedupe users" do
+  test "#users_array should convert to array, sort, and dedupe users" do
     @domain.users = "two,two,one"
     assert_equal [ "one", "two" ], @domain.users_array
   end
