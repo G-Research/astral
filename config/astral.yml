@@ -4,6 +4,8 @@ shared:
   vault_cert_path: "pki_int/issue/learn"
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
   cert_ttl: <%= ENV["CERT_TTL"] %>
+  app_registry_addr: <%= ENV["APP_REGISTRY_ADDR"] %>
+  app_registry_token: <%= ENV["APP_REGISTRY_TOKEN"] %>
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
