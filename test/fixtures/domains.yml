@@ -1,16 +1,16 @@
 owner_match:
   fqdn: example.com
-  users: john.doe@example.com
+  users: john.doe@example.com,some.other@example.com
   group_delegation: false
 
 group_match:
   fqdn: example2.com
   users: some.other@example2.com
   group_delegation: true
-  groups: group1
+  groups: group1,group2
 
 no_match:
   fqdn: example3.com
-  users: some.other@example2.com
+  users: some.other@example2.com,yet.another@example2.com
   group_delegation: true
-  groups: group3
+  groups: group3,group4
