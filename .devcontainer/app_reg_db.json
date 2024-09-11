@@ -3,7 +3,7 @@
     {
 	"id": "example.com",
 	"fullyQualifiedDomainName": "example.com",
-	"ownerDelegatedRequestToTeam": true,
+	"ownerDelegatedRequestsToTeam": true,
 	"autoApprovedGroups": "group1",
 	"autoApprovedServiceAccounts": "john.doe@example.com"
      }

@@ -14,12 +14,14 @@ module Services
     def get_domain_info(fqdn)
       rslt = client.get("/api/v1beta1/domain-names/#{fqdn}").body
       convert(rslt)
+    rescue Faraday::ResourceNotFound => e
+      nil
     end
 
     private
 
-    def convert(input)
-      if !input || input["isDeleted"]
+    def convert(domain_info)
+      if !domain_info || domain_info["isDeleted"]
         return nil
       end
 
