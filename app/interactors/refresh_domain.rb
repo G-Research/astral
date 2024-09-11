@@ -4,7 +4,6 @@ class RefreshDomain
   def call
     domain_info = Services::DomainOwnershipService.new.get_domain_info(context.request.fqdn)
     domain_record = Domain.first_or_create(fqdn: context.request.fqdn)
-
     if !domain_info
       domain_record.delete
       return

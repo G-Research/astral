@@ -1,0 +1,11 @@
+{
+  "domain-names": [
+    {
+	"id": "example.com",
+	"fullyQualifiedDomainName": "example.com",
+	"ownerDelegatedRequestToTeam": true,
+	"autoApprovedGroups": "group1",
+	"autoApprovedServiceAccounts": "john.doe@example.com"
+     }
+  ]
+}

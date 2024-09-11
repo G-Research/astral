@@ -19,6 +19,8 @@ services:
       VAULT_ADDR: http://10.1.10.100:8200
       VAULT_TOKEN: root_token
       JWT_SIGNING_KEY: jwt_secret
+      APP_REGISTRY_ADDR: http://10.1.10.150:8800
+      APP_REGISTRY_TOKEN: app_reg_token
     
   vault:
     image: hashicorp/vault:latest
@@ -32,6 +34,20 @@ services:
       astral:
         ipv4_address: "10.1.10.100"
 
+  app_registry:
+    image: node:latest
+    restart: unless-stopped
+    ports:
+      - 8800:8800
+    volumes:
+      - .:/data
+    networks:
+      astral:
+        ipv4_address: "10.1.10.150"
+    command: >
+      sh -c "npm install -g json-server@0.17.4 &&
+             json-server /data/app_reg_db.json --routes /data/app_reg_routes.json --port 8800 --host 0.0.0.0"
+        
 networks:
   astral:
     ipam:
