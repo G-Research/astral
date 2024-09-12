@@ -6,6 +6,13 @@
 	"ownerDelegatedRequestsToTeam": true,
 	"autoApprovedGroups": "group1",
 	"autoApprovedServiceAccounts": "john.doe@example.com"
+     },
+     {
+	"id": "example2.com",
+	"fullyQualifiedDomainName": "example2.com",
+	"ownerDelegatedRequestsToTeam": true,
+	"autoApprovedGroups": "group1",
+	"autoApprovedServiceAccounts": "john.doe@example.com"
      }
   ]
 }

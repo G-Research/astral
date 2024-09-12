@@ -2,10 +2,10 @@ class RefreshDomain
   include Interactor
 
   def call
-    domain_info = Services::DomainOwnershipService.new.get_domain_info(context.request.fqdn)
-    domain_record = Domain.first_or_create(fqdn: context.request.fqdn)
+    domain_info = Services::DomainOwnershipService.new.get_domain_info(context.request.common_name)
+    domain_record = Domain.find_or_create_by!(fqdn: context.request.common_name)
     if !domain_info
-      domain_record.delete
+      domain_record.destroy!
       return
     end
 
