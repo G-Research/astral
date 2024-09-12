@@ -1,5 +1,6 @@
 class AuthenticateIdentity
   include Interactor
+  include AuditLogging
   include FailOnError
 
   before do

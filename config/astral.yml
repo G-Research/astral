@@ -9,6 +9,7 @@ shared:
   app_registry_ca_file: <%= ENV["APP_REGISTRY_CA_FILE"] %>
   app_registry_client_cert: <%= ENV["APP_REGISTRY_CLIENT_CERT"] %>
   app_registry_client_key: <%= ENV["APP_REGISTRY_CLIENT_KEY"] %>
+  audit_log_file: <%= ENV["AUDIT_LOG_FILE"] || "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>

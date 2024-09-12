@@ -1,5 +1,6 @@
 class ObtainCert
   include Interactor
+  include AuditLogging
   include FailOnError
 
   def call

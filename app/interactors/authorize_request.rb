@@ -1,6 +1,8 @@
 class AuthorizeRequest
   include Interactor
+  include AuditLogging
   include FailOnError
+
 
   def call
     context.request.fqdns.each do |fqdn|
