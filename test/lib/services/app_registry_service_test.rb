@@ -1,8 +1,8 @@
 require "test_helper"
 
-class DomainOwnershipServiceTest < ActiveSupport::TestCase
+class AppRegistryServiceTest < ActiveSupport::TestCase
   setup do
-    @service = Services::DomainOwnershipService.new
+    @service = Services::AppRegistryService.new
   end
 
   test "#get_domain_info fetches from configured api server" do

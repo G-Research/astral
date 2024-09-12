@@ -1,7 +1,9 @@
 module Services
   class AuthService
+    attr_reader :impl
+
     def initialize
-      @domain_ownership_service = DomainOwnershipService.new
+      # TODO this should select an external service impl when needed
     end
 
     def authenticate!(token)
@@ -9,10 +11,6 @@ module Services
       raise AuthError unless identity
       # TODO verify identity with authority?
       identity
-    end
-
-    def authorize!(identity, cert_issue_req)
-      @domain_ownership_service.authorize!(identity, cert_issue_req)
     end
 
     private
