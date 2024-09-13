@@ -5,7 +5,7 @@ class DomainTest < ActiveSupport::TestCase
   def setup
     @attributes = {
       fqdn: "example4.com",
-      owner: "john.doe@example.com"
+      users: "john.doe@example.com"
     }
     @domain = Domain.new(@attributes)
   end
@@ -26,15 +26,13 @@ class DomainTest < ActiveSupport::TestCase
     assert_includes @domain.errors[:fqdn], "can't be blank"
   end
 
-  test "#valid? should require an owner" do
-    @domain.owner = nil
-    assert_not @domain.valid?
-    assert_includes @domain.errors[:owner], "can't be blank"
+  test "#groups_array should convert to array, sort, and dedupe groups" do
+    @domain.groups = "two,two,one"
+    assert_equal [ "one", "two" ], @domain.groups_array
   end
 
-  test "before_save should sort and dedupe groups" do
-    @domain.groups = [ "two", "two", "one" ]
-    @domain.save
-    assert_equal [ "one", "two" ], @domain.groups
+  test "#users_array should convert to array, sort, and dedupe users" do
+    @domain.users = "two,two,one"
+    assert_equal [ "one", "two" ], @domain.users_array
   end
 end

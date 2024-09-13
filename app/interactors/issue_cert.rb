@@ -1,5 +1,6 @@
 class IssueCert
   include Interactor::Organizer
+  include FailOnError
 
-  organize AuthorizeRequest, ObtainCert, Log
+  organize RefreshDomain, AuthorizeRequest, ObtainCert, Log
 end

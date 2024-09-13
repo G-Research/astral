@@ -1,14 +1,16 @@
 module Services
   class DomainOwnershipService
-    def authorize!(identity, cert_req)
-      cert_req.fqdns.each do |fqdn|
-        domain = Domain.where(fqdn: fqdn).first
-        raise AuthError unless domain.present? &&
-                               (domain.owner == identity.subject ||
-                               (domain.group_delegation &&
-                               (domain.groups & identity.groups).any?))
+    class << self
+      def get_domain_info(fqdn)
+        impl.get_domain_info(fqdn)
       end
-      nil
+
+      private
+
+      def impl
+        # TODO this should select an implementation service based on config
+        AppRegistryService
+      end
     end
   end
 end

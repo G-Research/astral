@@ -13,7 +13,7 @@
 ActiveRecord::Schema[7.2].define(version: 2024_09_04_175652) do
   create_table "domains", force: :cascade do |t|
     t.string "fqdn", null: false
-    t.string "owner", null: false
+    t.text "users"
     t.text "groups"
     t.boolean "group_delegation", default: false
     t.datetime "created_at", null: false
