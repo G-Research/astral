@@ -2,7 +2,7 @@ require "test_helper"
 
 class AppRegistryServiceTest < ActiveSupport::TestCase
   setup do
-    @service = Services::AppRegistryService.new
+    @service = Services::AppRegistryService
   end
 
   test "#get_domain_info fetches from configured api server" do

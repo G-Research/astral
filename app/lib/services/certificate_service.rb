@@ -1,14 +1,16 @@
 module Services
   class CertificateService
-    attr_reader :impl
+    class << self
+      def issue_cert(cert_issue_request)
+        impl.issue_cert(cert_issue_request)
+      end
 
-    def initialize
-      # TODO this should select an implementation service based on config
-      @impl = VaultService.new
-    end
+      private
 
-    def issue_cert(cert_issue_request)
-      impl.issue_cert(cert_issue_request)
+      def impl
+        # TODO this should select an implementation service based on config
+        VaultService
+      end
     end
   end
 end

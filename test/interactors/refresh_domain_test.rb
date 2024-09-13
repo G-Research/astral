@@ -27,10 +27,10 @@ class RefreshDomainTest < ActiveSupport::TestCase
   end
 
   test ".call leaves db record as-is when service has error" do
-    mock = Services::DomainOwnershipService.new
+    mock = Minitest::Mock.new
     err = ->(_) { raise Faraday::TimeoutError.new }
-    mock.stub(:get_domain_info, err) do
-      Services::DomainOwnershipService.stub :new, mock do
+    mock.expect(:call, err) do
+      Services::DomainOwnershipService.stub :get_domain_info, mock do
         rslt = @interactor.call(identity: @identity, request: @cr)
         assert rslt.success?
         reloaded = Domain.where(fqdn: @domain.fqdn).first!
