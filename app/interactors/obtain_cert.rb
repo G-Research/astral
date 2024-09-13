@@ -1,7 +1,7 @@
 class ObtainCert
   include Interactor
-  include AuditLogging
   include FailOnError
+  include AuditLogging
 
   def call
     if cert = Services::CertificateService.issue_cert(context.request)

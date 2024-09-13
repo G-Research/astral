@@ -1,7 +1,7 @@
 class AuthenticateIdentity
   include Interactor
-  include AuditLogging
   include FailOnError
+  include AuditLogging
 
   before do
     token = context.request.headers["Authorization"]

@@ -1,7 +1,7 @@
 class AuthorizeRequest
   include Interactor
-  include AuditLogging
   include FailOnError
+  include AuditLogging
 
 
   def call
