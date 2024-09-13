@@ -4,7 +4,7 @@ class AuditLogFormatter < ActiveSupport::Logger::SimpleFormatter
     request_id = Thread.current[:request_id]
     json = {
       type: severity,
-      time: timestamp,
+      time: "#{timestamp}",
       request_id: request_id
     }
     if message.is_a? Hash
