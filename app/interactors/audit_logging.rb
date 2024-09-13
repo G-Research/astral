@@ -3,17 +3,26 @@ module AuditLogging
 
   included do
     around do |interactor|
-      logger = AuditLogger.new
-      logger.info(message: "#{self.class.name} begin")
       interactor.call
-      if context.failed?
-        logger.error(message: "#{self.class.name} failed")
-      else
-        logger.info(message: "#{self.class.name} succeeded")
-      end
+      log
     rescue => e
-      logger.error(message: "#{self.class.name} failed")
+      log
       raise e
     end
+  end
+
+  private
+
+  def log
+    msg = context.success? ? "succeeded" : "failed"
+    level = context.success? ? :info : :error
+    payload = {
+      action: "#{self.class.name}",
+      success: context.success?,
+      action_error: context.error&.message,
+      subject: context.identity&.subject,
+      cert_common_name: context.request&.try(:common_name)
+    }
+    AuditLogger.new.send(level, payload)
   end
 end
