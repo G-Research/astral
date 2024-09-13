@@ -1,7 +1,12 @@
 module Services
   class VaultService
+    def self.issue_cert(cert_issue_request)
+      new.issue_cert(cert_issue_request)
+    end
+    
+    private
     attr_reader :client
-
+    
     def initialize
       # TODO create a new token for use in the session
       @client = Vault::Client.new(

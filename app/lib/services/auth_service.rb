@@ -13,6 +13,10 @@ module Services
       identity
     end
 
+    def self.authenticate!(token)
+      new.authenticate!(token)
+    end
+
     private
 
     def decode(token)

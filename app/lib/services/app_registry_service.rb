@@ -17,6 +17,10 @@ module Services
     rescue Faraday::ResourceNotFound => e
       nil
     end
+    
+    def self.get_domain_info(fqdn)
+      new.get_domain_info(fqdn)
+    end
 
     private
 
