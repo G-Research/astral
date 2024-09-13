@@ -4,13 +4,16 @@ module AuditLogging
   included do
     around do |interactor|
       logger = AuditLogger.new
-      logger.info("#{self.class.name} begin")
+      logger.info(message: "#{self.class.name} begin")
       interactor.call
       if context.failed?
-        logger.error("#{self.class.name} failed")
+        logger.error(message: "#{self.class.name} failed")
       else
-        logger.info("#{self.class.name} succeeded")
+        logger.info(message: "#{self.class.name} succeeded")
       end
+    rescue => e
+      logger.error(message: "#{self.class.name} failed")
+      raise e
     end
   end
 end
