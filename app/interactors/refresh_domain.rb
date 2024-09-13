@@ -1,6 +1,5 @@
 class RefreshDomain
   include Interactor
-  include AuditLogging
 
   def call
     domain_info = Services::DomainOwnershipService.get_domain_info(context.request.common_name)

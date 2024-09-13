@@ -14,12 +14,12 @@ module AuditLogging
   private
 
   def log
-    msg = context.success? ? "succeeded" : "failed"
+    result = context.success? ? "success" : "failure"
     level = context.success? ? :info : :error
     payload = {
       action: "#{self.class.name}",
-      success: context.success?,
-      action_error: context.error&.message,
+      result: result,
+      error: context.error&.message,
       subject: context.identity&.subject,
       cert_common_name: context.request&.try(:common_name)
     }
