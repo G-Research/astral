@@ -1,5 +1,6 @@
 class ObtainCert
   include Interactor
+  include FailOnError
 
   def call
     if cert = Services::CertificateService.new.issue_cert(context.request)
