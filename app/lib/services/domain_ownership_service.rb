@@ -1,20 +1,16 @@
 module Services
   class DomainOwnershipService
-    attr_reader :impl
+    class << self
+      def get_domain_info(fqdn)
+        impl.get_domain_info(fqdn)
+      end
 
-    def self.get_domain_info(fqdn)
-      new.get_domain_info(fqdn)
-    end
-    
-    private
-    
-    def initialize
-      # TODO this should select an implementation service based on config
-      @impl = AppRegistryService.new
-    end
+      private
 
-    def get_domain_info(fqdn)
-      impl.get_domain_info(fqdn)
+      def impl
+        # TODO this should select an implementation service based on config
+        AppRegistryService
+      end
     end
   end
 end

@@ -8,9 +8,9 @@ class AuthenticateIdentityTest < ActiveSupport::TestCase
 
   test ".call success" do
     request = OpenStruct.new(headers: { "Authorization" => "Bearer valid_token" })
-    srv = Minitest::Mock.new
-    srv.expect :authenticate!, @identity, [ "valid_token" ]
-    Services::AuthService.stub :new, srv do
+    mock = Minitest::Mock.new
+    mock.expect :call, @identity, [ "valid_token" ]
+    Services::AuthService.stub :authenticate!, mock do
       context = @interactor.call(request: request)
       assert context.success?
       assert_equal @identity, context.identity
@@ -19,9 +19,9 @@ class AuthenticateIdentityTest < ActiveSupport::TestCase
 
   test ".call failure" do
     request = OpenStruct.new(headers: { "Authorization" => "Bearer invalid_token" })
-    srv = Minitest::Mock.new
-    srv.expect :authenticate!, nil, [ "invalid_token" ]
-    Services::AuthService.stub :new, srv do
+    mock = Minitest::Mock.new
+    mock.expect :call, nil, [ "invalid_token" ]
+    Services::AuthService.stub :authenticate!, mock do
       context = @interactor.call(request: request)
       assert context.failure?
       assert_nil context.identity
