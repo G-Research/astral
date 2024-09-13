@@ -1,6 +1,10 @@
 require "test_helper"
 
 class AuditLogFormatterTest < ActiveSupport::TestCase
+  setup do
+    Thread.current[:request_id] = nil
+  end
+
   test "#call formats logformatter inputs as json" do
     t = Time.now
     result = AuditLogFormatter.new.call("info", t, nil, "some message")
