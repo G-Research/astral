@@ -1,10 +1,10 @@
 module Requests
-  class CreateSecretRequest
+  class SecretRequest
     include ActiveModel::Model
     include ActiveModel::Attributes
 
     attribute :path, :string
-    attribute :data, Hash
+    attribute :data
 
     validates :path, presence: true
   end

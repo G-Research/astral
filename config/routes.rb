@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   root "info#index"
 
   resources :certificates, only: %i[create]
-  resources :secrets, only: %i[create show]
+  resources :secrets, only: %i[create]
+  get 'secrets/*path', to: 'secrets#show', as: :secret
 end

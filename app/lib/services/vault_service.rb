@@ -14,11 +14,11 @@ module Services
 
       def kv_write(path, data)
         enable_engine(kv_mount, "kv-v2")
-        client.logical.write("#{kv_mount}/#{path}", data)
+        client.logical.write("#{kv_mount}/data/#{path}", data: data)
       end
 
       def kv_delete(path)
-        client.logical.delete("#{kv_mount}/#{path}")
+        client.logical.delete("#{kv_mount}/data/#{path}")
       end
 
       private
