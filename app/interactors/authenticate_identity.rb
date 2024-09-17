@@ -1,6 +1,7 @@
 class AuthenticateIdentity
   include Interactor
   include FailOnError
+  include AuditLogging
 
   before do
     token = context.request.headers["Authorization"]
@@ -8,7 +9,7 @@ class AuthenticateIdentity
   end
 
   def call
-    if identity = Services::AuthService.new.authenticate!(context.token)
+    if identity = Services::AuthService.authenticate!(context.token)
       context.identity = identity
     else
       context.fail!(message: "Invalid token")

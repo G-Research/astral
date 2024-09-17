@@ -4,6 +4,12 @@ shared:
   vault_cert_path: "pki_int/issue/learn"
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
   cert_ttl: <%= ENV["CERT_TTL"] %>
+  app_registry_addr: <%= ENV["APP_REGISTRY_ADDR"] %>
+  app_registry_token: <%= ENV["APP_REGISTRY_TOKEN"] %>
+  app_registry_ca_file: <%= ENV["APP_REGISTRY_CA_FILE"] %>
+  app_registry_client_cert: <%= ENV["APP_REGISTRY_CLIENT_CERT"] %>
+  app_registry_client_key: <%= ENV["APP_REGISTRY_CLIENT_KEY"] %>
+  audit_log_file: <%= ENV["AUDIT_LOG_FILE"] || "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>

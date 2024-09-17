@@ -1,12 +1,16 @@
 module Services
   class CertificateService
-    def initialize
-      # TODO this should select an implementation service based on config
-      @impl = VaultService.new
-    end
+    class << self
+      def issue_cert(cert_issue_request)
+        impl.issue_cert(cert_issue_request)
+      end
 
-    def issue_cert(cert_issue_request)
-      @impl.issue_cert(cert_issue_request)
+      private
+
+      def impl
+        # TODO this should select an implementation service based on config
+        VaultService
+      end
     end
   end
 end

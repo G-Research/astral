@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   before_action :set_default_format
+  before_action :store_request_id
   rescue_from StandardError, with: :handle_standard_error
   rescue_from AuthError, with: :handle_auth_error
   rescue_from BadRequestError, with: :handle_bad_request_error
@@ -20,6 +21,10 @@ class ApplicationController < ActionController::API
 
   def set_default_format
     request.format = :json
+  end
+
+  def store_request_id
+    Thread.current[:request_id] = request.uuid
   end
 
   def handle_standard_error(exception)

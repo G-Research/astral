@@ -6,22 +6,22 @@ class ObtainCertTest < ActiveSupport::TestCase
     @cert = OpenStruct.new(certificate: "certificate", ca_chain: "ca_chain")
   end
 
-  test "successful call" do
+  test ".call success" do
     request = CertIssueRequest.new
-    srv = Minitest::Mock.new
-    srv.expect :issue_cert, @cert, [ request ]
-    Services::CertificateService.stub :new, srv do
+    mock = Minitest::Mock.new
+    mock.expect :call, @cert, [ request ]
+    Services::CertificateService.stub :issue_cert, mock do
       context = @interactor.call(request: request)
       assert context.success?
       assert_equal @cert, context.cert
     end
   end
 
-  test "unsuccessful call" do
+  test ".call failure" do
     request = CertIssueRequest.new
-    srv = Minitest::Mock.new
-    srv.expect :issue_cert, nil, [ request ]
-    Services::CertificateService.stub :new, srv do
+    mock = Minitest::Mock.new
+    mock.expect :call, nil, [ request ]
+    Services::CertificateService.stub :issue_cert, mock do
       context = @interactor.call(request: request)
       assert context.failure?
       assert_nil context.cert
