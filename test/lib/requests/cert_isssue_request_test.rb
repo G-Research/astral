@@ -21,7 +21,7 @@ class CertIssueRequestTest < ActiveSupport::TestCase
       email_protection_flag: true,
       server_flag: false
     }
-    @cert_issue_request = CertIssueRequest.new(@attributes)
+    @cert_issue_request = Requests::CertIssueRequest.new(@attributes)
   end
 
   test "#new should set attributes from attributes argument" do
@@ -77,7 +77,7 @@ class CertIssueRequestTest < ActiveSupport::TestCase
   end
 
   test "#new should have default values" do
-    @cert_issue_request = CertIssueRequest.new
+    @cert_issue_request = Requests::CertIssueRequest.new
     assert_equal false, @cert_issue_request.exclude_cn_from_sans
     assert_equal "pem", @cert_issue_request.format
     assert_equal "pem", @cert_issue_request.private_key_format
@@ -90,7 +90,7 @@ class CertIssueRequestTest < ActiveSupport::TestCase
   end
 
   test "#valid? should be false with default values" do
-    @cert_issue_request = CertIssueRequest.new
+    @cert_issue_request = Requests::CertIssueRequest.new
     assert_not @cert_issue_request.valid?
   end
 

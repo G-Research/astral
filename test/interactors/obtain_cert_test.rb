@@ -7,10 +7,10 @@ class ObtainCertTest < ActiveSupport::TestCase
   end
 
   test ".call success" do
-    request = CertIssueRequest.new
+    request = Requests::CertIssueRequest.new
     mock = Minitest::Mock.new
     mock.expect :call, @cert, [ request ]
-    Services::CertificateService.stub :issue_cert, mock do
+    Services::SecretsService.stub :issue_cert, mock do
       context = @interactor.call(request: request)
       assert context.success?
       assert_equal @cert, context.cert
@@ -18,10 +18,10 @@ class ObtainCertTest < ActiveSupport::TestCase
   end
 
   test ".call failure" do
-    request = CertIssueRequest.new
+    request = Requests::CertIssueRequest.new
     mock = Minitest::Mock.new
     mock.expect :call, nil, [ request ]
-    Services::CertificateService.stub :issue_cert, mock do
+    Services::SecretsService.stub :issue_cert, mock do
       context = @interactor.call(request: request)
       assert context.failure?
       assert_nil context.cert

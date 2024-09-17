@@ -4,7 +4,7 @@ class AuthorizeRequestTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:group_match)
     @identity = Identity.new(subject: @domain.users_array.first)
-    @cr = CertIssueRequest.new(common_name: @domain.fqdn)
+    @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @interactor = AuthorizeRequest
   end
 

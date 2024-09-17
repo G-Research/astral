@@ -20,7 +20,7 @@ module Services
       def kv_delete(path)
         client.logical.delete("#{kv_mount}/#{path}")
       end
-      
+
       private
 
       def client
@@ -40,11 +40,11 @@ module Services
       rescue Vault::HTTPError => e
         puts "Error enabling #{type} engine: #{e}"
       end
-      
+
       def kv_mount
-        #TODO should this be dynamic based on identity?
+        # TODO should this be dynamic based on identity?
         "astralkv"
-      end1
+      end
     end
   end
 end

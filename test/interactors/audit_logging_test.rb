@@ -4,7 +4,7 @@ class AuditLoggingTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:owner_match)
     @identity = Identity.new(subject: @domain.users_array.first)
-    @cr = CertIssueRequest.new(common_name: @domain.fqdn)
+    @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @log = Tempfile.new("log-test")
     Rails.configuration.astral[:audit_log_file] = @log.path
   end

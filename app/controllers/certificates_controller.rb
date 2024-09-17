@@ -2,7 +2,7 @@ class CertificatesController < ApplicationController
   before_action :authenticate_request
 
   def create
-    req = CertIssueRequest.new(params_permitted)
+    req = Requests::CertIssueRequest.new(params_permitted)
     if !req.valid?
       raise BadRequestError.new req.errors.full_messages
     end
@@ -16,7 +16,7 @@ class CertificatesController < ApplicationController
   private
 
   def params_permitted
-    attrs = CertIssueRequest.new.attributes.keys
+    attrs = Requests::CertIssueRequest.new.attributes.keys
     params.require(:cert_issue_request).permit(attrs)
   end
 end
