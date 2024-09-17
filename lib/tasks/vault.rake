@@ -4,7 +4,7 @@ require "json"
 
 # Define Rake tasks
 namespace :vault do
-  desc "Setup PKI root and intermediate certificates"
+  desc "Setup Vault engines and CAs for dev and test"
   task :setup do
     unless Rails.env.development?
       raise "This task should only be used in development"
@@ -32,8 +32,8 @@ end
 def ensure_root_cert
   enable_pki("pki", "87600h")
 
-  # Generate root certificate
-  root_cert = Vault.logical.write("pki/root/generate/internal",
+   # Generate root certificate
+   root_cert = Vault.logical.write("pki/root/generate/internal",
                                   common_name: "astral.internal",
                                   issuer_name: "root-2024",
                                   ttl: "87600h").data[:certificate]
