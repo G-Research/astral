@@ -4,7 +4,7 @@ module Requests
     include ActiveModel::Attributes
 
     attribute :path, :string
-    attribute :data, :hash
+    attribute :data, Hash
 
     validates :path, presence: true
   end

@@ -6,7 +6,7 @@ class SecretsController < ApplicationController
     if !req.valid?
       raise BadRequestError.new req.errors.full_messages
     end
-    result = CreateSecret.call(request: req, identity: identity)
+    result = OpenStruct.new #WriteSecret.call(request: req, identity: identity)
     if result.failure?
       raise (result.error || StandardError.new(result.message))
     end
@@ -16,7 +16,8 @@ class SecretsController < ApplicationController
   private
 
   def params_permitted
-    attrs = Requests::CreateSecretRequest.attributes.keys
+    attrs = Requests::CreateSecretRequest.new.attributes.keys
+    binding.debugger
     params.require(:secret_request).permit(attrs)
   end
 end

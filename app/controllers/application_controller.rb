@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   before_action :store_request_id
   rescue_from StandardError, with: :handle_standard_error
   rescue_from AuthError, with: :handle_auth_error
-  rescue_from BadRequestError, with: :handle_bad_request_error
+  rescue_from BadRequestError, with: :handle_bad_request
   rescue_from ActionController::ParameterMissing, with: :handle_bad_request
 
   attr_reader :identity # decoded and verified JWT
@@ -35,7 +35,7 @@ class ApplicationController < ActionController::API
     render json: { error: "Unauthorized" }, status: :unauthorized
   end
 
-  def handle_bad_request_error(exception)
+  def handle_bad_request(exception)
     render json: { error: exception.message }, status: :bad_request
   end
 end

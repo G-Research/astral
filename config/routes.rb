@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   root "info#index"
 
   resources :certificates, only: %i[create]
+  resources :secrets, only: %i[create show]
 end
