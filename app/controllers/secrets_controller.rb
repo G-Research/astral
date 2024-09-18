@@ -25,7 +25,7 @@ class SecretsController < ApplicationController
     @secret = result.secret
   end
 
-  def delete
+  def destroy
     req = Requests::SecretRequest.new(path: params.require(:path))
     if !req.valid?
       raise BadRequestError.new req.errors.full_messages

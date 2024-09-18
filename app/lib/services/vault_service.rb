@@ -32,10 +32,8 @@ module Services
       end
 
       def enable_engine(mount, type)
-        unless client.sys.mounts.key?(mount + "/")
+        unless client.sys.mounts.key?(mount.to_sym)
           client.sys.mount(mount, type, "#{type} secrets engine")
-        else
-          puts "#{mount} already enabled."
         end
       rescue Vault::HTTPError => e
         puts "Error enabling #{type} engine: #{e}"
