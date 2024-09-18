@@ -24,10 +24,21 @@ class SecretsController < ApplicationController
     end
     @secret = result.secret
   end
+
+  def delete
+    req = Requests::SecretRequest.new(path: params.require(:path))
+    if !req.valid?
+      raise BadRequestError.new req.errors.full_messages
+    end
+    result = DeleteSecret.call(request: req, identity: identity)
+    if result.failure?
+      raise (result.error || StandardError.new(result.message))
+    end
+  end
   
   private
 
   def params_permitted
-    params.require(:secret_request).permit(:path, data: {})
+    params.require(:secret).permit(:path, data: {})
   end
 end

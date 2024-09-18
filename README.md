@@ -18,24 +18,40 @@ This Rails app is most easily run and developed in its devcontainer.
 ```
 rails s
 ```
-3) POST /certificates to acquire cert in another terminal (need to provide `common_name` param):
+3) POST /certificates to acquire cert (need to provide `common_name` param):
 ```
 curl -X POST http://localhost:3000/certificates \
 -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI" \
 -H "Content-type: application/json" \
 -d "{ \"cert_issue_request\": { \"common_name\": \"example.com\" } }"
 ```
-4) Run the tests from devcontainer terminal:
+4) POST and GET /secrets to save and fetch a secret:
+```
+curl -X POST http://localhost:3000/secrets \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI" \
+-H "Content-type: application/json" \
+-d "{\"secret\": { \"path\":\"some/path\", \"data\": {\"password\": \"s3crit\"} } }"
+
+curl http://localhost:3000/secrets/some/path \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
+```
+5) Run the tests from devcontainer terminal:
 ```
 rails test
 ```
 
-# Running the prod image
+# Running the prod image (local build):
 1) Build the prod image:
 ```
 docker build -t astral:latest .
 ```
 2) Run the prod image:
+```
+docker run -e SECRET_KEY_BASE=mysecrit -p 3000:3000 astral:latest
+```
+
+# Running the prod image (from repository):
+1) Run the prod image:
 ```
 docker run -e SECRET_KEY_BASE=mysecrit -p 3000:3000 astral:latest
 ```
