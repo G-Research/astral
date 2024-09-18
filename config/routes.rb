@@ -14,5 +14,5 @@ Rails.application.routes.draw do
 
   resources :certificates, only: %i[create]
   resources :secrets, only: %i[create]
-  get 'secrets/*path', to: 'secrets#show', as: :secret
+  get "secrets/*path", to: "secrets#show", as: :secret
 end

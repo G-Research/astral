@@ -35,7 +35,7 @@ class SecretsController < ApplicationController
       raise (result.error || StandardError.new(result.message))
     end
   end
-  
+
   private
 
   def params_permitted
