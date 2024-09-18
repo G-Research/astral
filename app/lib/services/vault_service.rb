@@ -32,6 +32,7 @@ module Services
       end
 
       def enable_engine(mount, type)
+        # create the engine mount if not present already
         unless client.sys.mounts.key?(mount.to_sym)
           client.sys.mount(mount, type, "#{type} secrets engine")
         end

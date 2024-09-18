@@ -5,6 +5,7 @@ module Requests
 
     attribute :path, :string
     attribute :data
+    alias_attribute :kv_path, :path
 
     validates :path, presence: true
   end

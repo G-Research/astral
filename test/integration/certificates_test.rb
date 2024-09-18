@@ -1,7 +1,7 @@
 require "test_helper"
 
 class CertificatesTest < ActionDispatch::IntegrationTest
-  test "#create unauthorized" do
+  test "#create with missing token" do
     post certificates_path
     assert_response :unauthorized
   end

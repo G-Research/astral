@@ -1,4 +1,4 @@
-class AuthorizeRequest
+class AuthorizeCertRequest
   include Interactor
   include FailOnError
   include AuditLogging

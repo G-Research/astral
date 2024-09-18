@@ -21,8 +21,9 @@ module AuditLogging
       result: result,
       error: context.error&.message,
       subject: context.identity&.subject,
-      cert_common_name: context.request&.try(:common_name)
-    }
+      cert_common_name: context.request&.try(:common_name),
+      kv_path: context.request&.try(:kv_path)
+    }.compact!
     AuditLogger.new.send(level, payload)
   end
 end

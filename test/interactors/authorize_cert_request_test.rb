@@ -1,11 +1,11 @@
 require "test_helper"
 
-class AuthorizeRequestTest < ActiveSupport::TestCase
+class AuthorizeCertRequestTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:group_match)
     @identity = Identity.new(subject: @domain.users_array.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
-    @interactor = AuthorizeRequest
+    @interactor = AuthorizeCertRequest
   end
 
   test ".call with matching owner" do
