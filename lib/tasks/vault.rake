@@ -13,8 +13,6 @@ namespace :vault do
     Vault.token = ENV["VAULT_TOKEN"]
     ensure_root_cert
     configure_root_cert
-    ensure_intermediate_cert
-    configure_intermediate_cert
   end
 end
 
@@ -59,53 +57,5 @@ def configure_root_cert
                       ocsp_servers: "{{cluster_path}}/ocsp",
                       enable_templating: true)
 rescue Vault::HTTPError => e
-  puts "Error configuring root pki, already enabled?: #{e}"
-end
-
-def ensure_intermediate_cert
-  enable_pki("pki_int", "43800h")
-
-  # Generate intermediate CSR
-  intermediate_csr = Vault.logical.write("pki_int/intermediate/generate/internal",
-                                         common_name: "astral.internal Intermediate Authority",
-                                         issuer_name: "learn-intermediate").data[:csr]
-
-  # Save the intermediate CSR
-  File.write("tmp/pki_intermediate.csr", intermediate_csr)
-
-  # Sign the intermediate certificate with the root CA
-  intermediate_cert = Vault.logical.write("pki/root/sign-intermediate",
-                                          issuer_ref: "root-2024",
-                                          csr: intermediate_csr,
-                                          format: "pem_bundle",
-                                          ttl: "43800h").data[:certificate]
-
-  # Save the signed intermediate certificate
-  File.write("tmp/intermediate.cert.pem", intermediate_cert)
-
-  # Set the signed intermediate certificate
-  Vault.logical.write("pki_int/intermediate/set-signed", certificate: intermediate_cert)
-rescue Vault::HTTPError => e
-  puts "Error enabling intermediate pki, already enabled?: #{e}"
-end
-
-def configure_intermediate_cert
-  Vault.logical.write("pki_int/config/cluster",
-                      path: "#{Vault.address}/v1/pki_int",
-                      aia_path: "#{Vault.address}/v1/pki_int")
-
-  issuer_ref = Vault.logical.read("pki_int/config/issuers").data[:default]
-  Vault.logical.write("pki_int/roles/learn",
-                      issuer_ref: issuer_ref,
-                      allow_any_name: true,
-                      max_ttl: "720h",
-                      no_store: false)
-
-  Vault.logical.write("pki_int/config/urls",
-                      issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
-                      crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
-                      ocsp_servers: "{{cluster_path}}/ocsp",
-                      enable_templating: true)
-rescue Vault::HTTPError => e
-  puts "Error configuring intermediate pki, already enabled?: #{e}"
+  puts "Error configuring root pki: #{e}"
 end
