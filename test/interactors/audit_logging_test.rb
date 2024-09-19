@@ -24,7 +24,7 @@ class AuditLoggingTest < ActiveSupport::TestCase
                      end)
     rslt = SuccessAction.call(identity: @identity, request: @cr)
     assert rslt.success?
-    assert_match %Q("action":"SuccessAction","result":"success","error":null,"subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
+    assert_match %Q("action":"SuccessAction","result":"success","subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
   end
 
   test ".call will be logged as failure" do
@@ -38,6 +38,6 @@ class AuditLoggingTest < ActiveSupport::TestCase
                      end)
     rslt = FailAction.call(identity: @identity, request: @cr)
     assert_not rslt.success?
-    assert_match %Q("action":"FailAction","result":"failure","error":null,"subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
+    assert_match %Q("action":"FailAction","result":"failure","subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
   end
 end
