@@ -37,7 +37,7 @@ module Services
           client.sys.mount(mount, type, "#{type} secrets engine")
         end
       rescue Vault::HTTPError => e
-        puts "Error enabling #{type} engine: #{e}"
+        Rails.logger.error "Error enabling #{type} engine: #{e}"
       end
 
       def kv_mount
