@@ -1,6 +1,6 @@
 require "test_helper"
 
-class AuditLoggingTest < ActiveSupport::TestCase
+class ApplicationInteractorTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:owner_match)
     @identity = Identity.new(subject: @domain.users_array.first)
@@ -15,11 +15,10 @@ class AuditLoggingTest < ActiveSupport::TestCase
   end
 
   test ".call will be logged as success" do
-    Object.const_set("SuccessAction", Class.new do
-                       include Interactor
-                       include AuditLogging
-
+    Object.const_set("SuccessAction", Class.new(ApplicationInteractor) do
                        def call
+                       ensure
+                         log
                        end
                      end)
     rslt = SuccessAction.call(identity: @identity, request: @cr)
@@ -28,12 +27,11 @@ class AuditLoggingTest < ActiveSupport::TestCase
   end
 
   test ".call will be logged as failure" do
-    Object.const_set("FailAction", Class.new do
-                       include Interactor
-                       include AuditLogging
-
+    Object.const_set("FailAction", Class.new(ApplicationInteractor) do
                        def call
                          context.fail!
+                       ensure
+                         log
                        end
                      end)
     rslt = FailAction.call(identity: @identity, request: @cr)

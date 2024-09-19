@@ -1,13 +1,11 @@
-class ReadSecret
-  include Interactor
-  include FailOnError
-  include AuditLogging
-
+class ReadSecret < ApplicationInteractor
   def call
     if secret = Services::SecretsService.kv_read(context.request.path)
       context.secret = secret
     else
       context.fail!(message: "Failed to read secret")
     end
+  ensure
+    log
   end
 end

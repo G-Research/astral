@@ -1,8 +1,4 @@
-class AuthenticateIdentity
-  include Interactor
-  include FailOnError
-  include AuditLogging
-
+class AuthenticateIdentity < ApplicationInteractor
   before do
     token = context.request.headers["Authorization"]
     context.token = token.split(" ").last if token
@@ -14,5 +10,7 @@ class AuthenticateIdentity
     else
       context.fail!(message: "Invalid token")
     end
+  ensure
+    log
   end
 end

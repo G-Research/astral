@@ -1,17 +1,5 @@
-module AuditLogging
-  extend ActiveSupport::Concern
-
-  included do
-    around do |interactor|
-      interactor.call
-      log
-    rescue => e
-      log
-      raise e
-    end
-  end
-
-  private
+class ApplicationInteractor
+  include Interactor
 
   def log
     result = context.success? ? "success" : "failure"
