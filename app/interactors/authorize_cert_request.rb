@@ -9,6 +9,6 @@ class AuthorizeCertRequest < ApplicationInteractor
     end
     nil
   ensure
-    log
+    audit_log
   end
 end

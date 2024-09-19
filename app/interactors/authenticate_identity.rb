@@ -11,6 +11,6 @@ class AuthenticateIdentity < ApplicationInteractor
       context.fail!(message: "Invalid token")
     end
   ensure
-    log
+    audit_log
   end
 end

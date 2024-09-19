@@ -18,7 +18,7 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
     Object.const_set("SuccessAction", Class.new(ApplicationInteractor) do
                        def call
                        ensure
-                         log
+                         audit_log
                        end
                      end)
     rslt = SuccessAction.call(identity: @identity, request: @cr)
@@ -31,7 +31,7 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
                        def call
                          context.fail!
                        ensure
-                         log
+                         audit_log
                        end
                      end)
     rslt = FailAction.call(identity: @identity, request: @cr)

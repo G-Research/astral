@@ -6,6 +6,6 @@ class ReadSecret < ApplicationInteractor
       context.fail!(message: "Failed to read secret")
     end
   ensure
-    log
+    audit_log
   end
 end

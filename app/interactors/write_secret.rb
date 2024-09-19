@@ -6,6 +6,6 @@ class WriteSecret < ApplicationInteractor
       context.fail!(message: "Failed to store secret")
     end
   ensure
-    log
+    audit_log
   end
 end

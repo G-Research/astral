@@ -6,6 +6,6 @@ class ObtainCert < ApplicationInteractor
       context.fail!(message: "Failed to issue certificate")
     end
   ensure
-    log
+    audit_log
   end
 end

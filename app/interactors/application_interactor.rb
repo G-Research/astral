@@ -1,7 +1,7 @@
 class ApplicationInteractor
   include Interactor
 
-  def log
+  def audit_log
     result = context.success? ? "success" : "failure"
     level = context.success? ? :info : :error
     payload = {
