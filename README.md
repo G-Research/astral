@@ -49,9 +49,3 @@ docker build -t astral:latest .
 ```
 docker run -e SECRET_KEY_BASE=mysecrit -p 3000:3000 astral:latest
 ```
-
-# Running the prod image (from repository):
-1) Run the prod image:
-```
-docker run -e SECRET_KEY_BASE=mysecrit -p 3000:3000 astral:latest
-```
