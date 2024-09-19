@@ -13,6 +13,10 @@ class SecretsTest < ActionDispatch::IntegrationTest
 
   test "#create or update a secret" do
     create_secret
+    assert_response :success
+    %w[ data metadata lease_id ].each do |key|
+      assert_includes response.parsed_body["secret"].keys, key
+    end
   end
 
   test "#show" do
@@ -36,9 +40,5 @@ class SecretsTest < ActionDispatch::IntegrationTest
     # create the secret
     post secrets_path, headers: { "Authorization" => "Bearer #{jwt_authorized}" },
          params: { secret: { path: "top/secret/key", data: { password: "sicr3t" } } }
-    assert_response :success
-    %w[ data metadata lease_id ].each do |key|
-      assert_includes response.parsed_body["secret"].keys, key
-    end
   end
 end
