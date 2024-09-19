@@ -1,5 +1,5 @@
 module Services
-  class AuthService
+  class Auth
     class << self
       def authenticate!(token)
         identity = decode(token)

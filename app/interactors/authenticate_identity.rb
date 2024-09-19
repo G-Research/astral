@@ -5,7 +5,7 @@ class AuthenticateIdentity < ApplicationInteractor
   end
 
   def call
-    if identity = Services::AuthService.authenticate!(context.token)
+    if identity = Services::Auth.authenticate!(context.token)
       context.identity = identity
     else
       context.fail!(message: "Invalid token")

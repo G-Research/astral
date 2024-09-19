@@ -1,5 +1,5 @@
-module Services
-  class VaultService
+module Clients
+  class Vault
     class << self
       def issue_cert(cert_issue_request)
         opts = cert_issue_request.attributes
@@ -25,7 +25,7 @@ module Services
 
       def client
         # TODO create a new token for the session
-        Vault::Client.new(
+        ::Vault::Client.new(
           address: Rails.configuration.astral[:vault_addr],
           token: Rails.configuration.astral[:vault_token]
         )
@@ -36,7 +36,7 @@ module Services
         unless client.sys.mounts.key?(mount.to_sym)
           client.sys.mount(mount, type, "#{type} secrets engine")
         end
-      rescue Vault::HTTPError => e
+      rescue ::Vault::HTTPError => e
         Rails.logger.error "Error enabling #{type} engine: #{e}"
       end
 

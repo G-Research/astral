@@ -1,5 +1,5 @@
 module Services
-  class DomainOwnershipService
+  class DomainOwnership
     class << self
       def get_domain_info(fqdn)
         impl.get_domain_info(fqdn)
@@ -9,7 +9,7 @@ module Services
 
       def impl
         # TODO this should select an implementation service based on config
-        AppRegistryService
+        Clients::AppRegistry
       end
     end
   end
