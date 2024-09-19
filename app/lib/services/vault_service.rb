@@ -41,8 +41,7 @@ module Services
       end
 
       def kv_mount
-        # TODO should this be dynamic based on identity?
-        "astralkv"
+        Rails.configuration.astral[:vault_kv_mount]
       end
     end
   end
