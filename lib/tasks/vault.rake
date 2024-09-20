@@ -4,7 +4,7 @@ require "json"
 
 # Define Rake tasks
 namespace :vault do
-  desc "Setup PKI root and intermediate certificates"
+  desc "Setup PKI root certificate authority"
   task :setup do
     unless Rails.env.development?
       raise "This task should only be used in development"
@@ -28,34 +28,42 @@ rescue Vault::HTTPError => e
 end
 
 def ensure_root_cert
-  enable_pki("pki", "87600h")
+  enable_pki(root_mount, "87600h")
 
   # Generate root certificate
   root_cert = Vault.logical.write("pki/root/generate/internal",
                                   common_name: "astral.internal",
-                                  issuer_name: "root-2024",
+                                  issuer_name: root_issuer_name,
                                   ttl: "87600h").data[:certificate]
 
   # Save the root certificate
-  File.write("tmp/root_2024_ca.crt", root_cert)
+  File.write("tmp/#{root_issuer_name}.crt", root_cert)
 rescue Vault::HTTPError => e
   puts "Error enabling root pki, already enabled?: #{e}"
 end
 
 def configure_root_cert
-  Vault.logical.write("pki/config/cluster",
-                      path: "#{ENV["VAULT_ADDR"]}/v1/pki",
-                      aia_path: "#{ENV["VAULT_ADDR"]}/v1/pki")
+  Vault.logical.write("#{root_mount}/config/cluster",
+                      path: "#{ENV["VAULT_ADDR"]}/v1/#{root_mount}",
+                      aia_path: "#{ENV["VAULT_ADDR"]}/v1/#{root_mount}")
 
-  Vault.logical.write("pki/roles/2024-servers",
+  Vault.logical.write("#{root_mount}/roles/2024-servers",
                       allow_any_name: true,
                       no_store: false)
 
-  Vault.logical.write("pki/config/urls",
+  Vault.logical.write("#{root_mount}/config/urls",
                       issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
                       crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
                       ocsp_servers: "{{cluster_path}}/ocsp",
                       enable_templating: true)
 rescue Vault::HTTPError => e
   puts "Error configuring root pki: #{e}"
+end
+
+def root_issuer_name
+  ENV["VAULT_ROOT_CA_REF"]
+end
+
+def root_mount
+  ENV["VAULT_ROOT_CA_MOUNT"]
 end

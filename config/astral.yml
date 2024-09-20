@@ -4,7 +4,8 @@ shared:
   vault_cert_path: "pki_int/issue/learn"
   vault_kv_mount: <%= ENV["VAULT_KV_MOUNT"] || "astralkv" %>
   # Pre-existing root CA in Vault for signing intermediate created by astral
-  vault_root_ca_ref: <%= ENV["VAULT_ROOT_CA_REF"] || "root-2024" %> 
+  vault_root_ca_ref: <%= ENV["VAULT_ROOT_CA_REF"] || "root-ca" %>
+  vault_root_ca_mount: <%= ENV["VAULT_ROOT_CA_MOUNT"] || "pki" %>
   vault_pki_mount: <%= ENV["VAULT_PKI_MOUNT"] || "astralpki" %>
 
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>

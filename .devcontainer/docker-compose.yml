@@ -18,6 +18,9 @@ services:
     environment:
       VAULT_ADDR: http://10.1.10.100:8200
       VAULT_TOKEN: root_token
+      VAULT_ROOT_CA_MOUNT: pki
+      VAULT_ROOT_CA_REF: root-ca
+      VAULT_PKI_MOUNT: astralpki
       JWT_SIGNING_KEY: jwt_secret
       APP_REGISTRY_ADDR: http://10.1.10.150:8800
       APP_REGISTRY_TOKEN: app_reg_token
