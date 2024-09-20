@@ -2,9 +2,10 @@ module Clients
   class Vault
     class << self
       def issue_cert(cert_issue_request)
+        enable_ca
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
-        tls_cert = client.logical.write(Rails.configuration.astral[:vault_cert_path], opts)
+        tls_cert = client.logical.write(cert_path, opts)
         OpenStruct.new tls_cert.data
       end
 
@@ -42,6 +43,10 @@ module Clients
 
       def intermediate_ca_mount
         Rails.configuration.astral[:vault_pki_mount]
+      end
+
+      def cert_path
+        "#{intermediate_ca_mount}/issue/astral"
       end
 
       def root_ca_ref
