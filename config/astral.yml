@@ -1,7 +1,6 @@
 shared:
   vault_addr: <%= ENV["VAULT_ADDR"] %>
   vault_token: <%= ENV["VAULT_TOKEN"] %>
-  vault_kv_mount: <%= ENV["VAULT_KV_MOUNT"] || "astralkv" %>
   # Pre-existing root CA in Vault for signing intermediate created by astral
   vault_root_ca_ref: <%= ENV["VAULT_ROOT_CA_REF"] || "root-ca" %>
   vault_root_ca_mount: <%= ENV["VAULT_ROOT_CA_MOUNT"] || "pki" %>

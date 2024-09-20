@@ -38,7 +38,7 @@ module Clients
       end
 
       def kv_mount
-        Rails.configuration.astral[:vault_kv_mount]
+        "kv_astral"
       end
 
       def intermediate_ca_mount
