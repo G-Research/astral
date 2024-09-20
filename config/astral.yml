@@ -5,7 +5,6 @@ shared:
   # Pre-existing root CA in Vault for signing intermediate created by astral
   vault_root_ca_ref: <%= ENV["VAULT_ROOT_CA_REF"] || "root-ca" %>
   vault_root_ca_mount: <%= ENV["VAULT_ROOT_CA_MOUNT"] || "pki" %>
-  vault_pki_mount: <%= ENV["VAULT_PKI_MOUNT"] || "astralpki" %>
 
   jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
   cert_ttl: <%= ENV["CERT_TTL"] %>

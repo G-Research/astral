@@ -42,7 +42,7 @@ module Clients
       end
 
       def intermediate_ca_mount
-        Rails.configuration.astral[:vault_pki_mount]
+        "pki_astral"
       end
 
       def cert_path
