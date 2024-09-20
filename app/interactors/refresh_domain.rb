@@ -1,6 +1,6 @@
 class RefreshDomain < ApplicationInteractor
   def call
-    domain_info = Services::DomainOwnershipService.get_domain_info(context.request.common_name)
+    domain_info = Services::DomainOwnership.get_domain_info(context.request.common_name)
     domain_record = Domain.find_or_create_by!(fqdn: context.request.common_name)
     if !domain_info
       domain_record.destroy!

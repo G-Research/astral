@@ -1,6 +1,6 @@
 class ReadSecret < ApplicationInteractor
   def call
-    if secret = Services::SecretsService.kv_read(context.request.path)
+    if secret = Services::KeyValue.read(context.request.path)
       context.secret = secret
     else
       context.fail!(message: "Failed to read secret")
