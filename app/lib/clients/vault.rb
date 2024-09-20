@@ -24,7 +24,6 @@ module Clients
       private
 
       def client
-        # TODO create a new token for the session
         ::Vault::Client.new(
           address: Rails.configuration.astral[:vault_addr],
           token: Rails.configuration.astral[:vault_token]
