@@ -1,15 +1,15 @@
 module Services
-  class DomainOwnershipService
+  class Certificate
     class << self
-      def get_domain_info(fqdn)
-        impl.get_domain_info(fqdn)
+      def issue_cert(cert_issue_request)
+        impl.issue_cert(cert_issue_request)
       end
 
       private
 
       def impl
         # TODO this should select an implementation service based on config
-        AppRegistryService
+        Clients::Vault
       end
     end
   end

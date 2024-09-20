@@ -1,5 +1,5 @@
-module Services
-  class AppRegistryService
+module Clients
+  class AppRegistry
     class << self
       def get_domain_info(fqdn)
         rslt = client.get("/api/v1beta1/domain-names/#{fqdn}").body
