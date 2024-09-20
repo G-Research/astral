@@ -12,7 +12,7 @@ module Services
       def delete(path)
         impl.kv_delete(path)
       end
-      
+
       private
 
       def impl

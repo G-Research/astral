@@ -38,7 +38,7 @@ module Clients
       rescue ::Vault::HTTPError => e
         Rails.logger.error "Error enabling #{type} engine: #{e}"
       end
-      
+
 
       def kv_mount
         Rails.configuration.astral[:vault_kv_mount]
