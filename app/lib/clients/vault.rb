@@ -48,11 +48,11 @@ module Clients
       def cert_path
         "#{intermediate_ca_mount}/issue/astral"
       end
-      
+
       def root_ca_ref
         Rails.configuration.astral[:vault_root_ca_ref]
       end
-      
+
       def root_ca_mount
         Rails.configuration.astral[:vault_root_ca_mount]
       end
@@ -66,7 +66,7 @@ module Clients
         # if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
         #   return
         # end
-        
+
         # # create the mount
         # enable_engine(intermediate_ca_mount, "pki")
 
@@ -111,8 +111,6 @@ module Clients
       rescue ::Vault::HTTPError => e
         Rails.logger.error "Unable to configure intermediate_cert: #{e}"
       end
-
-      
     end
   end
 end
