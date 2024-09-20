@@ -63,12 +63,12 @@ module Clients
 
       def enable_ca
         # if mount exists, assume configuration is done
-        # if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
-        #   return
-        # end
+        if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
+          return
+        end
 
-        # # create the mount
-        # enable_engine(intermediate_ca_mount, "pki")
+        # create the mount
+        enable_engine(intermediate_ca_mount, "pki")
 
         # Generate intermediate CSR
         intermediate_csr = client.logical.write("#{intermediate_ca_mount}/intermediate/generate/internal",
@@ -96,6 +96,7 @@ module Clients
                             path: "#{vault_address}/v1/#{intermediate_ca_mount}",
                             aia_path: "#{vault_address}/v1/#{intermediate_ca_mount}")
 
+        # Configure the role for issuing certs
         issuer_ref = client.logical.read("#{intermediate_ca_mount}/config/issuers").data[:default]
         client.logical.write("#{intermediate_ca_mount}/roles/astral",
                             issuer_ref: issuer_ref,
