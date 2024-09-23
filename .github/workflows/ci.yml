@@ -23,8 +23,8 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/astral-devcontainer
-          cacheFrom: ghcr.io/astral-devcontainer
-          push: never
+          noCache: true
+          push: always
           runCmd: |
             # Add multiple commands to run if needed
             bundle install
