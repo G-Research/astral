@@ -11,6 +11,8 @@ module Clients
 
       def configure_pki
         enable_ca
+        sign_cert
+        configure_ca
       end
 
       private
@@ -38,12 +40,14 @@ module Clients
       def enable_ca
         # if mount exists, assume configuration is done
         if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
-          # return
+          return
         end
 
         # create the mount
-        # enable_engine(intermediate_ca_mount, cert_engine_type)
+        enable_engine(intermediate_ca_mount, cert_engine_type)
+      end
 
+      def sign_cert
         # Generate intermediate CSR
         intermediate_csr = client.logical.write("#{intermediate_ca_mount}/intermediate/generate/internal",
                                                 common_name: "astral.internal Intermediate Authority",
@@ -64,7 +68,9 @@ module Clients
 
         # Set the signed intermediate certificate
         client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert)
+      end
 
+      def configure_ca
         # Configure the intermediate CA
         client.logical.write("#{intermediate_ca_mount}/config/cluster",
                              path: "#{vault_address}/v1/#{intermediate_ca_mount}",
@@ -83,8 +89,6 @@ module Clients
                              crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
                              ocsp_servers: "{{cluster_path}}/ocsp",
                              enable_templating: true)
-      rescue ::Vault::HTTPError => e
-        Rails.logger.error "Unable to configure intermediate_cert: #{e}"
       end
     end
   end
