@@ -38,7 +38,7 @@ module Clients
       def enable_ca
         # if mount exists, assume configuration is done
         if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
-          return
+          # return
         end
 
         # create the mount
