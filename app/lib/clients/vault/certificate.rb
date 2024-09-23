@@ -42,7 +42,7 @@ module Clients
         end
 
         # create the mount
-        enable_engine(intermediate_ca_mount, cert_engine_type)
+        # enable_engine(intermediate_ca_mount, cert_engine_type)
 
         # Generate intermediate CSR
         intermediate_csr = client.logical.write("#{intermediate_ca_mount}/intermediate/generate/internal",
