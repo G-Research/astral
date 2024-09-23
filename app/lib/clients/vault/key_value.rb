@@ -6,14 +6,18 @@ module Clients
       end
 
       def kv_write(path, data)
-        unless client.sys.mounts.key?(kv_mount.to_sym)
-          enable_engine(kv_mount, kv_engine_type)
-        end
+        configure_kv
         client.logical.write("#{kv_mount}/data/#{path}", data: data)
       end
 
       def kv_delete(path)
         client.logical.delete("#{kv_mount}/data/#{path}")
+      end
+
+      def configure_kv
+        unless client.sys.mounts.key?(kv_mount.to_sym)
+          enable_engine(kv_mount, kv_engine_type)
+        end
       end
 
       private

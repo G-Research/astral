@@ -2,11 +2,15 @@ module Clients
   class Vault
     class << self
       def issue_cert(cert_issue_request)
-        enable_ca
+        configure_ca
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
         tls_cert = client.logical.write(cert_path, opts)
         OpenStruct.new tls_cert.data
+      end
+
+      def configure_ca
+        enable_ca
       end
 
       private
