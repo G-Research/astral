@@ -21,6 +21,8 @@ class SecretsTest < ActionDispatch::IntegrationTest
 
   test "#show" do
     create_secret("top/secret/key2")
+    # pause
+    sleep(1)
     # view the secret
     get secret_path("top/secret/key2"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
@@ -31,6 +33,8 @@ class SecretsTest < ActionDispatch::IntegrationTest
 
   test "#delete" do
     create_secret("top/secret/key3")
+    # pause
+    sleep(1)
     # delete the secret
     delete destroy_secret_path("top/secret/key3"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
