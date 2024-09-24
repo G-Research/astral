@@ -1,0 +1,119 @@
+/certificates:
+  post:
+    summary: Create Certificate
+    description: Creates a new certificate.
+    operationId: createCertificate
+    requestBody:
+      description: Certificate creation data
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              common_name:
+                type: string
+                description: "Common name for the certificate"
+                example: "example.com"
+              alt_names:
+                type: string
+                description: "Alternative names for the certificate (comma-separated)"
+                example: "www.example.com,mail.example.com"
+              exclude_cn_from_sans:
+                type: boolean
+                description: "Exclude the common name from the subject alternative names (SAN)"
+                default: false
+              format:
+                type: string
+                description: "Format of the certificate"
+                enum: ["pem", "der", "pem_bundle"]
+                default: "pem"
+              not_after:
+                type: string
+                format: date-time
+                description: "Expiration date for the certificate"
+              other_sans:
+                type: string
+                description: "Other subject alternative names"
+                example: "DNS:example.org, DNS:example.net"
+              private_key_format:
+                type: string
+                description: "Format of the private key"
+                enum: ["pem", "der", "pkcs8"]
+                default: "pem"
+              remove_roots_from_chain:
+                type: boolean
+                description: "Whether to remove root certificates from the certificate chain"
+                default: false
+              ttl:
+                type: integer
+                description: "Time to live for the certificate (in seconds)"
+                example: 86400
+              uri_sans:
+                type: string
+                description: "URI Subject Alternative Names"
+                example: "http://example.com"
+              ip_sans:
+                type: string
+                description: "IP Subject Alternative Names"
+                example: "192.168.1.1"
+              serial_number:
+                type: integer
+                description: "Serial number of the certificate"
+              client_flag:
+                type: boolean
+                description: "Indicates if the certificate is for a client"
+                default: true
+              code_signing_flag:
+                type: boolean
+                description: "Indicates if the certificate is used for code signing"
+                default: false
+              email_protection_flag:
+                type: boolean
+                description: "Indicates if the certificate provides email protection"
+                default: false
+              server_flag:
+                type: boolean
+                description: "Indicates if the certificate is for a server"
+                default: true
+    responses:
+      '201':
+        description: Certificate created successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ca_chain:
+                  type: array
+                  items:
+                    type: string
+                  description: "Certificate authority chain"
+                  example: ["ca_cert_1", "ca_cert_2"]
+                certificate:
+                  type: string
+                  description: "Generated certificate"
+                  example: "-----BEGIN CERTIFICATE-----\nMIID...==\n-----END CERTIFICATE-----"
+                expiration:
+                  type: string
+                  format: date-time
+                  description: "Certificate expiration date"
+                  example: "2024-09-30T00:00:00Z"
+                issuing_ca:
+                  type: string
+                  description: "Issuing certificate authority"
+                  example: "-----BEGIN CERTIFICATE-----\nMIIC...==\n-----END CERTIFICATE-----"
+                private_key:
+                  type: string
+                  description: "Private key for the certificate"
+                  example: "-----BEGIN PRIVATE KEY-----\nMIIE...==\n-----END PRIVATE KEY-----"
+                private_key_type:
+                  type: string
+                  description: "Private key format"
+                  example: "pem"
+                serial_number:
+                  type: string
+                  description: "Certificate serial number"
+                  example: "1234567890abcdef"
+      '400':
+        description: Validation error or bad request

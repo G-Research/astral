@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: Astral
+  description: API documentation for the Astral application
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  /up:
+    get:
+      summary: Health Check
+      description: Returns 200 if the app boots without exceptions, otherwise 500.
+      operationId: getHealthCheck
+      responses:
+        '200':
+          description: Application is up
+        '500':
+          description: Application failed to boot properly
+
+  /:
+    get:
+      summary: Info
+      description: Basic info about the application
+      operationId: getRoot
+      responses:
+        '200':
+          description: Root path information retrieved successfully
+
+  /certificates:
+    $ref: './paths/certificates.yaml#/certificates'
+
+  /secrets:
+    $ref: './paths/secrets.yaml#/secrets'
+
