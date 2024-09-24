@@ -36,9 +36,15 @@ class SecretsTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  private
+
   def create_secret
     # create the secret
     post secrets_path, headers: { "Authorization" => "Bearer #{jwt_authorized}" },
          params: { secret: { path: "top/secret/key", data: { password: "sicr3t" } } }
+  end
+
+  def remove_pki_engine
+    vault_client.sys.unmount "pki_astral"
   end
 end

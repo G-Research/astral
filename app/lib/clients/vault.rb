@@ -1,48 +1,29 @@
 module Clients
   class Vault
     class << self
-      def issue_cert(cert_issue_request)
-        opts = cert_issue_request.attributes
-        # Generate the TLS certificate using the intermediate CA
-        tls_cert = client.logical.write(Rails.configuration.astral[:vault_cert_path], opts)
-        OpenStruct.new tls_cert.data
-      end
-
-      def kv_read(path)
-        client.kv(kv_mount).read(path)
-      end
-
-      def kv_write(path, data)
-        enable_engine(kv_mount, "kv-v2")
-        client.logical.write("#{kv_mount}/data/#{path}", data: data)
-      end
-
-      def kv_delete(path)
-        client.logical.delete("#{kv_mount}/data/#{path}")
-      end
-
       private
 
       def client
         ::Vault::Client.new(
-          address: Rails.configuration.astral[:vault_addr],
-          token: Rails.configuration.astral[:vault_token]
+          address: vault_address,
+          token: vault_token
         )
       end
 
-      def enable_engine(mount, type)
-        # create the engine mount if not present already
-        unless client.sys.mounts.key?(mount.to_sym)
-          client.sys.mount(mount, type, "#{type} secrets engine")
-        end
-      rescue ::Vault::HTTPError => e
-        Rails.logger.error "Error enabling #{type} engine: #{e}"
+      def vault_address
+        Rails.configuration.astral[:vault_addr]
       end
 
+      def vault_token
+        Rails.configuration.astral[:vault_token]
+      end
 
-      def kv_mount
-        Rails.configuration.astral[:vault_kv_mount]
+      def enable_engine(mount, type)
+        client.sys.mount(mount, type, "#{type} secrets engine")
       end
     end
   end
+
+  require_relative "vault/key_value"
+  require_relative "vault/certificate"
 end
