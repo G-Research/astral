@@ -12,7 +12,7 @@ class SecretsTest < ActionDispatch::IntegrationTest
   end
 
   test "#create or update a secret" do
-    create_secret("top/secret/key1")
+    create_secret
     assert_response :success
     %w[ data metadata lease_id ].each do |key|
       assert_includes response.parsed_body["secret"].keys, key
@@ -20,11 +20,9 @@ class SecretsTest < ActionDispatch::IntegrationTest
   end
 
   test "#show" do
-    create_secret("top/secret/key2")
-    # pause
-    sleep(1)
+    create_secret
     # view the secret
-    get secret_path("top/secret/key2"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
+    get secret_path("top/secret/key"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
     %w[ data metadata lease_id ].each do |key|
       assert_includes response.parsed_body["secret"].keys, key
@@ -32,19 +30,15 @@ class SecretsTest < ActionDispatch::IntegrationTest
   end
 
   test "#delete" do
-    create_secret("top/secret/key3")
-    # pause
-    sleep(1)
+    create_secret
     # delete the secret
-    delete destroy_secret_path("top/secret/key3"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
+    delete destroy_secret_path("top/secret/key"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
   end
 
-  private
-
-  def create_secret(path)
+  def create_secret
     # create the secret
     post secrets_path, headers: { "Authorization" => "Bearer #{jwt_authorized}" },
-         params: { secret: { path: path, data: { password: "sicr3t" } } }
+         params: { secret: { path: "top/secret/key", data: { password: "sicr3t" } } }
   end
 end
