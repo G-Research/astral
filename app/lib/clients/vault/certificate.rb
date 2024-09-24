@@ -2,7 +2,6 @@ module Clients
   class Vault
     class << self
       def issue_cert(cert_issue_request)
-        configure_pki
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
         tls_cert = client.logical.write(cert_path, opts)
@@ -10,9 +9,10 @@ module Clients
       end
 
       def configure_pki
-        enable_ca
-        sign_cert
-        configure_ca
+        if enable_ca
+          sign_cert
+          configure_ca
+        end
       end
 
       private
@@ -40,11 +40,12 @@ module Clients
       def enable_ca
         # if mount exists, assume configuration is done
         if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
-          return
+          return false
         end
 
         # create the mount
         enable_engine(intermediate_ca_mount, cert_engine_type)
+        true
       end
 
       def sign_cert

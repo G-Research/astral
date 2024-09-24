@@ -31,5 +31,10 @@ module AstralRails
 
     # Application configs from config/astral.yml
     config.astral = config_for :astral
+
+    config.after_initialize do
+      Clients::Vault.configure_kv
+      Clients::Vault.configure_pki
+    end
   end
 end
