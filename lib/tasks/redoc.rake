@@ -20,5 +20,4 @@ namespace :redoc do
     )
     puts "openapi-bundled.yml moved to public hosting location"
   end
-
 end
