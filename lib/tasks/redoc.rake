@@ -15,7 +15,7 @@ namespace :redoc do
   desc "Move bundled api spec to public hosting location"
   task :publish do
     %x(
-      sudo chown vscode:vscode doc/openapi/openapi-bundled.yml
+      sudo chown $(id -un):$(id -gn) doc/openapi/openapi-bundled.yml
       mv doc/openapi/openapi-bundled.yml public/doc/
     )
     puts "openapi-bundled.yml moved to public hosting location"
