@@ -1,4 +1,4 @@
-/certificates:
+certificates:
   post:
     summary: Create Certificate
     description: Creates a new certificate.

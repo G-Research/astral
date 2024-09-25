@@ -29,8 +29,8 @@ paths:
           description: Root path information retrieved successfully
 
   /certificates:
-    $ref: './paths/certificates.yaml#/certificates'
+    $ref: './paths/certificates.yml#/certificates'
 
   /secrets:
-    $ref: './paths/secrets.yaml#/secrets'
+    $ref: './paths/secrets.yml#/secrets'
 

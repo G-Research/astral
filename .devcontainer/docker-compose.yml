@@ -39,3 +39,10 @@ services:
     command: >
       sh -c "npm install -g json-server@0.17.4 &&
              json-server /data/app_reg_db.json --routes /data/app_reg_routes.json --port 8800 --host 0.0.0.0"
+
+  redocly:
+    image: redocly/cli
+    volumes:
+      - ../doc/openapi:/data:cached
+    working_dir: /data
+    command: "bundle openapi.yml --output openapi-bundled.yml"
