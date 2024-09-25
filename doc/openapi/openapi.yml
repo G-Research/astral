@@ -26,11 +26,35 @@ paths:
       operationId: getRoot
       responses:
         '200':
-          description: Root path information retrieved successfully
+          description: App info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  app:
+                    type: string
+                    description: The app name
+                    example: astral
+                  description:
+                    type: string
+                    description: The app description
+                    example: Astral provides a simplified API for PKI and secrets
+                  documentation:
+                    type: string
+                    description: The api docs location
+                    example: http://localhost:3000/doc
+                  version:
+                    type: string
+                    description: The app version
+                    example: "0.0.1"
 
   /certificates:
-    $ref: './paths/certificates.yml#/certificates'
+    $ref: './paths/certificates.yml#/postCertificates'
 
   /secrets:
-    $ref: './paths/secrets.yml#/secrets'
+    $ref: './paths/secrets.yml#/postSecrets'
+
+  /secrets/{path}:
+    $ref: './paths/secrets.yml#/getDeleteSecrets'
 

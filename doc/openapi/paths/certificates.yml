@@ -1,7 +1,7 @@
-certificates:
+postCertificates:
   post:
     summary: Create Certificate
-    description: Creates a new certificate.
+    description: Issues a new certificate for the provided properties, using the Astral intermediate CA.
     operationId: createCertificate
     requestBody:
       description: Certificate creation data
@@ -117,3 +117,5 @@ certificates:
                   example: "1234567890abcdef"
       '400':
         description: Validation error or bad request
+      '401':
+        description: Unauthorized

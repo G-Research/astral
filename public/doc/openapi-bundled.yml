@@ -24,7 +24,28 @@ paths:
       operationId: getRoot
       responses:
         '200':
-          description: Root path information retrieved successfully
+          description: App info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  app:
+                    type: string
+                    description: The app name
+                    example: astral
+                  description:
+                    type: string
+                    description: The app description
+                    example: Astral provides a simplified API for PKI and secrets
+                  documentation:
+                    type: string
+                    description: The api docs location
+                    example: http://localhost:3000/doc
+                  version:
+                    type: string
+                    description: The app version
+                    example: 0.0.1
   /certificates:
     post:
       summary: Create Certificate
@@ -242,4 +263,90 @@ paths:
                     description: Authentication information (if applicable)
         '400':
           description: Validation error or bad request
+  /secrets/{path}:
+    get:
+      summary: Get Secret
+      description: Retrieves a secret by its path.
+      operationId: getSecret
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Path to the secret
+      responses:
+        '200':
+          description: Secret retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    description: Unique ID for the request
+                    example: 9000000d4-f0000-4c000-000000-800000000f
+                  lease_id:
+                    type: string
+                    description: Lease ID
+                    example: ''
+                  renewable:
+                    type: boolean
+                    description: Indicates if the secret is renewable
+                    default: false
+                  lease_duration:
+                    type: integer
+                    description: Lease duration in seconds
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      created_time:
+                        type: string
+                        format: date-time
+                        description: The time the secret was created
+                        example: '2022-02-09T23:41:58.888138788Z'
+                      deletion_time:
+                        type: string
+                        description: The time the secret was deleted (if applicable)
+                        example: ''
+                      destroyed:
+                        type: boolean
+                        description: Indicates if the secret was destroyed
+                        default: false
+                      version:
+                        type: integer
+                        description: Version of the secret
+                        example: 2
+                  wrap_info:
+                    type: object
+                    nullable: true
+                    description: Wrap information (if applicable)
+                  warnings:
+                    type: string
+                    nullable: true
+                    description: Warnings (if any)
+                  auth:
+                    type: object
+                    nullable: true
+                    description: Authentication information (if applicable)
+        '404':
+          description: Secret not found
+    delete:
+      summary: Delete Secret
+      description: Deletes a secret by its path.
+      operationId: deleteSecret
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Path to the secret
+      responses:
+        '204':
+          description: Secret deleted successfully
+        '404':
+          description: Secret not
 components: {}
