@@ -59,7 +59,7 @@ module Clients
         root_cert = client.logical.write("#{root_ca_mount}/root/generate/internal",
                                         common_name: "astral.internal",
                                         issuer_name: root_ca_ref,
-                                        ttl: "87600h").data
+                                        ttl: "87600h").data[:certificate]
         # save the root certificate
         File.write("tmp/#{root_ca_mount}.crt", root_cert)
 
@@ -92,13 +92,13 @@ module Clients
                                                  issuer_ref: root_ca_ref,
                                                  csr: intermediate_csr,
                                                  format: "pem_bundle",
-                                                 ttl: "43800h").data
+                                                 ttl: "43800h").data[:certificate]
 
         # save the signed intermediate certificate
         File.write("tmp/#{intermediate_ca_mount}.cert.pem", intermediate_cert)
 
         # set the signed intermediate certificate
-        client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert[:certificate])
+        client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert)
       end
 
       def configure_ca
