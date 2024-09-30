@@ -28,7 +28,7 @@ class VaultTest < ActiveSupport::TestCase
       @client.stub :intermediate_ca_mount, intermediate_ca_mount do
         assert @client.configure_pki
 
-        [root_ca_mount, intermediate_ca_mount].each do |mount|
+        [ root_ca_mount, intermediate_ca_mount ].each do |mount|
           engines = vault_client.sys.mounts
           assert_equal "pki", engines[mount.to_sym].type
 

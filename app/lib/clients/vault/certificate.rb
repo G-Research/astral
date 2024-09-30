@@ -59,9 +59,9 @@ module Clients
         root_cert = client.logical.write("#{root_ca_mount}/root/generate/internal",
                                         common_name: "astral.internal",
                                         issuer_name: root_ca_ref,
-                                        ttl: "87600h").data[:certificate]
+                                        ttl: "87600h").data
         # save the root certificate
-        File.write("tmp/#{root_ca_ref}.crt", root_cert)
+        File.write("tmp/#{root_ca_mount}.crt", root_cert)
 
         client.logical.write("#{root_ca_mount}/config/cluster",
                             path: "#{vault_address}/v1/#{root_ca_mount}",
@@ -85,20 +85,20 @@ module Clients
                                                 issuer_name: "astral-intermediate").data[:csr]
 
         # save the intermediate CSR
-        File.write("tmp/pki_intermediate.csr", intermediate_csr)
+        File.write("tmp/#{intermediate_ca_mount}.csr", intermediate_csr)
 
         # sign the intermediate certificate with the root CA
         intermediate_cert = client.logical.write("#{root_ca_mount}/root/sign-intermediate",
                                                  issuer_ref: root_ca_ref,
                                                  csr: intermediate_csr,
                                                  format: "pem_bundle",
-                                                 ttl: "43800h").data[:certificate]
+                                                 ttl: "43800h").data
 
         # save the signed intermediate certificate
-        File.write("tmp/intermediate.cert.pem", intermediate_cert)
+        File.write("tmp/#{intermediate_ca_mount}.cert.pem", intermediate_cert)
 
         # set the signed intermediate certificate
-        client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert)
+        client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert[:certificate])
       end
 
       def configure_ca
