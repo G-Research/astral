@@ -3,8 +3,8 @@ module Clients
     class << self
       def put_entity(name, policies)
         client.logical.write("identity/entity",
-                             {:name => name,
-                              :policies => policies})
+                             name: name,
+                             policies: policies)
       end
       def read_entity(name)
         client.logical.read("identity/entity/name/" + name)

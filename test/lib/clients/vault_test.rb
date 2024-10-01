@@ -17,13 +17,9 @@ class VaultTest < ActiveSupport::TestCase
   end
 
   test "#put_entity" do
-    puts "gbj " + @entity_name.to_s
-    en = @client.put_entity(name: @entity_name.to_s, policies: @policies.to_s)
-    if en == nil then puts "gbj1nil" end
-    puts "gbj2 " + en.data.to_s
-    entity2 =  @client.read_entity(@entity_name.to_s)
-    if entity2 == nil then puts "gbjnil" end
-    assert_equal entity2.data[:policies], @policies.to_s
+    @client.put_entity( @entity_name, @policies)
+    entity =  @client.read_entity(@entity_name)
+    assert_equal entity.data[:policies][0], @policies
   end
 
   test "#configure_kv" do
