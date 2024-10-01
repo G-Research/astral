@@ -16,10 +16,18 @@ class VaultTest < ActiveSupport::TestCase
     vault_client.sys.unmount(random_mount)
   end
 
-  test "#put_entity" do
-    @client.put_entity( @entity_name, @policies)
+  test "#entity" do
+    entity =  @client.read_entity(@entity_name)
+    assert_nil entity
+
+    @client.put_entity(@entity_name, @policies)
     entity =  @client.read_entity(@entity_name)
     assert_equal entity.data[:policies][0], @policies
+
+    @client.delete_entity(@entity_name)
+    entity =  @client.read_entity(@entity_name)
+    assert_nil entity
+
   end
 
   test "#configure_kv" do
