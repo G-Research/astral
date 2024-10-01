@@ -67,10 +67,6 @@ module Clients
                             path: "#{vault_address}/v1/#{root_ca_mount}",
                             aia_path: "#{vault_address}/v1/#{root_ca_mount}")
 
-        client.logical.write("#{root_ca_mount}/roles/2024-servers",
-                            allow_any_name: true,
-                            no_store: false)
-
         client.logical.write("#{root_ca_mount}/config/urls",
                             issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
                             crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
@@ -95,7 +91,7 @@ module Clients
                                                  ttl: "43800h").data[:certificate]
 
         # save the signed intermediate certificate
-        File.write("tmp/#{intermediate_ca_mount}.cert.pem", intermediate_cert)
+        File.write("tmp/#{intermediate_ca_mount}.crt", intermediate_cert)
 
         # set the signed intermediate certificate
         client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert)
