@@ -4,30 +4,17 @@ class VaultTest < ActiveSupport::TestCase
   attr_reader :random_mount
   attr_reader :policies
   attr_reader :entity_name
-
+  attr_reader :alias_name
   setup do
     @client = Clients::Vault
     @random_mount = SecureRandom.hex(4)
     @policies = SecureRandom.hex(4)
     @entity_name = SecureRandom.hex(4)
+    @alias_name = SecureRandom.hex(4)
   end
 
   teardown do
     vault_client.sys.unmount(random_mount)
-  end
-
-  test "#entity" do
-    entity =  @client.read_entity(@entity_name)
-    assert_nil entity
-
-    @client.put_entity(@entity_name, @policies)
-    entity =  @client.read_entity(@entity_name)
-    assert_equal entity.data[:policies][0], @policies
-
-    @client.delete_entity(@entity_name)
-    entity =  @client.read_entity(@entity_name)
-    assert_nil entity
-
   end
 
   test "#configure_kv" do
@@ -56,6 +43,44 @@ class VaultTest < ActiveSupport::TestCase
       assert_equal 720.hours, role_config[:max_ttl]
       assert_equal true, role_config[:allow_any_name]
      end
+  end
+
+  test "#entity" do
+    entity =  @client.read_entity(@entity_name)
+    assert_nil entity
+
+    @client.put_entity(@entity_name, @policies)
+    entity =  @client.read_entity(@entity_name)
+    assert_equal entity.data[:policies][0], @policies
+
+    @client.delete_entity(@entity_name)
+    entity =  @client.read_entity(@entity_name)
+    assert_nil entity
+
+  end
+
+  test "#entity_alias" do
+    err = assert_raises RuntimeError do
+      @client.read_entity_alias(@entity_name, @alias_name)
+    end
+    assert_match /no such entity/, err.message
+
+    @client.put_entity(@entity_name, @policies)
+    err = assert_raises RuntimeError do
+      @client.read_entity_alias(@entity_name, @alias_name)
+    end
+    assert_match /no such alias/, err.message
+
+    @client.put_entity_alias(@entity_name, @alias_name, "token/")
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
+    assert_equal entity_alias.data[:mount_type], "token"
+
+    assert_equal @client.delete_entity_alias(@entity_name, @alias_name), true
+
+    err = assert_raises RuntimeError do
+      @client.delete_entity_alias(@entity_name, @alias_name)
+    end
+    assert_match /no such alias/, err.message
   end
 
   private
