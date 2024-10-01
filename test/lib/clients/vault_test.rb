@@ -2,14 +2,28 @@ require "test_helper"
 
 class VaultTest < ActiveSupport::TestCase
   attr_reader :random_mount
+  attr_reader :policies
+  attr_reader :entity_name
 
   setup do
     @client = Clients::Vault
     @random_mount = SecureRandom.hex(4)
+    @policies = SecureRandom.hex(4)
+    @entity_name = SecureRandom.hex(4)
   end
 
   teardown do
     vault_client.sys.unmount(random_mount)
+  end
+
+  test "#put_entity" do
+    puts "gbj " + @entity_name.to_s
+    en = @client.put_entity(name: @entity_name.to_s, policies: @policies.to_s)
+    if en == nil then puts "gbj1nil" end
+    puts "gbj2 " + en.data.to_s
+    entity2 =  @client.read_entity(@entity_name.to_s)
+    if entity2 == nil then puts "gbjnil" end
+    assert_equal entity2.data[:policies], @policies.to_s
   end
 
   test "#configure_kv" do
