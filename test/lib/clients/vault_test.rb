@@ -71,9 +71,10 @@ class VaultTest < ActiveSupport::TestCase
     end
     assert_match /no such alias/, err.message
 
-    @client.put_entity_alias(@entity_name, @alias_name, "token/")
+    auth_method = "token"
+    @client.put_entity_alias(@entity_name, @alias_name, auth_method)
     entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
-    assert_equal entity_alias.data[:mount_type], "token"
+    assert_equal entity_alias.data[:mount_type], auth_method
 
     assert_equal @client.delete_entity_alias(@entity_name, @alias_name), true
 
