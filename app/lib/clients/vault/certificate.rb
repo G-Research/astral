@@ -9,10 +9,12 @@ module Clients
       end
 
       def configure_pki
-        if enable_ca
-          sign_cert
-          configure_ca
-        end
+        # if intermediate mount exists, assume configuration is done
+        return if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
+        configure_root_ca if create_root?
+        enable_ca
+        sign_cert
+        configure_ca
       end
 
       private
@@ -23,6 +25,11 @@ module Clients
 
       def cert_path
         "#{intermediate_ca_mount}/issue/astral"
+      end
+
+      def create_root?
+        create_root_config = Rails.configuration.astral[:vault_create_root]
+        !!ActiveModel::Type::Boolean.new.cast(create_root_config)
       end
 
       def root_ca_ref
@@ -38,36 +45,55 @@ module Clients
       end
 
       def enable_ca
-        # if mount exists, assume configuration is done
-        if client.sys.mounts.key?(intermediate_ca_mount.to_sym)
-          return false
-        end
-
-        # create the mount
+        # create the intermediate mount
         enable_engine(intermediate_ca_mount, cert_engine_type)
-        true
+      end
+
+      def configure_root_ca
+        return if client.sys.mounts.key?(root_ca_mount.to_sym)
+
+        # enable engine
+        enable_engine(root_ca_mount, cert_engine_type)
+
+        # generate root certificate
+        root_cert = client.logical.write("#{root_ca_mount}/root/generate/internal",
+                                        common_name: "astral.internal",
+                                        issuer_name: root_ca_ref,
+                                        ttl: "87600h").data[:certificate]
+        # save the root certificate
+        File.write("tmp/#{root_ca_mount}.crt", root_cert)
+
+        client.logical.write("#{root_ca_mount}/config/cluster",
+                            path: "#{vault_address}/v1/#{root_ca_mount}",
+                            aia_path: "#{vault_address}/v1/#{root_ca_mount}")
+
+        client.logical.write("#{root_ca_mount}/config/urls",
+                            issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
+                            crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
+                            ocsp_servers: "{{cluster_path}}/ocsp",
+                            enable_templating: true)
       end
 
       def sign_cert
-        # Generate intermediate CSR
+        # generate intermediate CSR
         intermediate_csr = client.logical.write("#{intermediate_ca_mount}/intermediate/generate/internal",
                                                 common_name: "astral.internal Intermediate Authority",
                                                 issuer_name: "astral-intermediate").data[:csr]
 
-        # Save the intermediate CSR
-        File.write("tmp/pki_intermediate.csr", intermediate_csr)
+        # save the intermediate CSR
+        File.write("tmp/#{intermediate_ca_mount}.csr", intermediate_csr)
 
-        # Sign the intermediate certificate with the root CA
+        # sign the intermediate certificate with the root CA
         intermediate_cert = client.logical.write("#{root_ca_mount}/root/sign-intermediate",
                                                  issuer_ref: root_ca_ref,
                                                  csr: intermediate_csr,
                                                  format: "pem_bundle",
                                                  ttl: "43800h").data[:certificate]
 
-        # Save the signed intermediate certificate
-        File.write("tmp/intermediate.cert.pem", intermediate_cert)
+        # save the signed intermediate certificate
+        File.write("tmp/#{intermediate_ca_mount}.crt", intermediate_cert)
 
-        # Set the signed intermediate certificate
+        # set the signed intermediate certificate
         client.logical.write("#{intermediate_ca_mount}/intermediate/set-signed", certificate: intermediate_cert)
       end
 

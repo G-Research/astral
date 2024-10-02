@@ -20,9 +20,9 @@ class SecretsTest < ActionDispatch::IntegrationTest
   end
 
   test "#show" do
-    create_secret
+    path = create_secret
     # view the secret
-    get secret_path("top/secret/key"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
+    get secret_path(path), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
     %w[ data metadata lease_id ].each do |key|
       assert_includes response.parsed_body["secret"].keys, key
@@ -30,18 +30,21 @@ class SecretsTest < ActionDispatch::IntegrationTest
   end
 
   test "#delete" do
-    create_secret
+    path = create_secret
     # delete the secret
-    delete destroy_secret_path("top/secret/key"), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
+    delete destroy_secret_path(path), headers: { "Authorization" => "Bearer #{jwt_authorized}" }
     assert_response :success
   end
 
   private
 
   def create_secret
+    # make a path
+    path = "top/secret/#{SecureRandom.hex}"
     # create the secret
     post secrets_path, headers: { "Authorization" => "Bearer #{jwt_authorized}" },
-         params: { secret: { path: "top/secret/key", data: { password: "sicr3t" } } }
+         params: { secret: { path: path, data: { password: "sicr3t" } } }
+    path
   end
 
   def remove_pki_engine
