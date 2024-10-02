@@ -1,8 +1,8 @@
 require "test_helper"
 
 class VaultTest < ActiveSupport::TestCase
-  attr_reader :root_ca_mount
   attr_reader :intermediate_ca_mount
+  attr_reader :root_ca_mount
   attr_reader :policies
   attr_reader :entity_name
   attr_reader :alias_name
@@ -59,7 +59,7 @@ class VaultTest < ActiveSupport::TestCase
 
     @client.put_entity(@entity_name, @policies)
     entity =  @client.read_entity(@entity_name)
-    assert_equal entity.data[:policies][0], @policies
+    assert_equal @policies, entity.data[:policies][0]
 
     @client.delete_entity(@entity_name)
     entity =  @client.read_entity(@entity_name)
@@ -84,10 +84,10 @@ class VaultTest < ActiveSupport::TestCase
     auth_method = "token"
     @client.put_entity_alias(@entity_name, @alias_name, auth_method)
     entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
-    assert_equal entity_alias.data[:mount_type], auth_method
+    assert_equal auth_method, entity_alias.data[:mount_type]
 
     # confirm deleted alias
-    assert_equal @client.delete_entity_alias(@entity_name, @alias_name), true
+    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name)
     err = assert_raises RuntimeError do
       @client.delete_entity_alias(@entity_name, @alias_name)
     end
