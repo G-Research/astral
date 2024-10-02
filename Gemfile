@@ -30,6 +30,7 @@ gem "bootsnap", require: false
 
 # High-level app logic
 gem "interactor", "~> 3.0"
+gem "ostruct"
 
 # Use the vault-ruby gem to interact with HashiCorp Vault
 gem "vault"

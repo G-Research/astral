@@ -14,6 +14,7 @@ services:
     environment:
       VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: root_token
+      VAULT_CREATE_ROOT: true
       VAULT_ROOT_CA_MOUNT: pki
       VAULT_ROOT_CA_REF: root-ca
       JWT_SIGNING_KEY: jwt_secret
