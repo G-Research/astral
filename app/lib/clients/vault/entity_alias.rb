@@ -21,7 +21,7 @@ module Clients
           raise "no such entity #{entity_name}"
         end
         aliases = e.data[:aliases]
-        a = aliases.find { |a| a[:name] == alias_name}
+        a = aliases.find { |a| a[:name] == alias_name }
         if a.nil?
           raise "no such alias #{alias_name}"
         end
