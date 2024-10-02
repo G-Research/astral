@@ -64,8 +64,8 @@ module Clients
         File.write("tmp/#{root_ca_mount}.crt", root_cert)
 
         client.logical.write("#{root_ca_mount}/config/cluster",
-                            path: "#{vault_address}/v1/#{root_ca_mount}",
-                            aia_path: "#{vault_address}/v1/#{root_ca_mount}")
+                            path: "#{address}/v1/#{root_ca_mount}",
+                            aia_path: "#{address}/v1/#{root_ca_mount}")
 
         client.logical.write("#{root_ca_mount}/config/urls",
                             issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
@@ -100,8 +100,8 @@ module Clients
       def configure_ca
         # Configure the intermediate CA
         client.logical.write("#{intermediate_ca_mount}/config/cluster",
-                             path: "#{vault_address}/v1/#{intermediate_ca_mount}",
-                             aia_path: "#{vault_address}/v1/#{intermediate_ca_mount}")
+                             path: "#{address}/v1/#{intermediate_ca_mount}",
+                             aia_path: "#{address}/v1/#{intermediate_ca_mount}")
 
         # Configure the role for issuing certs
         issuer_ref = client.logical.read("#{intermediate_ca_mount}/config/issuers").data[:default]

@@ -6,11 +6,14 @@ class VaultTest < ActiveSupport::TestCase
 
   setup do
     @client = Clients::Vault
+    @token = Clients::Vault.token
+    Clients::Vault.token = vault_token
     @root_ca_mount = SecureRandom.hex(4)
     @intermediate_ca_mount = SecureRandom.hex(4)
   end
 
   teardown do
+    Clients::Vault.token = @token
     vault_client.sys.unmount(root_ca_mount)
     vault_client.sys.unmount(intermediate_ca_mount)
   end
@@ -53,11 +56,15 @@ class VaultTest < ActiveSupport::TestCase
   def vault_client
     ::Vault::Client.new(
           address: vault_addr,
-          token: Rails.configuration.astral[:vault_token]
+          token: vault_token
     )
   end
 
   def vault_addr
     Rails.configuration.astral[:vault_addr]
+  end
+
+  def vault_token
+    Rails.configuration.astral[:vault_token]
   end
 end
