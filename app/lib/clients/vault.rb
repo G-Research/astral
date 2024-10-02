@@ -1,24 +1,24 @@
 module Clients
   class Vault
-      class_attribute :token
+    class_attribute :token
 
-      class << self
-        private
+    class << self
+      private
 
-        def client
-          ::Vault::Client.new(
-            address: address,
-            token: token
-          )
-        end
+      def client
+        ::Vault::Client.new(
+          address: address,
+          token: token
+        )
+      end
 
-        def address
-          Rails.configuration.astral[:vault_addr]
-        end
+      def address
+        Rails.configuration.astral[:vault_addr]
+      end
 
-        def enable_engine(mount, type)
-          client.sys.mount(mount, type, "#{type} secrets engine")
-        end
+      def enable_engine(mount, type)
+        client.sys.mount(mount, type, "#{type} secrets engine")
+      end
     end
   end
 
