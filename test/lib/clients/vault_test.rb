@@ -3,6 +3,7 @@ require "test_helper"
 class VaultTest < ActiveSupport::TestCase
   attr_reader :intermediate_ca_mount
   attr_reader :root_ca_mount
+  attr_reader :kv_mount
 
   setup do
     @client = Clients::Vault
@@ -10,6 +11,7 @@ class VaultTest < ActiveSupport::TestCase
     Clients::Vault.token = vault_token
     @root_ca_mount = SecureRandom.hex(4)
     @intermediate_ca_mount = SecureRandom.hex(4)
+    @kv_mount = SecureRandom.hex(4)
   end
 
   teardown do
@@ -18,15 +20,15 @@ class VaultTest < ActiveSupport::TestCase
     vault_client.sys.unmount(intermediate_ca_mount)
   end
 
-  test "#configure_kv" do
-    @client.stub :kv_mount, intermediate_ca_mount do
+  test ".configure_kv" do
+    @client.stub :kv_mount, kv_mount do
       assert @client.configure_kv
       engines = vault_client.sys.mounts
-      assert_equal "kv", engines[intermediate_ca_mount.to_sym].type
+      assert_equal "kv", engines[kv_mount.to_sym].type
     end
   end
 
-  test "#configure_pki" do
+  test ".configure_pki" do
     @client.stub :root_ca_mount, root_ca_mount do
       @client.stub :intermediate_ca_mount, intermediate_ca_mount do
         assert @client.configure_pki
@@ -50,6 +52,20 @@ class VaultTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test ".rotate_token" do
+    # begins with default token
+    assert_equal vault_token, @client.token
+
+    assert @client.rotate_token
+
+    # now has a new token
+    assert_not_equal vault_token, @client.token
+
+    # ensure we can write with the new token
+    assert_instance_of Vault::Secret, @client.kv_write("testing/secret", { password: "sicr3t" })
+  end
+
 
   private
 
