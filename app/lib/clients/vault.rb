@@ -11,11 +11,11 @@ module Clients
       end
 
       def vault_address
-        Rails.configuration.astral[:vault_addr]
+        Config[:vault_addr]
       end
 
       def vault_token
-        Rails.configuration.astral[:vault_token]
+        Config[:vault_token]
       end
 
       def enable_engine(mount, type)

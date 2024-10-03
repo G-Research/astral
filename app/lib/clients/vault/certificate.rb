@@ -28,16 +28,16 @@ module Clients
       end
 
       def create_root?
-        create_root_config = Rails.configuration.astral[:vault_create_root]
+        create_root_config = Config[:vault_create_root]
         !!ActiveModel::Type::Boolean.new.cast(create_root_config)
       end
 
       def root_ca_ref
-        Rails.configuration.astral[:vault_root_ca_ref]
+        Config[:vault_root_ca_ref]
       end
 
       def root_ca_mount
-        Rails.configuration.astral[:vault_root_ca_mount]
+        Config[:vault_root_ca_mount]
       end
 
       def cert_engine_type
