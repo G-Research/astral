@@ -34,7 +34,7 @@ module AstralRails
 
     config.after_initialize do
       # bootstrap with provided token, then rotate
-      Clients::Vault.token = Rails.configuration.astral[:vault_token]
+      Clients::Vault.token = Config[:vault_token]
       Clients::Vault.configure_kv
       Clients::Vault.configure_pki
       Clients::Vault.rotate_token
