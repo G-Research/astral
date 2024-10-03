@@ -1,21 +1,19 @@
 module Clients
   class Vault
+    class_attribute :token
+
     class << self
       private
 
       def client
         ::Vault::Client.new(
-          address: vault_address,
-          token: vault_token
+          address: address,
+          token: token
         )
       end
 
-      def vault_address
+      def address
         Config[:vault_addr]
-      end
-
-      def vault_token
-        Config[:vault_token]
       end
 
       def enable_engine(mount, type)
@@ -26,6 +24,7 @@ module Clients
 
   require_relative "vault/key_value"
   require_relative "vault/certificate"
+  require_relative "vault/policy"
   require_relative "vault/entity"
   require_relative "vault/entity_alias"
 end

@@ -6,7 +6,6 @@ module Clients
       end
 
       def kv_write(path, data)
-        configure_kv
         client.logical.write("#{kv_mount}/data/#{path}", data: data)
       end
 
