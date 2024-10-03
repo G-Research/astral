@@ -11,7 +11,7 @@ module Requests
     attribute :other_sans, :string
     attribute :private_key_format, :string, default: "pem"
     attribute :remove_roots_from_chain, :boolean, default: false
-    attribute :ttl, :integer, default: Rails.configuration.astral[:cert_ttl]
+    attribute :ttl, :integer, default: Config[:cert_ttl]
     attribute :uri_sans, :string
     attribute :ip_sans, :string
     attribute :serial_number, :integer
@@ -24,7 +24,7 @@ module Requests
     validates :format, presence: true, inclusion: { in: %w[pem der pem_bundle] }
     validates :private_key_format, presence: true, inclusion: { in: %w[pem der pkcs8] }
     validates :ttl, numericality: {
-                less_than_or_equal_to: Rails.configuration.astral[:cert_ttl],
+                less_than_or_equal_to: Config[:cert_ttl],
                 greater_than: 0
               }
     validate :validate_no_wildcards

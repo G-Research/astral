@@ -99,11 +99,11 @@ class VaultTest < ActiveSupport::TestCase
   def vault_client
     ::Vault::Client.new(
           address: vault_addr,
-          token: Rails.configuration.astral[:vault_token]
+          token: Config[:vault_token]
     )
   end
 
   def vault_addr
-    Rails.configuration.astral[:vault_addr]
+    Config[:vault_addr]
   end
 end
