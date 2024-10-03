@@ -26,4 +26,6 @@ module Clients
 
   require_relative "vault/key_value"
   require_relative "vault/certificate"
+  require_relative "vault/entity"
+  require_relative "vault/entity_alias"
 end
