@@ -66,7 +66,6 @@ class VaultTest < ActiveSupport::TestCase
     assert_instance_of Vault::Secret, @client.kv_write("testing/secret", { password: "sicr3t" })
   end
 
-
   private
 
   def vault_client
