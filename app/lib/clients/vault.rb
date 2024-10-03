@@ -13,7 +13,7 @@ module Clients
       end
 
       def address
-        Rails.configuration.astral[:vault_addr]
+        Config[:vault_addr]
       end
 
       def enable_engine(mount, type)

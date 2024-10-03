@@ -59,9 +59,9 @@ class CertIssueRequestTest < ActiveSupport::TestCase
   end
 
   test "#valid? should require a ttl less than configured max" do
-    @cert_issue_request.ttl = Rails.configuration.astral[:cert_ttl] + 1
+    @cert_issue_request.ttl = Config[:cert_ttl] + 1
     assert_not @cert_issue_request.valid?
-    assert_includes @cert_issue_request.errors[:ttl], "must be less than or equal to #{Rails.configuration.astral[:cert_ttl]}"
+    assert_includes @cert_issue_request.errors[:ttl], "must be less than or equal to #{Config[:cert_ttl]}"
   end
 
   test "#valid? should prevent wildcard common_name" do
@@ -82,7 +82,7 @@ class CertIssueRequestTest < ActiveSupport::TestCase
     assert_equal "pem", @cert_issue_request.format
     assert_equal "pem", @cert_issue_request.private_key_format
     assert_equal false, @cert_issue_request.remove_roots_from_chain
-    assert_equal Rails.configuration.astral[:cert_ttl], @cert_issue_request.ttl
+    assert_equal Config[:cert_ttl], @cert_issue_request.ttl
     assert_equal true, @cert_issue_request.client_flag
     assert_equal false, @cert_issue_request.code_signing_flag
     assert_equal false, @cert_issue_request.email_protection_flag

@@ -1,22 +1,22 @@
 shared:
-  vault_addr: <%= ENV["VAULT_ADDR"] %>
-  vault_token: <%= ENV["VAULT_TOKEN"] %>
+  vault_addr: 
+  vault_token:
 
   # Pre-existing root CA, or create new if requested
-  vault_create_root: <%= ENV["VAULT_CREATE_ROOT"] || "true" %>
-  vault_root_ca_ref: <%= ENV["VAULT_ROOT_CA_REF"] || "root-ca" %>
-  vault_root_ca_mount: <%= ENV["VAULT_ROOT_CA_MOUNT"] || "pki_root" %>
+  vault_create_root: true
+  vault_root_ca_ref: root_ca
+  vault_root_ca_mount: pki_root
 
-  jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
-  cert_ttl: <%= ENV["CERT_TTL"] %>
+  jwt_signing_key:
+  cert_ttl:
 
-  app_registry_addr: <%= ENV["APP_REGISTRY_ADDR"] %>
-  app_registry_token: <%= ENV["APP_REGISTRY_TOKEN"] %>
-  app_registry_ca_file: <%= ENV["APP_REGISTRY_CA_FILE"] %>
-  app_registry_client_cert: <%= ENV["APP_REGISTRY_CLIENT_CERT"] %>
-  app_registry_client_key: <%= ENV["APP_REGISTRY_CLIENT_KEY"] %>
+  app_registry_addr:
+  app_registry_token:
+  app_registry_ca_file:
+  app_registry_client_cert:
+  app_registry_client_key:
 
-  audit_log_file: <%= ENV["AUDIT_LOG_FILE"] || "#{Rails.root.join('log')}/astral-audit.log" %>
+  audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
@@ -24,3 +24,4 @@ test:
 development:
 
 production:
+  vault_create_root: false

@@ -120,10 +120,10 @@ class VaultTest < ActiveSupport::TestCase
   end
 
   def vault_addr
-    Rails.configuration.astral[:vault_addr]
+    Config[:vault_addr]
   end
 
   def vault_token
-    Rails.configuration.astral[:vault_token]
+    Config[:vault_token]
   end
 end
