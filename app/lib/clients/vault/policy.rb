@@ -1,6 +1,6 @@
 module Clients
   class Vault
-    class << self
+    module Policy
       def rotate_token
         create_astral_policy
         token = create_astral_token

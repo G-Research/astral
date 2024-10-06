@@ -29,6 +29,9 @@ module AstralRails
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # the secret_key_base isn't used, but Rails requires it
+    config.secret_key_base = "secret_key_base_not_used!"
+
     # Application configs from config/astral.yml
     config.astral = config_for :astral
 
