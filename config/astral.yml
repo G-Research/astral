@@ -19,9 +19,27 @@ shared:
   audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
+  configure_oidc?: true
+  oidc_provider:
+    name: "identity/oidc/provider/my-provider"
+    host: "http://oidc_provider:8300"
+    token: "root_token"
+  test_user:
+    name: "test"
+    password: "test"
+    email: "test@example.com"
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
+  configure_oidc?: true
+  oidc_provider:
+    name: "identity/oidc/provider/my-provider"
+    host: "http://oidc_provider:8300"
+    token: "root_token"
+  test_user:
+    name: "test"
+    password: "test"
+    email: "test@example.com"
 
 production:
   vault_create_root: false
