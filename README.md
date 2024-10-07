@@ -1,20 +1,32 @@
 # README
 
-Astral is an api-only application intended to simplify
-certificate acquisition for other applications/services. Broadly speaking,
-it will: 
+Astral is an api-only application intended to simplify certificate
+acquisition and secrets storage. Invoking a single endpoint can issue
+an mTLS certificate or fetch a secret for applications in your
+environment, without any need to configure the underlying PKI or
+secrets storage (Vault).
 
-1) Authenticate the request for cerficate using a third party trusted source (JWT, etc)
-2) Authorize the request using a Domain Ownership Registry 
-3) If authorized, obtain a certificate from PKI CLM (such as Vault/OpenBao)
-4) Log this transaction in audit infrastructure (ELK, etc).
+Some features of Astral:
+
+0) Configure Astral-specific Certificate Authority and Key-Value stores in Vault
+1) Authenticate requests for cerficates or secrets using a third party
+   trusted source (JWT with signing key, eg)
+2) For certiciates:
+	a) Authorize the request using a Domain Ownership registry, where domain owner 
+	   or authorized groups must match the identity of the requesting client
+	b) When authorized, obtain a certificate for the common name
+3) For secrets:
+	a) Create secrets with a policy for reading
+	b) Read only when the requesting client identity has the policy.
+4) Log all transactions in audit infrastructure (ELK, etc).
 
 # Running in development
 
-This Rails app is most easily run and developed in its devcontainer.
+This Rails app is most easily run and developed in its devcontainer, which includes Vault
+and a Domain Ownership registry (AppRegistry) in the compose environment.
 
-1) Open in devcontainer
-2) Launch server using vscode launch config, or in terminal run:
+1) Open in devcontainer (automatic in vscode)
+2) Launch server using vscode launch config, or in the terminal run:
 ```
 rails s
 ```
@@ -47,5 +59,5 @@ docker build -t astral:latest .
 ```
 2) Run the prod image:
 ```
-docker run -e SECRET_KEY_BASE=mysecrit -p 3000:3000 astral:latest
+docker run -p 3000:3000 astral:latest
 ```

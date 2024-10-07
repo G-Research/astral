@@ -1,5 +1,11 @@
 module Clients
   class Vault
+    extend Clients::Vault::Certificate
+    extend Clients::Vault::KeyValue
+    extend Clients::Vault::Policy
+    extend Clients::Vault::Entity
+    extend Clients::Vault::EntityAlias
+
     class_attribute :token
 
     class << self
@@ -21,10 +27,4 @@ module Clients
       end
     end
   end
-
-  require_relative "vault/key_value"
-  require_relative "vault/certificate"
-  require_relative "vault/policy"
-  require_relative "vault/entity"
-  require_relative "vault/entity_alias"
 end

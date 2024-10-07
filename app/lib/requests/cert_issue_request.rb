@@ -24,7 +24,7 @@ module Requests
     validates :format, presence: true, inclusion: { in: %w[pem der pem_bundle] }
     validates :private_key_format, presence: true, inclusion: { in: %w[pem der pkcs8] }
     validates :ttl, numericality: {
-                less_than_or_equal_to: Config[:cert_ttl],
+                less_than_or_equal_to: Config[:cert_ttl].to_i,
                 greater_than: 0
               }
     validate :validate_no_wildcards

@@ -1,6 +1,6 @@
 module Clients
   class Vault
-    class << self
+    module Certificate
       def issue_cert(cert_issue_request)
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
@@ -57,21 +57,21 @@ module Clients
 
         # generate root certificate
         root_cert = client.logical.write("#{root_ca_mount}/root/generate/internal",
-                                        common_name: "astral.internal",
-                                        issuer_name: root_ca_ref,
-                                        ttl: "87600h").data[:certificate]
+                                         common_name: "astral.internal",
+                                         issuer_name: root_ca_ref,
+                                         ttl: "87600h").data[:certificate]
         # save the root certificate
         File.write("tmp/#{root_ca_mount}.crt", root_cert)
 
         client.logical.write("#{root_ca_mount}/config/cluster",
-                            path: "#{address}/v1/#{root_ca_mount}",
-                            aia_path: "#{address}/v1/#{root_ca_mount}")
+                             path: "#{address}/v1/#{root_ca_mount}",
+                             aia_path: "#{address}/v1/#{root_ca_mount}")
 
         client.logical.write("#{root_ca_mount}/config/urls",
-                            issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
-                            crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
-                            ocsp_servers: "{{cluster_path}}/ocsp",
-                            enable_templating: true)
+                             issuing_certificates: "{{cluster_aia_path}}/issuer/{{issuer_id}}/der",
+                             crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
+                             ocsp_servers: "{{cluster_path}}/ocsp",
+                             enable_templating: true)
       end
 
       def sign_cert

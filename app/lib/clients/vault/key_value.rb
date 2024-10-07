@@ -1,6 +1,6 @@
 module Clients
   class Vault
-    class << self
+    module KeyValue
       def kv_read(path)
         client.kv(kv_mount).read(path)
       end
