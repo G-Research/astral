@@ -10,11 +10,9 @@ module Clients
         @@client_id = app.data[:client_id]
         @@client_secret = app.data[:client_secret]
 
-        # create email scope
+        # create provider with email scope
         oidc_provider.logical.write("identity/oidc/scope/email",
                                     template: '{"email": {{identity.entity.metadata.email}}}')
-
-        # create the provider
         oidc_provider.logical.write(Config[:oidc_provider][:name],
                                     issuer: Config[:oidc_provider][:host],
                                     allowed_client_ids: @@client_id,
@@ -28,12 +26,11 @@ module Clients
                                     disabled: false)
         provider = oidc_provider.logical.read(Config[:oidc_provider][:name])
 
-        # create initial userpass for the provider
+        # create userpass for initial user
         oidc_provider.logical.delete("/sys/auth/userpass")
         oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-        oidc_provider.logical.write(
-          "/auth/userpass/users/#{Config[:initial_user][:name]}",
-          password: Config[:initial_user][:password])
+        oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user][:name]}",
+                                    password: Config[:initial_user][:password])
 
         # create an alias that maps the userpass to the entity
         op_entity = oidc_provider.logical.read(
