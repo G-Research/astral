@@ -43,9 +43,8 @@ module AstralRails
       if config.astral.configure_oidc?
         Clients::Vault.configure_oidc_provider
         provider = "#{config.astral.oidc_provider[:host]}/v1/#{config.astral.oidc_provider[:name]}"
-        binding.irb
-        Clients::Vault.configure_oidc_client(::Clients::Vault.client_id,
-                                             ::Clients::Vault.client_secret,
+        Clients::Vault.configure_oidc_client(::Clients::Vault::Oidc.client_id,
+                                             ::Clients::Vault::Oidc.client_secret,
                                              provider)
 
       end

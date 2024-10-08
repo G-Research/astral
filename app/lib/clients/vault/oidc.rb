@@ -1,8 +1,8 @@
 module Clients
   class Vault
-    cattr_accessor :client_id
-    cattr_accessor :client_secret
     module Oidc
+      cattr_accessor :client_id
+      cattr_accessor :client_secret
       def configure_oidc_provider
         # create test user for oidc
         oidc_provider.logical.delete("/sys/auth/userpass")
@@ -15,16 +15,15 @@ module Clients
                                     assignments: "allow_all")
 
         app = oidc_provider.logical.read(WEBAPP_NAME)
-        ::Clients::Vault.client_id = app.data[:client_id]
-        ::Clients::Vault.client_secret = app.data[:client_secret]
-        binding.irb
+        @@client_id = app.data[:client_id]
+        @@client_secret = app.data[:client_secret]
         # create email scope
         oidc_provider.logical.write("identity/oidc/scope/email",
                                     template: '{"email": {{identity.entity.metadata.email}}}')
 
         oidc_provider.logical.write(Config[:oidc_provider][:name],
                                     issuer: Config[:oidc_provider][:host],
-                                    allowed_client_ids: ::Clients::Vault.client_id,
+                                    allowed_client_ids: @@client_id,
                                     scopes_supported: "email")
         oidc_provider.logical.write("identity/entity",
                                     policies: "default",
@@ -78,7 +77,7 @@ module Clients
       def oidc_provider
         ::Vault::Client.new(
           address: Config[:oidc_provider][:host],
-          token: Config[:oidc_provider][:token]
+          token: token
         )
       end
 

@@ -23,7 +23,6 @@ test:
   oidc_provider:
     name: "identity/oidc/provider/my-provider"
     host: "http://oidc_provider:8300"
-    token: "root_token"
   test_user:
     name: "test"
     password: "test"
@@ -35,7 +34,6 @@ development:
   oidc_provider:
     name: "identity/oidc/provider/my-provider"
     host: "http://oidc_provider:8300"
-    token: "root_token"
   test_user:
     name: "test"
     password: "test"

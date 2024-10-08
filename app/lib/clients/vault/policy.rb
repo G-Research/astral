@@ -20,27 +20,6 @@ module Clients
         path "#{kv_mount}/data/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
-        path "/sys/auth" {
-          capabilities = ["read"]
-        }
-        path "/sys/auth/oidc" {
-          capabilities = ["create", "read", "update", "delete", "list", "sudo"]
-        }
-        path "/sys/policy/*" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
-        path "auth/oidc/config" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
-        path "auth/oidc/role/*" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
-        path "auth/userpass/*" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
-        path "identity/oidc/*" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
         path "identity/entity-alias" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
@@ -48,6 +27,12 @@ module Clients
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/entity/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "/sys/auth" {
+          capabilities = ["read"]
+        }
+        path "/sys/policy/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         HCL
