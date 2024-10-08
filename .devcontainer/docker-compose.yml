@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
     ports:
       - 8300:8300
-      environment:
+    environment:
       VAULT_DEV_ROOT_TOKEN_ID: root_token
       VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8300
 
