@@ -1,8 +1,6 @@
 module Clients
   class Vault
     module Oidc
-      cattr_accessor :client_id
-      cattr_accessor :client_secret
       def configure_oidc_provider
         # create oidc provider app
         oidc_provider.logical.write(WEBAPP_NAME,
@@ -49,13 +47,14 @@ module Clients
                                     mount_accessor: up_accessor)
       end
 
-      def configure_oidc_client(id, secret, issuer)
+      def configure_oidc_client
         client.logical.delete("/sys/auth/oidc")
         client.logical.write("/sys/auth/oidc", type: "oidc")
+        issuer = "#{Config[:oidc_provider][:host]}/v1/#{Config[:oidc_provider][:name]}"
         client.logical.write("auth/oidc/config",
                                    oidc_discovery_url: issuer,
-                                   oidc_client_id: id,
-                                   oidc_client_secret: secret,
+                                   oidc_client_id: @@client_id,
+                                   oidc_client_secret: @@client_secret,
                                    default_role: "reader")
 
         # create default role that all oidc users will receive
@@ -73,7 +72,7 @@ module Clients
              EOH
         client.logical.write(
           "auth/oidc/role/reader",
-          bound_audiences: id,
+          bound_audiences: @@client_id,
           allowed_redirect_uris: uris,
           user_claim: "email",
           oidc_scopes: "email",
@@ -87,6 +86,8 @@ module Clients
       end
 
       private
+      cattr_accessor :client_id
+      cattr_accessor :client_secret
       WEBAPP_NAME = "identity/oidc/client/astral"
 
       def oidc_provider

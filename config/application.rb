@@ -42,11 +42,7 @@ module AstralRails
       Clients::Vault.configure_pki
       if config.astral.configure_oidc?
         Clients::Vault.configure_oidc_provider
-        provider = "#{config.astral.oidc_provider[:host]}/v1/#{config.astral.oidc_provider[:name]}"
-        Clients::Vault.configure_oidc_client(::Clients::Vault::Oidc.client_id,
-                                             ::Clients::Vault::Oidc.client_secret,
-                                             provider)
-
+        Clients::Vault.configure_oidc_client
       end
       Clients::Vault.rotate_token
     end
