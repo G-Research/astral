@@ -23,7 +23,7 @@ test:
   oidc_provider:
     name: "identity/oidc/provider/my-provider"
     host: "http://oidc_provider:8300"
-  test_user:
+  initial_user:
     name: "test"
     password: "test"
     email: "test@example.com"
@@ -34,7 +34,7 @@ development:
   oidc_provider:
     name: "identity/oidc/provider/my-provider"
     host: "http://oidc_provider:8300"
-  test_user:
+  initial_user:
     name: "test"
     password: "test"
     email: "test@example.com"

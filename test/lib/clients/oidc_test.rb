@@ -5,17 +5,17 @@ class OIDCTest < ActiveSupport::TestCase
     @client = Clients::Vault
   end
 
-  test ".configure_oidc_user" do
+  test "#configure_oidc_user" do
     policy = <<-EOH
            path "sys" {
            policy = "deny"
            }
            EOH
-    @client.configure_oidc_user(Config[:test_user][:name], Config[:test_user][:email], policy)
-    entity = @client.read_entity(Config[:test_user][:name])
-    assert_equal Config[:test_user][:email], entity.data[:policies][0]
+    @client.configure_oidc_user(Config[:initial_user][:name], Config[:initial_user][:email], policy)
+    entity = @client.read_entity(Config[:initial_user][:name])
+    assert_equal Config[:initial_user][:email], entity.data[:policies][0]
     aliases = entity.data[:aliases]
-    assert aliases.find { |a| a[:name] == Config[:test_user][:email] }
+    assert aliases.find { |a| a[:name] == Config[:initial_user][:email] }
   end
 
   private

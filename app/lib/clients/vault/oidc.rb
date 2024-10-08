@@ -4,40 +4,43 @@ module Clients
       cattr_accessor :client_id
       cattr_accessor :client_secret
       def configure_oidc_provider
-        # create test user for oidc
-        oidc_provider.logical.delete("/sys/auth/userpass")
-        oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-        oidc_provider.logical.write("/auth/userpass/users/#{Config[:test_user][:name]}", password: Config[:test_user][:password])
-
         # create oidc provider app
         oidc_provider.logical.write(WEBAPP_NAME,
                                     redirect_uris: "http://localhost:8250/oidc/callback",
                                     assignments: "allow_all")
-
         app = oidc_provider.logical.read(WEBAPP_NAME)
         @@client_id = app.data[:client_id]
         @@client_secret = app.data[:client_secret]
+
         # create email scope
         oidc_provider.logical.write("identity/oidc/scope/email",
                                     template: '{"email": {{identity.entity.metadata.email}}}')
 
+        # create the provider
         oidc_provider.logical.write(Config[:oidc_provider][:name],
                                     issuer: Config[:oidc_provider][:host],
                                     allowed_client_ids: @@client_id,
                                     scopes_supported: "email")
+
+        # create an entity for an initial user
         oidc_provider.logical.write("identity/entity",
                                     policies: "default",
-                                    name: Config[:test_user][:name],
-                                    metadata: "email=#{Config[:test_user][:email]}",
+                                    name: Config[:initial_user][:name],
+                                    metadata: "email=#{Config[:initial_user][:email]}",
                                     disabled: false)
         provider = oidc_provider.logical.read(Config[:oidc_provider][:name])
 
-        op_entity = oidc_provider.logical.read("identity/entity/name/#{Config[:test_user][:name]}")
+        # create test userpass for the provider
+        oidc_provider.logical.delete("/sys/auth/userpass")
+        oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
+        oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user][:name]}", password: Config[:initial_user][:password])
+
+        op_entity = oidc_provider.logical.read("identity/entity/name/#{Config[:initial_user][:name]}")
         op_entity_id = op_entity.data[:id]
         op_auth_list = oidc_provider.logical.read("/sys/auth")
         up_accessor = op_auth_list.data[:"userpass/"][:accessor]
         oidc_provider.logical.write("identity/entity-alias",
-                                    name: Config[:test_user][:name],
+                                    name: Config[:initial_user][:name],
                                     canonical_id: op_entity_id,
                                     mount_accessor: up_accessor)
       end

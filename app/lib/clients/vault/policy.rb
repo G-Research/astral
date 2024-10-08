@@ -20,13 +20,13 @@ module Clients
         path "#{kv_mount}/data/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
-        path "identity/entity-alias" {
-          capabilities = ["create", "read", "update", "delete", "list"]
-        }
         path "identity/entity" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/entity/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/entity-alias" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "/sys/auth" {
