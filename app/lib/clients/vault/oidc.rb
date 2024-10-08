@@ -82,12 +82,12 @@ module Clients
 
       def configure_oidc_user(name, email, policy)
         client.sys.put_policy(email, policy)
-        put_entity(name, email);
-        put_entity_alias(name, email, "oidc");
+        put_entity(name, email)
+        put_entity_alias(name, email, "oidc")
       end
 
       private
-      WEBAPP_NAME = "identity/oidc/client/my-webapp"
+      WEBAPP_NAME = "identity/oidc/client/astral"
 
       def oidc_provider
         ::Vault::Client.new(
@@ -95,7 +95,6 @@ module Clients
           token: token
         )
       end
-
     end
   end
 end

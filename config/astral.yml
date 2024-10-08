@@ -21,7 +21,7 @@ shared:
 test:
   configure_oidc?: true
   oidc_provider:
-    name: "identity/oidc/provider/my-provider"
+    name: "identity/oidc/provider/astral"
     host: "http://oidc_provider:8300"
   initial_user:
     name: "test"
@@ -32,7 +32,7 @@ test:
 development:
   configure_oidc?: true
   oidc_provider:
-    name: "identity/oidc/provider/my-provider"
+    name: "identity/oidc/provider/astral"
     host: "http://oidc_provider:8300"
   initial_user:
     name: "test"
