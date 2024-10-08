@@ -30,12 +30,16 @@ module Clients
                                     disabled: false)
         provider = oidc_provider.logical.read(Config[:oidc_provider][:name])
 
-        # create test userpass for the provider
+        # create initial userpass for the provider
         oidc_provider.logical.delete("/sys/auth/userpass")
         oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-        oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user][:name]}", password: Config[:initial_user][:password])
+        oidc_provider.logical.write(
+          "/auth/userpass/users/#{Config[:initial_user][:name]}",
+          password: Config[:initial_user][:password])
 
-        op_entity = oidc_provider.logical.read("identity/entity/name/#{Config[:initial_user][:name]}")
+        # create an alias that maps the userpass to the entity
+        op_entity = oidc_provider.logical.read(
+          "identity/entity/name/#{Config[:initial_user][:name]}")
         op_entity_id = op_entity.data[:id]
         op_auth_list = oidc_provider.logical.read("/sys/auth")
         up_accessor = op_auth_list.data[:"userpass/"][:accessor]
@@ -45,7 +49,6 @@ module Clients
                                     mount_accessor: up_accessor)
       end
 
-
       def configure_oidc_client(id, secret, issuer)
         client.logical.delete("/sys/auth/oidc")
         client.logical.write("/sys/auth/oidc", type: "oidc")
@@ -54,18 +57,27 @@ module Clients
                                    oidc_client_id: id,
                                    oidc_client_secret: secret,
                                    default_role: "reader")
+
+        # create default role that all oidc users will receive
         policy = <<-EOH
               path "sys" {
-              policy = "deny"
+              policy = "read"
               }
               EOH
         client.sys.put_policy("reader", policy)
-        client.logical.write("auth/oidc/role/reader",
-                                   bound_audiences: id,
-                                   allowed_redirect_uris: "http://localhost:8200/ui/vault/auth/oidc/oidc/callback,http://localhost:8250/oidc/callback,http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback,http://127.0.0.1:8250/oidc/callback",
-                                   user_claim: "email",
-                                   oidc_scopes: "email",
-                                   token_policies: "reader")
+        uris = <<-EOH
+             http://localhost:8200/ui/vault/auth/oidc/oidc/callback,
+             http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback,
+             http://localhost:8250/oidc/callback,
+             http://127.0.0.1:8250/oidc/callback
+             EOH
+        client.logical.write(
+          "auth/oidc/role/reader",
+          bound_audiences: id,
+          allowed_redirect_uris: uris,
+          user_claim: "email",
+          oidc_scopes: "email",
+          token_policies: "reader")
       end
 
       def configure_oidc_user(name, email, policy)
