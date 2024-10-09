@@ -14,12 +14,17 @@ module Clients
       def client
         ::Vault::Client.new(
           address: address,
-          token: token
+          token: token,
+          ssl_ca_cert: ssl_cert
         )
       end
 
       def address
         Config[:vault_addr]
+      end
+
+      def ssl_cert
+        Config[:vault_ssl_cert]
       end
 
       def enable_engine(mount, type)

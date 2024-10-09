@@ -61,3 +61,11 @@ docker build -t astral:latest .
 ```
 docker run -p 3000:3000 astral:latest
 ```
+
+# Configuration
+Astral is configured in `config/astral.yml` -- all availble
+configuration options are all listed there. Note that configuration
+values can be supplied in this file or as environment variables with
+the same names (but UPPER_CASE). Environment vars will override any
+values here. Per-environment settings (development, test, production)
+will override the shared values.
