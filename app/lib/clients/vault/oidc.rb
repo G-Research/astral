@@ -28,15 +28,17 @@ module Clients
 
       def oidc_provider
         ::Vault::Client.new(
-          address: Config[:oidc_provider][:host],
+          address: Config[:oidc_provider][:addr],
           token: token
         )
       end
 
       def create_provider_app
-        oidc_provider.logical.write(WEBAPP_NAME,
-                                    redirect_uris: "http://localhost:8250/oidc/callback",
-                                    assignments: "allow_all")
+        oidc_provider.logical.write(
+          WEBAPP_NAME,
+          # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
+          redirect_uris: "http://localhost:8250/oidc/callback",
+          assignments: "allow_all")
         app = oidc_provider.logical.read(WEBAPP_NAME)
         @@client_id = app.data[:client_id]
         @@client_secret = app.data[:client_secret]
@@ -46,7 +48,7 @@ module Clients
         oidc_provider.logical.write("identity/oidc/scope/email",
                                     template: '{"email": {{identity.entity.metadata.email}}}')
         oidc_provider.logical.write(Config[:oidc_provider][:name],
-                                    issuer: Config[:oidc_provider][:host],
+                                    issuer: Config[:oidc_provider][:addr],
                                     allowed_client_ids: @@client_id,
                                     scopes_supported: "email")
       end
@@ -81,7 +83,7 @@ module Clients
       def create_client_config
         client.logical.delete("/sys/auth/oidc")
         client.logical.write("/sys/auth/oidc", type: "oidc")
-        issuer = "#{Config[:oidc_provider][:host]}/v1/#{Config[:oidc_provider][:name]}"
+        issuer = "#{Config[:oidc_provider][:addr]}/v1/#{Config[:oidc_provider][:name]}"
         client.logical.write("auth/oidc/config",
                                    oidc_discovery_url: issuer,
                                    oidc_client_id: @@client_id,
@@ -99,11 +101,10 @@ module Clients
       end
 
       def get_redirect_uris
+        # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
         redirect_uris = <<-EOH
-             http://localhost:8200/ui/vault/auth/oidc/oidc/callback,
-             http://127.0.0.1:8200/ui/vault/auth/oidc/oidc/callback,
              http://localhost:8250/oidc/callback,
-             http://127.0.0.1:8250/oidc/callback
+             #{Config[:vault_addr]}/ui/vault/auth/oidc/oidc/callback,
              EOH
       end
 
