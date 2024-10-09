@@ -64,7 +64,7 @@ docker run -p 3000:3000 astral:latest
 # Logging into vault with OIDC
 
 The rails test's configure the OIDC provider, so if the tests pass,
-you can run invoke the oidc login as follows:
+you can invoke the oidc login as follows:
 
 ```
   export VAULT_ADDR=http://127.0.0.1:8200; vault login -method=oidc
@@ -75,22 +75,19 @@ allow a browser window to open on your host.  When it does, select
 "username" option with user test/test.  (That is the username/pw
 configured by the rails tests.)
 
-When thata succeeds, you should see something like the following in the cli:
+When that succeeds, you should see something like the following in the cli:
 ```
 Success! You are now authenticated
-.
-.
 .
 identity_policies    ["test@example.com"]
 .
 .
-.
 ```
 
-Note that "identity_policies" is "test@example.com", which is the
+Note that "identity_policies" includes "test@example.com", which is the
 policy we created for this user.
 
-To make it work smoothly with the browser, you should add the
+To make this work smoothly with the browser, you should add the
 following to the /etc/hosts file on your host:
 
 ```
