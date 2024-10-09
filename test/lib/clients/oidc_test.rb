@@ -16,7 +16,9 @@ class OIDCTest < ActiveSupport::TestCase
     aliases = entity.data[:aliases]
     assert aliases.find { |a| a[:name] == Config[:initial_user][:email] }
   end
+
   private
+
   def get_test_policy
     policy = <<-EOH
            path "sys" {
@@ -24,5 +26,4 @@ class OIDCTest < ActiveSupport::TestCase
            }
            EOH
   end
-
 end
