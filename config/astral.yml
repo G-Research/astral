@@ -19,7 +19,7 @@ shared:
   audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
-  configure_oidc?: true
+  configure_oidc_provider?: true
   oidc_provider:
     name: "identity/oidc/provider/astral"
     addr: "http://oidc_provider:8300"
@@ -30,7 +30,7 @@ test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
-  configure_oidc?: true
+  configure_oidc_provider?: true
   oidc_provider:
     name: "identity/oidc/provider/astral"
     addr: "http://oidc_provider:8300"

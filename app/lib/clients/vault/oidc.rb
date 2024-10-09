@@ -9,10 +9,11 @@ module Clients
         create_alias_mapping_userpass_to_entity
       end
 
-      def configure_oidc_client
-        create_client_config
+      def configure_oidc_client(issuer, client_id, client_secret)
+        create_client_config(issuer, client_id, client_secret)
         create_default_policy_for_role
-        create_default_role
+        create_default_role(client_id)
+
       end
 
       def configure_oidc_user(name, email, policy)
@@ -80,14 +81,13 @@ module Clients
                                     mount_accessor: up_accessor)
       end
 
-      def create_client_config
+      def create_client_config(issuer, client_id, client_secret)
         client.logical.delete("/sys/auth/oidc")
         client.logical.write("/sys/auth/oidc", type: "oidc")
-        issuer = "#{Config[:oidc_provider][:addr]}/v1/#{Config[:oidc_provider][:name]}"
         client.logical.write("auth/oidc/config",
                                    oidc_discovery_url: issuer,
-                                   oidc_client_id: @@client_id,
-                                   oidc_client_secret: @@client_secret,
+                                   oidc_client_id: client_id,
+                                   oidc_client_secret: client_secret,
                                    default_role: "reader")
       end
 
@@ -108,10 +108,10 @@ module Clients
              EOH
       end
 
-      def create_default_role
+      def create_default_role(client_id)
         client.logical.write(
           "auth/oidc/role/reader",
-          bound_audiences: @@client_id,
+          bound_audiences: client_id,
           allowed_redirect_uris: get_redirect_uris,
           user_claim: "email",
           oidc_scopes: "email",
