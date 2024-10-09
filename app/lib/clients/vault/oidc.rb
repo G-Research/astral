@@ -1,19 +1,49 @@
+=begin
+
+The purpose of this module is to assign a policy to an OIDC user, by
+mapping that user's email address to a policy we create.
+It works as follows:
+
+It creates an OIDC provider and user.  That user has a
+username/password/email addr, that can be accessed with OIDC auth.
+
+It creates an OIDC client which connects to that provider.  When a
+user tries to auth, the client connects to the provider, which opens
+up a browser window allowing the user to enter his username/password.
+
+On success, the provider returns an OIDC token, which includes the
+user's email addr.
+
+The client has been configured to map that email address to an entity
+in vault, which has the policy which we want the user to have.
+
+So the mapping goes from the email address on the provider, to the
+policy in vault.  The email addr may not be the best mapping to use.
+Some other piece of user info may ultimately be better used to map the
+user to the policy.  But we don't yet have a good understanding of
+different OIDC provider configurations, so this should be good enough
+for now
+
+Note that this provider is only meant to be used in our dev/test
+environment to excercise the client.  In a prod env, a real OIDC
+provider is configured in.
+
+=end
 module Clients
   class Vault
     module Oidc
       def configure_oidc_provider
-        create_provider_app
+        create_provider_webapp
         create_provider_with_email_scope
         create_entity_for_initial_user
         create_userpass_for_initial_user
-        create_alias_mapping_userpass_to_entity
+        map_userpass_to_entity
       end
 
       def configure_oidc_client(issuer, client_id, client_secret)
         create_client_config(issuer, client_id, client_secret)
         create_default_policy_for_role
         create_default_role(client_id)
-
       end
 
       def configure_oidc_user(name, email, policy)
@@ -34,11 +64,10 @@ module Clients
         )
       end
 
-      def create_provider_app
+      def create_provider_webapp
         oidc_provider.logical.write(
           WEBAPP_NAME,
-          # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
-          redirect_uris: "http://localhost:8250/oidc/callback",
+          redirect_uris: get_redirect_uris,
           assignments: "allow_all")
         app = oidc_provider.logical.read(WEBAPP_NAME)
         @@client_id = app.data[:client_id]
@@ -69,7 +98,7 @@ module Clients
                                     password: Config[:initial_user][:password])
       end
 
-      def create_alias_mapping_userpass_to_entity
+      def map_userpass_to_entity
         op_entity = oidc_provider.logical.read(
           "identity/entity/name/#{Config[:initial_user][:name]}")
         op_entity_id = op_entity.data[:id]
