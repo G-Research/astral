@@ -103,11 +103,11 @@ module Clients
           "identity/entity/name/#{Config[:initial_user][:name]}")
         entity_id = entity.data[:id]
         auth_list = oidc_provider.logical.read("/sys/auth")
-        up_accessor = auth_list.data[:"userpass/"][:accessor]
+        accessor = auth_list.data[:"userpass/"][:accessor]
         oidc_provider.logical.write("identity/entity-alias",
                                     name: Config[:initial_user][:name],
                                     canonical_id: entity_id,
-                                    mount_accessor: up_accessor)
+                                    mount_accessor: accessor)
       end
 
       def create_client_config(issuer, client_id, client_secret)
