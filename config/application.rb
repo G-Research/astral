@@ -48,7 +48,7 @@ module AstralRails
         client_id = ::Clients::Vault::Oidc.client_id
         client_secret = ::Clients::Vault::Oidc.client_secret
       end
-      Clients::Vault.configure_oidc_client(issuer, client_id, client_secret)
+      Clients::Vault.configure_oidc_client(issuer, client_id, client_secret) unless client_id.nil?
       Clients::Vault.rotate_token
     end
   end

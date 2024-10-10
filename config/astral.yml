@@ -41,3 +41,9 @@ development:
 
 production:
   vault_create_root: false
+  configure_oidc_provider?: false
+  oidc_provider:
+    name:
+    addr:
+    client_id:
+    client_secret:
