@@ -5,6 +5,7 @@ module Clients
     extend Clients::Vault::Policy
     extend Clients::Vault::Entity
     extend Clients::Vault::EntityAlias
+    extend Clients::Vault::Oidc
 
     class_attribute :token
 
