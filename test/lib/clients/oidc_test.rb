@@ -2,7 +2,7 @@ require "test_helper"
 
 # NOTE: these tests excercise the OIDC config but can't really verify a
 # successful OIDC login.  (Because that requires browser interaction.)
-# See the readme for how to use with the browser
+# See the readme for how to use oidc login with the browser.
 
 class OIDCTest < ActiveSupport::TestCase
   setup do
