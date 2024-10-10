@@ -59,7 +59,7 @@ module Clients
 
       def oidc_provider
         ::Vault::Client.new(
-          address: Config[:oidc_provider][:addr],
+          address: "http://oidc_provider:8300",
           token: token
         )
       end
@@ -77,8 +77,8 @@ module Clients
       def create_provider_with_email_scope
         oidc_provider.logical.write("identity/oidc/scope/email",
                                     template: '{"email": {{identity.entity.metadata.email}}}')
-        oidc_provider.logical.write(Config[:oidc_provider][:name],
-                                    issuer: Config[:oidc_provider][:addr],
+        oidc_provider.logical.write("identity/oidc/provider/astral",
+                                    issuer: "http://oidc_provider:8300",
                                     allowed_client_ids: @@client_id,
                                     scopes_supported: "email")
       end

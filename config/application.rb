@@ -40,7 +40,7 @@ module AstralRails
       Clients::Vault.token = Config[:vault_token]
       Clients::Vault.configure_kv
       Clients::Vault.configure_pki
-      issuer = "#{config.astral.oidc_provider[:addr]}/v1/#{config.astral.oidc_provider[:name]}"
+      issuer = config.astral.oidc_provider[:issuer]
       client_id = config.astral.oidc_provider[:client_id]
       client_secret = config.astral.oidc_provider[:client_secret]
       if config.astral.configure_oidc_provider?

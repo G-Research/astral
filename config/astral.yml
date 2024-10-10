@@ -21,8 +21,7 @@ shared:
 test:
   configure_oidc_provider?: true
   oidc_provider:
-    name: "identity/oidc/provider/astral"
-    addr: "http://oidc_provider:8300"
+    issuer: "http://oidc_provider:8300/v1/identity/oidc/provider/astral"
   initial_user:
     name: "test"
     password: "test"
@@ -32,8 +31,7 @@ test:
 development:
   configure_oidc_provider?: true
   oidc_provider:
-    name: "identity/oidc/provider/astral"
-    addr: "http://oidc_provider:8300"
+    issuer: "http://oidc_provider:8300/v1/identity/oidc/provider/astral"
   initial_user:
     name: "test"
     password: "test"
@@ -43,7 +41,6 @@ production:
   vault_create_root: false
   configure_oidc_provider?: false
   oidc_provider:
-    name:
-    addr:
+    issuer:
     client_id:
     client_secret:
