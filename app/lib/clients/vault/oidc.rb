@@ -99,14 +99,14 @@ module Clients
       end
 
       def map_userpass_to_entity
-        op_entity = oidc_provider.logical.read(
+        entity = oidc_provider.logical.read(
           "identity/entity/name/#{Config[:initial_user][:name]}")
-        op_entity_id = op_entity.data[:id]
-        op_auth_list = oidc_provider.logical.read("/sys/auth")
-        up_accessor = op_auth_list.data[:"userpass/"][:accessor]
+        entity_id = entity.data[:id]
+        auth_list = oidc_provider.logical.read("/sys/auth")
+        up_accessor = auth_list.data[:"userpass/"][:accessor]
         oidc_provider.logical.write("identity/entity-alias",
                                     name: Config[:initial_user][:name],
-                                    canonical_id: op_entity_id,
+                                    canonical_id: entity_id,
                                     mount_accessor: up_accessor)
       end
 
