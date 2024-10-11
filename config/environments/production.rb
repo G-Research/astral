@@ -93,15 +93,12 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  config.after_initialize do
-    # bootstrap with provided token, then rotate
-    Clients::Vault.token = Config[:vault_token]
-    Clients::Vault.configure_kv
-    Clients::Vault.configure_pki
-    Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
-                                         config.astral.oidc_provider[:client_secret],
-                                         config.astral.oidc_provider[:client_secret])
-    Clients::Vault.rotate_token
+  def configure_oidc
+    unless config.astral.oidc_provider[:client_id].nil?
+      Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
+                                           config.astral.oidc_provider[:client_id],
+                                           config.astral.oidc_provider[:client_secret])
+    end
   end
 
 end

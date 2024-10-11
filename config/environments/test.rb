@@ -65,16 +65,10 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.after_initialize do
-    # bootstrap with provided token, then rotate
-    Clients::Vault.token = Config[:vault_token]
-    Clients::Vault.configure_kv
-    Clients::Vault.configure_pki
+  def configure_oidc
     Clients::Vault.configure_oidc_provider
     Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
                                          Clients::Vault::Oidc.client_id,
                                          Clients::Vault::Oidc.client_secret)
-    Clients::Vault.rotate_token
   end
-
 end
