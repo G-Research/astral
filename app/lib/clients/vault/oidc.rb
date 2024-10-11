@@ -54,9 +54,7 @@ module Clients
       end
 
       def initial_user
-        if Config[:initial_user].nil?
-          raise "initial user not configured."
-        end
+        raise "initial user not configured." unless Config[:initial_user]
         Config[:initial_user]
       end
       private
