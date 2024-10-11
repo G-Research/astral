@@ -79,6 +79,4 @@ Rails.application.configure do
                                          Clients::Vault::Oidc.client_id,
                                          Clients::Vault::Oidc.client_secret)
   end
-
-
 end

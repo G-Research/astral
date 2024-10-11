@@ -100,5 +100,4 @@ Rails.application.configure do
                                            config.astral.oidc_provider[:client_secret])
     end
   end
-
 end
