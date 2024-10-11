@@ -43,7 +43,6 @@ module Clients
 
       def configure_oidc_client(issuer, client_id, client_secret)
         create_client_config(issuer, client_id, client_secret)
-        create_default_policy_for_role
         create_default_role(client_id)
       end
 
@@ -131,18 +130,8 @@ module Clients
                                    oidc_discovery_url: issuer,
                                    oidc_client_id: client_id,
                                    oidc_client_secret: client_secret,
-                                   default_role: "reader")
+                                   default_role: "default")
       end
-
-      def create_default_policy_for_role
-        policy = <<-EOH
-              path "sys" {
-              policy = "read"
-              }
-              EOH
-        client.sys.put_policy("reader", policy)
-      end
-
       def redirect_uris
         # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
         redirect_uris = <<-EOH
@@ -153,12 +142,12 @@ module Clients
 
       def create_default_role(client_id)
         client.logical.write(
-          "auth/oidc/role/reader",
+          "auth/oidc/role/default",
           bound_audiences: client_id,
           allowed_redirect_uris: redirect_uris,
           user_claim: "email",
           oidc_scopes: "email",
-          token_policies: "reader")
+          token_policies: "default")
       end
     end
   end
