@@ -6,23 +6,23 @@ require "test_helper"
 
 class OIDCTest < ActiveSupport::TestCase
   setup do
-    client = Clients::Vault
-    client.configure_oidc_user(Config[:initial_user][:name],
-                                Config[:initial_user][:email], get_test_policy)
-    @entity = client.read_entity(Config[:initial_user][:name])
+    @client = Clients::Vault
+    @client.configure_oidc_user(@client.initial_user[:name],
+                                @client.initial_user[:email], test_policy)
+    @entity = @client.read_entity(@client.initial_user[:name])
   end
 
   test "#policies_contain_initial_users_email" do
-    assert_equal Config[:initial_user][:email], @entity.data[:policies][0]
+    assert_equal @client.initial_user[:email], @entity.data[:policies][0]
   end
 
   test "#aliases_contain_initial_users_email" do
     aliases = @entity.data[:aliases]
-    assert aliases.find { |a| a[:name] == Config[:initial_user][:email] }
+    assert aliases.find { |a| a[:name] == @client.initial_user[:email] }
   end
   private
 
-  def get_test_policy
+  def test_policy
     policy = <<-EOH
            path "sys" {
            policy = "read"

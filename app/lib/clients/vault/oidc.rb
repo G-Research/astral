@@ -30,15 +30,13 @@ module Clients
     module Oidc
       cattr_accessor :provider
       def configure_oidc_provider
-        @@provider ||=
-          begin
-            create_provider_webapp
-            provider = create_provider_with_email_scope
-            create_entity_for_initial_user
-            create_userpass_for_initial_user
-            map_userpass_to_entity
-            provider
-          end
+        if oidc_provider.logical.read("identity/oidc/provider/astral").nil?
+          create_provider_webapp
+          create_provider_with_email_scope
+          create_entity_for_initial_user
+          create_userpass_for_initial_user
+          map_userpass_to_entity
+        end
       end
 
       def configure_oidc_client(issuer, client_id, client_secret)
@@ -53,6 +51,12 @@ module Clients
         put_entity_alias(name, email, "oidc")
       end
 
+      def initial_user
+        if Config[:initial_user].nil?
+          raise "initial user not configured."
+        end
+        Config[:initial_user]
+      end
       private
       cattr_accessor :client_id
       cattr_accessor :client_secret
@@ -68,7 +72,7 @@ module Clients
       def create_provider_webapp
         oidc_provider.logical.write(
           WEBAPP_NAME,
-          redirect_uris: get_redirect_uris,
+          redirect_uris: redirect_uris,
           assignments: "allow_all")
         app = oidc_provider.logical.read(WEBAPP_NAME)
         @@client_id = app.data[:client_id]
@@ -88,26 +92,26 @@ module Clients
       def create_entity_for_initial_user
         oidc_provider.logical.write("identity/entity",
                                     policies: "default",
-                                    name: Config[:initial_user][:name],
-                                    metadata: "email=#{Config[:initial_user][:email]}",
+                                    name: initial_user[:name],
+                                    metadata: "email=#{initial_user[:email]}",
                                     disabled: false)
       end
 
       def create_userpass_for_initial_user
         oidc_provider.logical.delete("/sys/auth/userpass")
         oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-        oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user][:name]}",
-                                    password: Config[:initial_user][:password])
+        oidc_provider.logical.write("/auth/userpass/users/#{initial_user[:name]}",
+                                    password: initial_user[:password])
       end
 
       def map_userpass_to_entity
         entity = oidc_provider.logical.read(
-          "identity/entity/name/#{Config[:initial_user][:name]}")
+          "identity/entity/name/#{initial_user[:name]}")
         entity_id = entity.data[:id]
         auth_list = oidc_provider.logical.read("/sys/auth")
         accessor = auth_list.data[:"userpass/"][:accessor]
         oidc_provider.logical.write("identity/entity-alias",
-                                    name: Config[:initial_user][:name],
+                                    name: initial_user[:name],
                                     canonical_id: entity_id,
                                     mount_accessor: accessor)
       end
@@ -131,7 +135,7 @@ module Clients
         client.sys.put_policy("reader", policy)
       end
 
-      def get_redirect_uris
+      def redirect_uris
         # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
         redirect_uris = <<-EOH
              http://localhost:8250/oidc/callback,
@@ -143,7 +147,7 @@ module Clients
         client.logical.write(
           "auth/oidc/role/reader",
           bound_audiences: client_id,
-          allowed_redirect_uris: get_redirect_uris,
+          allowed_redirect_uris: redirect_uris,
           user_claim: "email",
           oidc_scopes: "email",
           token_policies: "reader")
