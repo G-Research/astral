@@ -28,7 +28,6 @@ provider is configured in config/astral.yml
 module Clients
   class Vault
     module Oidc
-      cattr_accessor :provider
       def configure_oidc_provider
         provider = oidc_provider.logical.read("identity/oidc/provider/astral")
         if provider.nil?

@@ -94,8 +94,8 @@ following to the /etc/hosts file on your host:
   127.0.0.1	oidc_provider
 ```
 
-Finally, if you run "rails test" a second time, it will recreate the
-provider settings, so you will need to clear the browser's
+Finally, if you restart the docker vault container, it will recreate
+the provider settings, so you will need to clear the browser's
 "oidc_provider" cookie.  Otherwise you will see this error:
 
 ```
