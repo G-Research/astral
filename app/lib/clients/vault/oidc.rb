@@ -62,13 +62,17 @@ module Clients
       private
       cattr_accessor :client_id
       cattr_accessor :client_secret
+      cattr_accessor :provider
       WEBAPP_NAME = "identity/oidc/client/astral"
 
       def oidc_provider
-        ::Vault::Client.new(
-          address: "http://oidc_provider:8300",
-          token: token
-        )
+        @@provider ||=
+          begin
+            ::Vault::Client.new(
+              address: "http://oidc_provider:8300",
+              token: token
+            )
+          end
       end
 
       def create_provider_webapp
