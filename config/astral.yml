@@ -19,7 +19,6 @@ shared:
   audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
 test:
-  configure_oidc_provider?: true
   oidc_provider:
     issuer: "http://oidc_provider:8300/v1/identity/oidc/provider/astral"
   initial_user:
@@ -29,7 +28,6 @@ test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
-  configure_oidc_provider?: true
   oidc_provider:
     issuer: "http://oidc_provider:8300/v1/identity/oidc/provider/astral"
   initial_user:
@@ -39,7 +37,6 @@ development:
 
 production:
   vault_create_root: false
-  configure_oidc_provider?: false
   oidc_provider:
     issuer:
     client_id:
