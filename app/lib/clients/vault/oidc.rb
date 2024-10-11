@@ -22,7 +22,7 @@ policy in vault.
 
 Note that this provider is only meant to be used in our dev/test
 environment to excercise the client.  In a prod env, a real OIDC
-provider is configured in.
+provider is configured in config/astral.yml
 
 =end
 module Clients
@@ -30,12 +30,15 @@ module Clients
     module Oidc
       cattr_accessor :provider
       def configure_oidc_provider
-        if oidc_provider.logical.read("identity/oidc/provider/astral").nil?
+        provider = oidc_provider.logical.read("identity/oidc/provider/astral")
+        if provider.nil?
           create_provider_webapp
           create_provider_with_email_scope
           create_entity_for_initial_user
           create_userpass_for_initial_user
           map_userpass_to_entity
+        else
+          set_client_id
         end
       end
 
@@ -74,6 +77,10 @@ module Clients
           WEBAPP_NAME,
           redirect_uris: redirect_uris,
           assignments: "allow_all")
+        set_client_id
+      end
+
+      def set_client_id
         app = oidc_provider.logical.read(WEBAPP_NAME)
         @@client_id = app.data[:client_id]
         @@client_secret = app.data[:client_secret]
