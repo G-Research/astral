@@ -18,11 +18,7 @@ The client has been configured to map that email address to an entity
 in vault, which has the policy which we want the user to have.
 
 So the mapping goes from the email address on the provider, to the
-policy in vault.  The email addr may not be the best mapping to use.
-Some other piece of user info may ultimately be better used to map the
-user to the policy.  But we don't yet have a good understanding of
-different OIDC provider configurations, so this should be good enough
-for now
+policy in vault.
 
 Note that this provider is only meant to be used in our dev/test
 environment to excercise the client.  In a prod env, a real OIDC
@@ -32,12 +28,17 @@ provider is configured in.
 module Clients
   class Vault
     module Oidc
+      cattr_accessor :provider
       def configure_oidc_provider
-        create_provider_webapp
-        create_provider_with_email_scope
-        create_entity_for_initial_user
-        create_userpass_for_initial_user
-        map_userpass_to_entity
+        @@provider ||=
+          begin
+            create_provider_webapp
+            provider = create_provider_with_email_scope
+            create_entity_for_initial_user
+            create_userpass_for_initial_user
+            map_userpass_to_entity
+            provider
+          end
       end
 
       def configure_oidc_client(issuer, client_id, client_secret)
@@ -81,6 +82,7 @@ module Clients
                                     issuer: "http://oidc_provider:8300",
                                     allowed_client_ids: @@client_id,
                                     scopes_supported: "email")
+        oidc_provider.logical.read("identity/oidc/provider/astral")
       end
 
       def create_entity_for_initial_user
