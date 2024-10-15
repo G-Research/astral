@@ -6,8 +6,8 @@ namespace :redoc do
   task :bundle do
     %x(
       docker run -v /workspaces/astral/doc/openapi:/data -w /data \
-      redocly/cli bundle openapi.yml \
-      --output openapi-bundled.yml
+        redocly/cli bundle openapi.yml \
+        --output openapi-bundled.yml
     )
     puts "openapi.yml and references bundled to openapi-bundled.yml"
   end

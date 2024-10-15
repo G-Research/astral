@@ -1,13 +1,13 @@
 # Astral configuration
-# Note that values can be supplied here or as environment vars (UPPER_CASE)
+# Note that values can be supplied here or as environment vars (UPPER_CASE).
 shared:
   vault_token:
   vault_addr:
   # if VAULT_ADDR is https with self-signed cert, need to provide
-  # path on disk to cert here
+  # path on disk to CA cert here
   vault_ssl_cert:
 
-  # Vault PKI configuration -- create root CA or reference an existing
+  # Vault PKI configuration -- create root CA when true, or reference an existing
   vault_create_root: true
   vault_root_ca_ref: root_ca
   vault_root_ca_mount: pki_root
@@ -25,6 +25,7 @@ shared:
   # User activity logging
   audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
+# Per-environment overrides of shared configs
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
