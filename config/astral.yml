@@ -4,8 +4,11 @@ shared:
   vault_token:
   vault_addr:
   # if VAULT_ADDR is https with self-signed cert, need to provide
-  # path on disk to CA cert here
+  # CA cert (path to file)
   vault_ssl_cert:
+  # Vault client cert if required (path to file)
+  vault_ssl_client_cert:
+  vault_ssl_client_key:
 
   # Vault PKI configuration -- create root CA when true, or reference an existing
   vault_create_root: true

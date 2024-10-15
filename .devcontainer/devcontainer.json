@@ -20,7 +20,7 @@
 	"forwardPorts": [3000, 5432, 8200],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bundle install && rake db:setup && rake configure:ssl",
+	"postCreateCommand": "bundle install && rake configure:ssl && rake db:setup",
 
 	// Configure tool-specific properties.
 	// "customizations": {},

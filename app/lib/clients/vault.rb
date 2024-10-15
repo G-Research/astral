@@ -15,7 +15,9 @@ module Clients
         ::Vault::Client.new(
           address: address,
           token: token,
-          ssl_ca_cert: ssl_cert
+          ssl_ca_cert: ssl_cert,
+          ssl_pem_file: ssl_client_cert,
+          ssl_key_file: ssl_client_key
         )
       end
 
@@ -25,6 +27,14 @@ module Clients
 
       def ssl_cert
         Config[:vault_ssl_cert]
+      end
+
+      def ssl_client_cert
+        Config[:vault_ssl_client_cert]
+      end
+
+      def ssl_client_key
+        Config[:vault_ssl_client_key]
       end
 
       def enable_engine(mount, type)
