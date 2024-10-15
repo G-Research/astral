@@ -12,7 +12,7 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
     environment:
-      VAULT_ADDR: https://vault:8200
+      VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: root_token
       VAULT_CREATE_ROOT: true
       VAULT_ROOT_CA_MOUNT: pki
@@ -37,7 +37,7 @@ services:
                 {
                     "tcp": {
                         "address": "0.0.0.0:8443",
-                        "tls_disable": "0",
+                        "tls_disable": "1",
                         "tls_cert_file": "/vault/cert/vault.pem",
                         "tls_key_file": "/vault/cert/vault.key"
                     }
