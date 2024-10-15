@@ -69,8 +69,7 @@ Rails.application.configure do
   def configure_oidc
     provider = OidcProvider.new
     provider.configure
-    Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
-                                         provider.client_id,
-                                         provider.client_secret)
+    config.astral.oidc_provider[:client_id] = provider.client_id
+    config.astral.oidc_provider[:client_secret] = provider.client_secret
   end
 end

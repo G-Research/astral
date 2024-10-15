@@ -41,7 +41,14 @@ module AstralRails
       Clients::Vault.configure_kv
       Clients::Vault.configure_pki
       configure_oidc
+      Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
+                                           config.astral.oidc_provider[:client_id],
+                                           config.astral.oidc_provider[:client_secret])
       Clients::Vault.rotate_token
+    end
+
+    def configure_oidc
+      # do nothing by default
     end
   end
 end

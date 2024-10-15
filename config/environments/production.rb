@@ -94,10 +94,5 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   def configure_oidc
-    if !config.astral.oidc_provider[:client_id].nil?
-      Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
-                                           config.astral.oidc_provider[:client_id],
-                                           config.astral.oidc_provider[:client_secret])
-    end
   end
 end

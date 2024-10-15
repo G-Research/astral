@@ -29,8 +29,10 @@ module Clients
   class Vault
     module Oidc
       def configure_oidc_client(issuer, client_id, client_secret)
-        create_client_config(issuer, client_id, client_secret)
-        create_default_role(client_id)
+        if !client_id.nil?
+          create_client_config(issuer, client_id, client_secret)
+          create_default_role(client_id)
+        end
       end
 
       def configure_oidc_user(name, email, policy)
