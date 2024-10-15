@@ -64,9 +64,9 @@ docker run -p 3000:3000 astral:latest
 
 # Configuration
 Astral is configured in `config/astral.yml` -- all availble
-configuration options are listed there in the `shared` section. Note
-that configuration values can be supplied in this file or as
+configuration options are listed in the `shared` section. Note that
+configuration values can be supplied in this file or as process
 environment variables with the same names (but
-UPPER_CASE). Environment vars will override any values
-here. Per-environment settings (development, test, production) will
-override the shared values but not the environment.
+UPPER_CASE). Environment vars will override any values in the config
+file.  Per-environment settings in the config file(development, test,
+production) will override the shared values for that type.
