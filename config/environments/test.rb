@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require_relative "../../test/lib/clients/oidc_test"
 
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
@@ -66,6 +67,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   def configure_oidc
+    binding.irb
     OIDCTest.configure_oidc_provider
     Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
                                          OIDCTest.client_id,

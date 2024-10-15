@@ -21,7 +21,7 @@ class OIDCTest < ActiveSupport::TestCase
     assert aliases.find { |a| a[:name] == @client.initial_user[:email] }
   end
 
-        def configure_oidc_provider
+  def configure_oidc_provider
         provider = oidc_provider.logical.read("identity/oidc/provider/astral")
         if provider.nil?
           create_provider_webapp
