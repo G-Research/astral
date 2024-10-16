@@ -25,6 +25,7 @@ shared:
 
 test:
   oidc_issuer: http://oidc_provider:8300/v1/identity/oidc/provider/astral
+  oidc_provider_addr: http://oidc_provider:8300
   initial_user:
     name: test
     password: test
@@ -33,6 +34,7 @@ test:
 
 development:
   oidc_issuer: http://oidc_provider:8300/v1/identity/oidc/provider/astral
+  oidc_provider_addr: http://oidc_provider:8300
   initial_user:
     name: test
     password: test

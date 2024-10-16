@@ -4,21 +4,28 @@ require "test_helper"
 # successful OIDC login.  (Because that requires browser interaction.)
 # See the readme for how to use oidc login with the browser.
 
-class OIDCTest < ActiveSupport::TestCase
+class OidcTest < ActiveSupport::TestCase
   setup do
     @client = Clients::Vault
-    @client.configure_oidc_user(initial_user[:name],
-                                initial_user[:email], test_policy)
+    @client.configure_oidc_user(
+      initial_user[:name],
+      initial_user[:email],
+      test_policy)
     @entity = @client.read_entity(initial_user[:name])
   end
 
-  test "#policies_contain_initial_users_email" do
+  test "policies_contain_initial_users_email" do
     assert_equal initial_user[:email], @entity.data[:policies][0]
   end
 
-  test "#aliases_contain_initial_users_email" do
+  test "aliases_contain_initial_users_email" do
     aliases = @entity.data[:aliases]
     assert aliases.find { |a| a[:name] == initial_user[:email] }
+  end
+
+  test "vault_is_configured_as_oidc_client" do
+    auth = @client.get_oidc_client_config
+    assert_equal Config[:oidc_client_id], auth.data[:oidc_client_id]
   end
 
   private

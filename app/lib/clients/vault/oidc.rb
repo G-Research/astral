@@ -13,6 +13,9 @@ module Clients
         put_entity_alias(name, email, "oidc")
       end
 
+      def get_oidc_client_config
+        client.logical.read("auth/oidc/config")
+      end
       private
 
       def create_client_config(issuer, client_id, client_secret)

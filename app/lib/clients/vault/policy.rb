@@ -32,6 +32,9 @@ module Clients
         path "/sys/auth" {
           capabilities = ["read"]
         }
+        path "auth/oidc/config" {
+          capabilities = ["read"]
+        }
         path "/sys/policy/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
