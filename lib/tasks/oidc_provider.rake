@@ -1,7 +1,7 @@
 require "rake"
 require_relative "../../app/lib/utils/oidc_provider"
 data = YAML.load(File.read("config/astral.yml"))
-initial_user = data["test"]["initial_user"].stringify_keys
+initial_user = data["test"]["initial_user"].symbolize_keys
 
 # Rake tasks for oidc provider
 namespace :oidc_provider do
