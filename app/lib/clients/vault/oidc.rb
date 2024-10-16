@@ -25,14 +25,14 @@ environment to excercise the client.  In a prod env, a real OIDC
 provider is configured in config/astral.yml
 
 =end
+require_relative "../../utils/oidc"
 module Clients
   class Vault
     module Oidc
       def configure_oidc_client(issuer, client_id, client_secret)
-        if !client_id.nil?
-          create_client_config(issuer, client_id, client_secret)
-          create_default_role(client_id)
-        end
+        return if client_id.nil?
+        create_client_config(issuer, client_id, client_secret)
+        create_default_role(client_id)
       end
 
       def configure_oidc_user(name, email, policy)
@@ -52,19 +52,11 @@ module Clients
                                    oidc_client_secret: client_secret,
                                    default_role: "default")
       end
-      def redirect_uris
-        # use localhost:8250, per: https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris
-        redirect_uris = <<-EOH
-             http://localhost:8250/oidc/callback,
-             #{Config[:vault_addr]}/ui/vault/auth/oidc/oidc/callback,
-             EOH
-      end
-
       def create_default_role(client_id)
         client.logical.write(
           "auth/oidc/role/default",
           bound_audiences: client_id,
-          allowed_redirect_uris: redirect_uris,
+          allowed_redirect_uris: OidcUtils.redirect_uris,
           user_claim: "email",
           oidc_scopes: "email",
           token_policies: "default")

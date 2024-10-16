@@ -1,9 +1,13 @@
+require_relative "oidc"
 class OidcProvider
   attr_reader :client_id
   attr_reader :client_secret
   attr_reader :provider
+  attr_reader :initial_user
 
-  def configure
+  def configure(token, initial_user)
+    @token = token
+    @initial_user = initial_user
     provider = oidc_provider.logical.read("identity/oidc/provider/astral")
     if provider.nil?
       create_provider_webapp
@@ -12,13 +16,16 @@ class OidcProvider
       create_userpass_for_initial_user
       map_userpass_to_entity
     else
-      set_client_id
+      get_client_info
     end
   end
 
-  def initial_user
-    raise "initial user not configured." unless Config[:initial_user]
-    Config[:initial_user]
+
+  def get_client_info
+    app = oidc_provider.logical.read(WEBAPP_NAME)
+    @client_id = app.data[:client_id]
+    @client_secret = app.data[:client_secret]
+    [@client_id, @client_secret]
   end
 
   private
@@ -28,22 +35,16 @@ class OidcProvider
     @provider ||=
       ::Vault::Client.new(
         address: "http://oidc_provider:8300",
-        token: Config[:vault_token]
+        token: @token
       )
   end
 
   def create_provider_webapp
     oidc_provider.logical.write(
       WEBAPP_NAME,
-      redirect_uris: redirect_uris,
+      redirect_uris: OidcUtils.redirect_uris,
       assignments: "allow_all")
-    set_client_id
-  end
-
-  def set_client_id
-    app = oidc_provider.logical.read(WEBAPP_NAME)
-    @client_id = app.data[:client_id]
-    @client_secret = app.data[:client_secret]
+    get_client_info
   end
 
   def create_provider_with_email_scope

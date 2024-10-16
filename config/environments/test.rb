@@ -67,9 +67,6 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   def configure_oidc
-    provider = OidcProvider.new
-    provider.configure
-    config.astral.oidc_provider[:client_id] = provider.client_id
-    config.astral.oidc_provider[:client_secret] = provider.client_secret
+    config.astral.oidc_client_id, config.astral.oidc_client_secret = OidcProvider.new.get_client_info
   end
 end

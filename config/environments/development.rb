@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require_relative "../../app/lib/utils/oidc_provider"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -74,9 +75,6 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   def configure_oidc
-    Clients::Vault.configure_oidc_provider
-    Clients::Vault.configure_oidc_client(config.astral.oidc_provider[:issuer],
-                                         Clients::Vault::Oidc.client_id,
-                                         Clients::Vault::Oidc.client_secret)
+    config.astral.oidc_client_id, config.astral.oidc_client_secret = OidcProvider.new.get_client_info
   end
 end
