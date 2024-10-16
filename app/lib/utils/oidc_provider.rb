@@ -24,6 +24,9 @@ class OidcProvider
     [@client_id, @client_secret]
   end
 
+  def get_info
+    oidc_provider.logical.read("identity/oidc/provider/astral")
+  end
 
   private
   WEBAPP_NAME = "identity/oidc/client/astral"
