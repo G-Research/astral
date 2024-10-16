@@ -1,7 +1,7 @@
 module Clients
   class Vault
     module Oidc
-      def configure_oidc_client(issuer, client_id, client_secret)
+      def configure_as_oidc_client(issuer, client_id, client_secret)
         return if client_id.nil?
         create_client_config(issuer, client_id, client_secret)
         create_default_role(client_id)

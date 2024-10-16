@@ -1,5 +1,4 @@
 require "test_helper"
-require_relative "../../../app/lib/utils/oidc_provider"
 
 # NOTE: these tests excercise the OIDC config but can't really verify a
 # successful OIDC login.  (Because that requires browser interaction.)
@@ -7,23 +6,22 @@ require_relative "../../../app/lib/utils/oidc_provider"
 
 class OIDCTest < ActiveSupport::TestCase
   setup do
-    @provider = OidcProvider.new
     @client = Clients::Vault
-    @client.configure_oidc_user(@provider.initial_user[:name],
-                                @provider.initial_user[:email], test_policy)
-    @entity = @client.read_entity(@provider.initial_user[:name])
+    @client.configure_oidc_user(initial_user[:name],
+                                initial_user[:email], test_policy)
+    @entity = @client.read_entity(initial_user[:name])
   end
 
   test "#policies_contain_initial_users_email" do
-    assert_equal @provider.initial_user[:email], @entity.data[:policies][0]
+    assert_equal initial_user[:email], @entity.data[:policies][0]
   end
 
   test "#aliases_contain_initial_users_email" do
     aliases = @entity.data[:aliases]
-    assert aliases.find { |a| a[:name] == @provider.initial_user[:email] }
+    assert aliases.find { |a| a[:name] == initial_user[:email] }
   end
-  private
 
+  private
   def test_policy
     policy = <<-EOH
            path "sys" {
@@ -31,4 +29,10 @@ class OIDCTest < ActiveSupport::TestCase
            }
            EOH
   end
+
+  def initial_user
+    raise "initial user not configured." unless Config[:initial_user]
+    Config[:initial_user]
+  end
+
 end

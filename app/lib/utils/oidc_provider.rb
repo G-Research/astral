@@ -24,10 +24,6 @@ class OidcProvider
     [@client_id, @client_secret]
   end
 
-  def initial_user
-    raise "initial user not configured." unless Config[:initial_user]
-    Config[:initial_user]
-  end
 
   private
   WEBAPP_NAME = "identity/oidc/client/astral"
@@ -84,4 +80,10 @@ class OidcProvider
                                 canonical_id: entity_id,
                                 mount_accessor: accessor)
   end
+
+  def initial_user
+    raise "initial user not configured." unless Config[:initial_user]
+    Config[:initial_user]
+  end
+
 end
