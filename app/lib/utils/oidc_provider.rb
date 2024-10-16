@@ -3,11 +3,8 @@ class OidcProvider
   attr_reader :client_id
   attr_reader :client_secret
   attr_reader :provider
-  attr_reader :initial_user
 
-  def configure(token, initial_user)
-    @token = token
-    @initial_user = initial_user
+  def configure
     provider = oidc_provider.logical.read("identity/oidc/provider/astral")
     if provider.nil?
       create_provider_webapp
@@ -28,6 +25,11 @@ class OidcProvider
     [@client_id, @client_secret]
   end
 
+  def initial_user
+    raise "initial user not configured." unless Config[:initial_user]
+    Config[:initial_user]
+  end
+
   private
   WEBAPP_NAME = "identity/oidc/client/astral"
 
@@ -35,7 +37,7 @@ class OidcProvider
     @provider ||=
       ::Vault::Client.new(
         address: "http://oidc_provider:8300",
-        token: @token
+        token: Config[:vault_token]
       )
   end
 

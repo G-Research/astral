@@ -6,6 +6,6 @@ require_relative "../../app/lib/config"
 namespace :oidc_provider do
   desc "Configure the provider"
   task :configure do
-    OidcProvider.new.configure ENV["VAULT_TOKEN"], Config[:initial_user]
+    OidcProvider.new.configure
   end
 end
