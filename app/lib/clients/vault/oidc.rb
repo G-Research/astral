@@ -1,9 +1,7 @@
-require_relative "../../utils/oidc"
 module Clients
   class Vault
     module Oidc
       def configure_oidc_client(issuer, client_id, client_secret)
-        binding.irb
         return if client_id.nil?
         create_client_config(issuer, client_id, client_secret)
         create_default_role(client_id)
@@ -30,7 +28,7 @@ module Clients
         client.logical.write(
           "auth/oidc/role/default",
           bound_audiences: client_id,
-          allowed_redirect_uris: OidcUtils.redirect_uris,
+          allowed_redirect_uris: Config[:oidc_redirect_uris],
           user_claim: "email",
           oidc_scopes: "email",
           token_policies: "default")

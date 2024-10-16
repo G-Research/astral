@@ -1,4 +1,3 @@
-require_relative "oidc"
 class OidcProvider
   attr_reader :client_id
   attr_reader :client_secret
@@ -44,7 +43,7 @@ class OidcProvider
   def create_provider_webapp
     oidc_provider.logical.write(
       WEBAPP_NAME,
-      redirect_uris: OidcUtils.redirect_uris,
+      redirect_uris: Config[:oidc_redirect_uris],
       assignments: "allow_all")
     get_client_info
   end
