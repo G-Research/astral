@@ -32,8 +32,7 @@ class OidcProvider
     @provider ||=
       ::Vault::Client.new(
         address: Config[:oidc_provider_addr],
-        # use the original token for the provider
-        token: ENV["VAULT_TOKEN"]
+        token: Config[:vault_token]
       )
   end
 
