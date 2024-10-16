@@ -61,6 +61,35 @@ docker build -t astral:latest .
 ```
 docker run -p 3000:3000 astral:latest
 ```
+
+# OIDC configuration
+The OIDC modules allow the assignment of a policy to an OIDC user, by
+mapping that user's email address to a policy we create.  They work
+as follows:
+
+OidcProvider::configure_oidc_provider() creates an OIDC provider and
+user on a separate dedicate vault instance.  The user created has a
+username/password/email addr, that can be accessed with OIDC auth from
+vault.
+
+Clients::Vault::Oidc::configure_oidc_client creates an OIDC client on
+our vault instance.  It connects to that provider just created.  When
+a user tries to auth, the client connects to the provider, which opens
+up a browser window allowing the user to enter his username/password.
+
+On success, the provider returns an OIDC token, which includes the
+user's email addr.
+
+The OIDC client has been configured to map that email address to an entity
+in vault, which has the policy which we want the user to have.
+
+So the mapping goes from the email address on the provider, to the
+policy in vault.
+
+Note that this provider is mainly meant to be used in our dev/test
+environment to excercise the client.  In a prod env, a real OIDC
+provider would used instead, (by configuring it in config/astral.yml).
+
 # Logging into vault with OIDC
 
 The rails test's configure the OIDC provider, so if the tests pass,

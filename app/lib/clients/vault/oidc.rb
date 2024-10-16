@@ -1,35 +1,9 @@
-=begin
-
-The purpose of this module is to assign a policy to an OIDC user, by
-mapping that user's email address to a policy we create.
-It works as follows:
-
-It creates an OIDC provider and user.  That user has a
-username/password/email addr, that can be accessed with OIDC auth.
-
-It creates an OIDC client which connects to that provider.  When a
-user tries to auth, the client connects to the provider, which opens
-up a browser window allowing the user to enter his username/password.
-
-On success, the provider returns an OIDC token, which includes the
-user's email addr.
-
-The client has been configured to map that email address to an entity
-in vault, which has the policy which we want the user to have.
-
-So the mapping goes from the email address on the provider, to the
-policy in vault.
-
-Note that this provider is only meant to be used in our dev/test
-environment to excercise the client.  In a prod env, a real OIDC
-provider is configured in config/astral.yml
-
-=end
 require_relative "../../utils/oidc"
 module Clients
   class Vault
     module Oidc
       def configure_oidc_client(issuer, client_id, client_secret)
+        binding.irb
         return if client_id.nil?
         create_client_config(issuer, client_id, client_secret)
         create_default_role(client_id)
