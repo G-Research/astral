@@ -26,19 +26,17 @@ shared:
 test:
   oidc_issuer: http://oidc_provider:8300/v1/identity/oidc/provider/astral
   oidc_provider_addr: http://oidc_provider:8300
-  initial_user:
-    name: test
-    password: test
-    email: test@example.com
+  initial_user_name: test
+  initial_user_password: test
+  initial_user_email: test@example.com
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
   oidc_issuer: http://oidc_provider:8300/v1/identity/oidc/provider/astral
   oidc_provider_addr: http://oidc_provider:8300
-  initial_user:
-    name: test
-    password: test
-    email: test@example.com
+  initial_user_name: test
+  initial_user_password: test
+  initial_user_email: test@example.com
 
 production:
   vault_create_root: false

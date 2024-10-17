@@ -68,7 +68,7 @@ mapping that user's email address to a policy we create.  They work as
 follows:
 
 OidcProvider::configure_as_oidc_provider() creates an OIDC provider
-and user on a separate dedicate vault instance.  The user created has
+and user on a separate dedicated vault instance.  The user created has
 a username/password/email addr, that can be accessed with OIDC auth
 from vault.
 
@@ -89,7 +89,8 @@ policy in vault.
 
 Note that this provider is mainly meant to be used in our dev/test
 environment to excercise the client.  In a prod env, a real OIDC
-provider would used instead, (by configuring it in config/astral.yml).
+provider would probably be used instead, (by configuring it in
+config/astral.yml).
 
 # Logging into vault with OIDC
 

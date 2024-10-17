@@ -60,32 +60,27 @@ class OidcProvider
   def create_entity_for_initial_user
     oidc_provider.logical.write("identity/entity",
                                 policies: "default",
-                                name: initial_user[:name],
-                                metadata: "email=#{initial_user[:email]}",
+                                name: Config[:initial_user_name],
+                                metadata: "email=#{Config[:initial_user_email]}",
                                 disabled: false)
   end
 
   def create_userpass_for_initial_user
     oidc_provider.logical.delete("/sys/auth/userpass")
     oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-    oidc_provider.logical.write("/auth/userpass/users/#{initial_user[:name]}",
-                                password: initial_user[:password])
+    oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user_name]}",
+                                password: Config[:initial_user_password])
   end
 
   def map_userpass_to_entity
     entity = oidc_provider.logical.read(
-      "identity/entity/name/#{initial_user[:name]}")
+      "identity/entity/name/#{Config[:initial_user_name]}")
     entity_id = entity.data[:id]
     auth_list = oidc_provider.logical.read("/sys/auth")
     accessor = auth_list.data[:"userpass/"][:accessor]
     oidc_provider.logical.write("identity/entity-alias",
-                                name: initial_user[:name],
+                                name: Config[:initial_user_name],
                                 canonical_id: entity_id,
                                 mount_accessor: accessor)
-  end
-
-  def initial_user
-    raise "initial user not configured." unless Config[:initial_user]
-    Config[:initial_user]
   end
 end
