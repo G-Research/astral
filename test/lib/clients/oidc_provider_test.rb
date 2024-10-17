@@ -1,5 +1,4 @@
 require "test_helper"
-require_relative "../../../app/lib/utils/oidc_provider"
 
 class OidcProviderTest < ActiveSupport::TestCase
   setup do

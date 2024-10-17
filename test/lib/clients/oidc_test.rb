@@ -14,16 +14,16 @@ class OidcTest < ActiveSupport::TestCase
     @entity = @client.read_entity(initial_user[:name])
   end
 
-  test "policies_contain_initial_users_email" do
+  test "policies contain initial users email" do
     assert_equal initial_user[:email], @entity.data[:policies][0]
   end
 
-  test "aliases_contain_initial_users_email" do
+  test "aliases contain initial users email" do
     aliases = @entity.data[:aliases]
     assert aliases.find { |a| a[:name] == initial_user[:email] }
   end
 
-  test "vault_is_configured_as_oidc_client" do
+  test "vault is configured as oidc client" do
     auth = @client.get_oidc_client_config
     assert_equal Config[:oidc_client_id], auth.data[:oidc_client_id]
   end
