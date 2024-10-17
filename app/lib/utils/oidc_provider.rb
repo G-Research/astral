@@ -21,7 +21,7 @@ class OidcProvider
     app = oidc_provider.logical.read(WEBAPP_NAME)
     @client_id = app.data[:client_id]
     @client_secret = app.data[:client_secret]
-    [@client_id, @client_secret]
+    [ @client_id, @client_secret ]
   end
 
   def get_info
@@ -88,5 +88,4 @@ class OidcProvider
     raise "initial user not configured." unless Config[:initial_user]
     Config[:initial_user]
   end
-
 end

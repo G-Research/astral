@@ -41,5 +41,4 @@ class OidcTest < ActiveSupport::TestCase
     raise "initial user not configured." unless Config[:initial_user]
     Config[:initial_user]
   end
-
 end
