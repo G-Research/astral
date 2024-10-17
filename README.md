@@ -67,34 +67,34 @@ The OIDC modules allow the assignment of a policy to an OIDC user, by
 mapping that user's email address to a policy we create.  They work as
 follows:
 
-OidcProvider::configure_as_oidc_provider() creates an OIDC provider
-and user on a separate dedicated vault instance.  The user created has
-a username/password/email addr, that can be accessed with OIDC auth
-from vault.
+OidcProvider.new.configure creates an OIDC provider
+and user on a separate dedicated Vault instance.  The user created has
+a username/password/email address, that can be accessed with OIDC auth
+from in the principal Vault instance.
 
-Clients::Vault::Oidc::configure_as_oidc_client() creates an OIDC
-client on our vault instance.  It connects to that provider just
+Clients::Vault::configure_as_oidc_client creates an OIDC
+client on our Vault instance.  It connects to that provider just
 created.  When a user tries to auth, the client connects to the
 provider, which opens up a browser window allowing the user to enter
-his username/password.
+their username/password.
 
 On success, the provider returns an OIDC token, which includes the
-user's email addr.
+user's email address.
 
 The OIDC client has been configured to map that email address to an
-entity in vault, which has the policy which we want the user to have.
+entity in Vault, which has the policy which we want the user to have.
 
 So the mapping goes from the email address on the provider, to the
-policy in vault.
+policy in Vault.
 
 Note that this provider is mainly meant to be used in our dev/test
 environment to excercise the client.  In a prod env, a real OIDC
 provider would probably be used instead, (by configuring it in
 config/astral.yml).
 
-# Logging into vault with OIDC
+# Logging into Vault with OIDC
 
-The rails test's configure the OIDC provider, so if the tests pass,
+The rails test's configure the OIDC initial user, so if the tests pass,
 you can invoke the oidc login as follows:
 
 ```
@@ -104,7 +104,7 @@ you can invoke the oidc login as follows:
 You should do this on your host machine, not in docker.  This will
 allow a browser window to open on your host.  When it does, select
 "username" option with user test/test.  (That is the username/pw
-configured by the rails tests.)
+configured at startup.)
 
 When that succeeds, you should see something like the following in the cli:
 ```
@@ -125,7 +125,7 @@ following to the /etc/hosts file on your host:
   127.0.0.1	oidc_provider
 ```
 
-Finally, if you restart the docker vault container, it will recreate
+Finally, if you restart the docker Vault container, it will recreate
 the provider settings, so you will need to clear the browser's
 "oidc_provider" cookie.  Otherwise you will see this error:
 

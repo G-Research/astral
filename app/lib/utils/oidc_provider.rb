@@ -1,10 +1,10 @@
 class OidcProvider
   attr_reader :client_id
   attr_reader :client_secret
-  attr_reader :provider
+  attr_reader :vault_client
 
   def configure
-    provider = oidc_provider.logical.read("identity/oidc/provider/astral")
+    provider = vault_client.logical.read("identity/oidc/provider/astral")
     if provider.nil?
       create_provider_webapp
       create_provider_with_email_scope
@@ -18,21 +18,21 @@ class OidcProvider
 
 
   def get_client_info
-    app = oidc_provider.logical.read(WEBAPP_NAME)
+    app = vault_client.logical.read(WEBAPP_NAME)
     @client_id = app.data[:client_id]
     @client_secret = app.data[:client_secret]
     [ @client_id, @client_secret ]
   end
 
   def get_info
-    oidc_provider.logical.read("identity/oidc/provider/astral")
+    vault_client.logical.read("identity/oidc/provider/astral")
   end
 
   private
   WEBAPP_NAME = "identity/oidc/client/astral"
 
-  def oidc_provider
-    @provider ||=
+  def vault_client
+    @vault_client ||=
       ::Vault::Client.new(
         address: Config[:oidc_provider_addr],
         token: Config[:vault_token]
@@ -40,7 +40,7 @@ class OidcProvider
   end
 
   def create_provider_webapp
-    oidc_provider.logical.write(
+    vault_client.logical.write(
       WEBAPP_NAME,
       redirect_uris: Config[:oidc_redirect_uris],
       assignments: "allow_all")
@@ -48,17 +48,17 @@ class OidcProvider
   end
 
   def create_provider_with_email_scope
-    oidc_provider.logical.write("identity/oidc/scope/email",
+    vault_client.logical.write("identity/oidc/scope/email",
                                 template: '{"email": {{identity.entity.metadata.email}}}')
-    oidc_provider.logical.write("identity/oidc/provider/astral",
+    vault_client.logical.write("identity/oidc/provider/astral",
                                 issuer: "http://oidc_provider:8300",
                                 allowed_client_ids: @client_id,
                                 scopes_supported: "email")
-    oidc_provider.logical.read("identity/oidc/provider/astral")
+    vault_client.logical.read("identity/oidc/provider/astral")
   end
 
   def create_entity_for_initial_user
-    oidc_provider.logical.write("identity/entity",
+    vault_client.logical.write("identity/entity",
                                 policies: "default",
                                 name: Config[:initial_user_name],
                                 metadata: "email=#{Config[:initial_user_email]}",
@@ -66,19 +66,19 @@ class OidcProvider
   end
 
   def create_userpass_for_initial_user
-    oidc_provider.logical.delete("/sys/auth/userpass")
-    oidc_provider.logical.write("/sys/auth/userpass", type: "userpass")
-    oidc_provider.logical.write("/auth/userpass/users/#{Config[:initial_user_name]}",
+    vault_client.logical.delete("/sys/auth/userpass")
+    vault_client.logical.write("/sys/auth/userpass", type: "userpass")
+    vault_client.logical.write("/auth/userpass/users/#{Config[:initial_user_name]}",
                                 password: Config[:initial_user_password])
   end
 
   def map_userpass_to_entity
-    entity = oidc_provider.logical.read(
+    entity = vault_client.logical.read(
       "identity/entity/name/#{Config[:initial_user_name]}")
     entity_id = entity.data[:id]
-    auth_list = oidc_provider.logical.read("/sys/auth")
+    auth_list = vault_client.logical.read("/sys/auth")
     accessor = auth_list.data[:"userpass/"][:accessor]
-    oidc_provider.logical.write("identity/entity-alias",
+    vault_client.logical.write("identity/entity-alias",
                                 name: Config[:initial_user_name],
                                 canonical_id: entity_id,
                                 mount_accessor: accessor)

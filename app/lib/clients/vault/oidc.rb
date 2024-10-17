@@ -2,6 +2,9 @@ module Clients
   class Vault
     module Oidc
       def configure_as_oidc_client(issuer, client_id, client_secret)
+        if client_id.nil? || !oidc_auth_data.nil?
+          return
+        end
         create_client_config(issuer, client_id, client_secret)
         create_default_role(client_id)
       end
@@ -15,12 +18,10 @@ module Clients
       def get_oidc_client_config
         client.logical.read("auth/oidc/config")
       end
+
       private
 
       def create_client_config(issuer, client_id, client_secret)
-        if client_id.nil? || !oidc_auth_data.nil?
-          return
-        end
         client.logical.write("/sys/auth/oidc", type: "oidc")
         client.logical.write("auth/oidc/config",
                                    oidc_discovery_url: issuer,

@@ -48,7 +48,7 @@ module AstralRails
     end
 
     def get_oidc_config
-      # do nothing by default
+      config.astral.oidc_client_id, config.astral.oidc_client_secret = OidcProvider.new.get_client_info
     end
   end
 end

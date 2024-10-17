@@ -66,7 +66,4 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
 
-  def get_oidc_config
-    config.astral.oidc_client_id, config.astral.oidc_client_secret = OidcProvider.new.get_client_info
-  end
 end
