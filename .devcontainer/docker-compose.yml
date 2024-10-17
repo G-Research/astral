@@ -26,7 +26,8 @@ services:
     image: hashicorp/vault:latest
     restart: unless-stopped
     ports:
-      - 8200:8443
+      - 8200:8200
+      - 8443:8443
     volumes:
       - ../cert:/vault/cert
     environment:
@@ -37,7 +38,7 @@ services:
                 {
                     "tcp": {
                         "address": "0.0.0.0:8443",
-                        "tls_disable": "1",
+                        "tls_disable": "0",
                         "tls_cert_file": "/vault/cert/vault.pem",
                         "tls_key_file": "/vault/cert/vault.key"
                     }

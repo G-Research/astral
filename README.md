@@ -85,8 +85,5 @@ command:
 rake configure:ssl
 ```
 
-To use in the devcontainer, edit `.devcontainer/docker-compose.yml` so
-that the `app` service has `VAULT_ADDRESS` of `https://vault:8200` and
-the `VAULT_SSL_CERT` value is uncommented. Finally, the `vault`
-service needs `tls_disable` in the `VAULT_LOCAL_CONFIG` set to
-`0`. Restart.
+To use SSL in the devcontainer, edit `.devcontainer/docker-compose.yml` so
+that the `app` service has `VAULT_ADDRESS` of `https://vault:8443`. 
