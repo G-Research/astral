@@ -17,7 +17,7 @@ services:
       VAULT_CREATE_ROOT: true
       VAULT_ROOT_CA_MOUNT: pki
       VAULT_ROOT_CA_REF: root-ca
-      # VAULT_SSL_CERT: cert/vault.pem
+      VAULT_SSL_CERT: cert/vault.pem
       JWT_SIGNING_KEY: jwt_secret
       APP_REGISTRY_ADDR: http://app_registry:8800
       APP_REGISTRY_TOKEN: app_reg_token

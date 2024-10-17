@@ -4,7 +4,7 @@ shared:
   vault_token:
   vault_addr:
   # if VAULT_ADDR is https with self-signed cert, need to provide
-  # CA cert (path to file)
+  # CA cert (path to file) in "vault_ssl_cert" below:
   vault_ssl_cert:
   # Vault client cert if required (path to file)
   vault_ssl_client_cert:
