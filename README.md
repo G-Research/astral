@@ -62,7 +62,33 @@ docker build -t astral:latest .
 docker run -p 3000:3000 astral:latest
 ```
 
-# OIDC configuration
+# Configuration
+Astral is configured in `config/astral.yml` -- all availble
+configuration options are listed in the `shared` section. Note that
+configuration values can be supplied in this file or as process
+environment variables with the same names (but
+UPPER_CASE). Environment vars will override any values in the config
+file.  Per-environment settings in the config file(development, test,
+production) will override the shared values for that type.
+
+## mTLS connections
+Astral can connect to Vault with mTLS. Just
+set the following values in `config/astral.yml`:
+```
+  vault_ssl_cert:
+  vault_ssl_client_cert:
+  vault_ssl_client_key:
+```
+A self-signed server cert for Vault can be generated with the following 
+command:
+```
+rake configure:ssl
+```
+
+To use SSL in the devcontainer, edit `.devcontainer/docker-compose.yml` so
+that the `app` service has `VAULT_ADDRESS` of `https://vault:8443`. 
+
+## OIDC configuration
 The OIDC modules allow the assignment of a policy to an OIDC user, by
 mapping that user's email address to a policy we create.  They work as
 follows:
@@ -132,3 +158,5 @@ the provider settings, so you will need to clear the browser's
 ```
   * Vault login failed. Expired or missing OAuth state.
 ```
+
+
