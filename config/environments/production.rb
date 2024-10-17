@@ -95,5 +95,4 @@ Rails.application.configure do
 
   def get_oidc_config
   end
-
 end
