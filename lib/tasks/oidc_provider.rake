@@ -7,5 +7,6 @@ namespace :oidc_provider do
   desc "Configure the provider"
   task :configure do
     OidcProvider.new.configure
+    puts "oidc provider configured"
   end
 end
