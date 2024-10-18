@@ -36,9 +36,9 @@ class OidcProvider
       ::Vault::Client.new(
         address: Config[:oidc_provider_addr],
         token: Config[:vault_token],
-        ssl_ca_cert: Config[:vault_ssl_cert],
-        ssl_pem_file: Config[:vault_ssl_client_cert],
-        ssl_key_file: Config[:vault_ssl_client_key]
+        ssl_ca_cert: Config[:oidc_provider_ssl_cert],
+        ssl_pem_file: Config[:oidc_provider_ssl_client_cert],
+        ssl_key_file: Config[:oidc_provider_ssl_client_key]
       )
   end
 
