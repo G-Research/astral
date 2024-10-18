@@ -54,7 +54,7 @@ class OidcProvider
     vault_client.logical.write("identity/oidc/scope/email",
                                 template: '{"email": {{identity.entity.metadata.email}}}')
     vault_client.logical.write("identity/oidc/provider/astral",
-                                issuer: "http://oidc_provider:8300",
+                                issuer: Config[:oidc_provider_addr],
                                 allowed_client_ids: @client_id,
                                 scopes_supported: "email")
     vault_client.logical.read("identity/oidc/provider/astral")
