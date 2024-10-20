@@ -39,7 +39,7 @@ shared:
   oidc_provider_ssl_cert: cert/oidc_provider.pem
   # oidc provider client cert if required (path to file)
   oidc_provider_ssl_client_cert:
-  oidc_provider_ssl_client_key:
+  oidc_provider_ssl_client_key: 
 
 
   initial_user_name: test

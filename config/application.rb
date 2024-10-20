@@ -44,6 +44,7 @@ module AstralRails
       Clients::Vault.configure_as_oidc_client(config.astral.oidc_issuer,
                                            config.astral.oidc_client_id,
                                            config.astral.oidc_client_secret)
+
       Clients::Vault.rotate_token
     end
 
