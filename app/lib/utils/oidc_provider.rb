@@ -28,7 +28,7 @@ class OidcProvider
     vault_client.logical.read("identity/oidc/provider/astral")
   end
 
-  def get_issuer
+  def self.get_configured_issuer
     Config[:oidc_provider_addr] + Config[:oidc_issuer_path]
   end
 

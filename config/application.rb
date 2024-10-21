@@ -41,7 +41,7 @@ module AstralRails
       Clients::Vault.configure_kv
       Clients::Vault.configure_pki
       get_oidc_config
-      issuer = OidcProvider.new.get_issuer
+      issuer = OidcProvider.get_configured_issuer
       Clients::Vault.configure_as_oidc_client(issuer,
                                            config.astral.oidc_client_id,
                                            config.astral.oidc_client_secret)
