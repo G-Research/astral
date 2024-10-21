@@ -1,19 +1,7 @@
-module AuditLogging
-  extend ActiveSupport::Concern
+class ApplicationInteractor
+  include Interactor
 
-  included do
-    around do |interactor|
-      interactor.call
-      log
-    rescue => e
-      log
-      raise e
-    end
-  end
-
-  private
-
-  def log
+  def audit_log
     result = context.success? ? "success" : "failure"
     level = context.success? ? :info : :error
     payload = {
@@ -21,8 +9,9 @@ module AuditLogging
       result: result,
       error: context.error&.message,
       subject: context.identity&.subject,
-      cert_common_name: context.request&.try(:common_name)
-    }
+      cert_common_name: context.request&.try(:common_name),
+      kv_path: context.request&.try(:kv_path)
+    }.compact!
     AuditLogger.new.send(level, payload)
   end
 end

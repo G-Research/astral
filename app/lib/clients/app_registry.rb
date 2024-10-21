@@ -1,5 +1,5 @@
-module Services
-  class AppRegistryService
+module Clients
+  class AppRegistry
     class << self
       def get_domain_info(fqdn)
         rslt = client.get("/api/v1beta1/domain-names/#{fqdn}").body
@@ -11,8 +11,8 @@ module Services
       private
 
       def client
-        Faraday.new(ssl: ssl_opts, url: Rails.configuration.astral[:app_registry_addr]) do |faraday|
-          faraday.request :authorization, "Bearer", -> { Rails.configuration.astral[:app_registry_token] }
+        Faraday.new(ssl: ssl_opts, url: Config[:app_registry_addr]) do |faraday|
+          faraday.request :authorization, "Bearer", -> { Config[:app_registry_token] }
           faraday.request :retry, retry_opts
           faraday.response :json
           faraday.response :raise_error, include_request: true
@@ -34,9 +34,9 @@ module Services
 
       def ssl_opts
         {
-          ca_file: Rails.configuration.astral[:app_registry_ca_file],
-          client_cert: Rails.configuration.astral[:app_registry_client_cert],
-          client_key: Rails.configuration.astral[:app_registry_client_key]
+          ca_file: Config[:app_registry_ca_file],
+          client_cert: Config[:app_registry_client_cert],
+          client_key: Config[:app_registry_client_key]
         }
       end
 

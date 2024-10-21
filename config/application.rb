@@ -29,7 +29,18 @@ module AstralRails
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # the secret_key_base isn't used, but Rails requires it
+    config.secret_key_base = "secret_key_base_not_used!"
+
     # Application configs from config/astral.yml
     config.astral = config_for :astral
+
+    config.after_initialize do
+      # bootstrap with provided token, then rotate
+      Clients::Vault.token = Config[:vault_token]
+      Clients::Vault.configure_kv
+      Clients::Vault.configure_pki
+      Clients::Vault.rotate_token
+    end
   end
 end

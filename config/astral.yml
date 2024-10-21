@@ -1,19 +1,38 @@
+# Astral configuration
+# Note that values can be supplied here or as environment vars (UPPER_CASE).
 shared:
-  vault_addr: <%= ENV["VAULT_ADDR"] %>
-  vault_token: <%= ENV["VAULT_TOKEN"] %>
-  vault_cert_path: "pki_int/issue/learn"
-  jwt_signing_key: <%= ENV["JWT_SIGNING_KEY"] %>
-  cert_ttl: <%= ENV["CERT_TTL"] %>
-  app_registry_addr: <%= ENV["APP_REGISTRY_ADDR"] %>
-  app_registry_token: <%= ENV["APP_REGISTRY_TOKEN"] %>
-  app_registry_ca_file: <%= ENV["APP_REGISTRY_CA_FILE"] %>
-  app_registry_client_cert: <%= ENV["APP_REGISTRY_CLIENT_CERT"] %>
-  app_registry_client_key: <%= ENV["APP_REGISTRY_CLIENT_KEY"] %>
-  audit_log_file: <%= ENV["AUDIT_LOG_FILE"] || "#{Rails.root.join('log')}/astral-audit.log" %>
+  vault_token:
+  vault_addr:
+  # if VAULT_ADDR is https with self-signed cert, need to provide
+  # CA cert (path to file) in "vault_ssl_cert" below:
+  vault_ssl_cert:
+  # Vault client cert if required (path to file)
+  vault_ssl_client_cert:
+  vault_ssl_client_key:
 
+  # Vault PKI configuration -- create root CA when true, or reference an existing
+  vault_create_root: true
+  vault_root_ca_ref: root_ca
+  vault_root_ca_mount: pki_root
+  cert_ttl:
+
+  jwt_signing_key:
+
+  # When using AppRegistry for Domain Ownership information
+  app_registry_addr:
+  app_registry_token:
+  app_registry_ca_file:
+  app_registry_client_cert:
+  app_registry_client_key:
+
+  # User activity logging
+  audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
+
+# Per-environment overrides of shared configs
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
 
 production:
+  vault_create_root: false

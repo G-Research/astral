@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Documentation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+</head>
+<body>
+<redoc spec-url='/doc/openapi-bundled.yml'></redoc>
+<script>
+    Redoc.init('/doc/openapi-bundled.yml', {}, document.querySelector('redoc'));
+</script>
+</body>
+</html>

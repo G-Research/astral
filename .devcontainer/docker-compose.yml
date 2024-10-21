@@ -11,15 +11,15 @@ services:
       - 3000:3000
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    networks:
-      astral:
-        ipv4_address: "10.1.10.200"
     environment:
-      VAULT_ADDR: http://10.1.10.100:8200
+      VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: root_token
+      VAULT_CREATE_ROOT: true
+      VAULT_ROOT_CA_MOUNT: pki
+      VAULT_ROOT_CA_REF: root-ca
+      VAULT_SSL_CERT: cert/vault.pem
       JWT_SIGNING_KEY: jwt_secret
-      APP_REGISTRY_ADDR: http://10.1.10.150:8800
+      APP_REGISTRY_ADDR: http://app_registry:8800
       APP_REGISTRY_TOKEN: app_reg_token
     
   vault:
@@ -27,12 +27,26 @@ services:
     restart: unless-stopped
     ports:
       - 8200:8200
+      - 8443:8443
+    volumes:
+      - ../cert:/vault/cert
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: root_token
-      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
-    networks:
-      astral:
-        ipv4_address: "10.1.10.100"
+      VAULT_LOCAL_CONFIG: >
+        {
+            "listener": [
+                {
+                    "tcp": {
+                        "address": "0.0.0.0:8443",
+                        "tls_disable": "0",
+                        "tls_cert_file": "/vault/cert/vault.pem",
+                        "tls_key_file": "/vault/cert/vault.key"
+                    }
+                }
+            ],
+            "default_lease_ttl": "168h",
+            "max_lease_ttl": "720h"
+        }
 
   app_registry:
     image: node:latest
@@ -41,16 +55,6 @@ services:
       - 8800:8800
     volumes:
       - .:/data
-    networks:
-      astral:
-        ipv4_address: "10.1.10.150"
     command: >
       sh -c "npm install -g json-server@0.17.4 &&
              json-server /data/app_reg_db.json --routes /data/app_reg_routes.json --port 8800 --host 0.0.0.0"
-        
-networks:
-  astral:
-    ipam:
-      driver: default
-      config:
-        - subnet: "10.1.10.0/24"
