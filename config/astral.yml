@@ -32,7 +32,9 @@ shared:
   oidc_client_secret:
   oidc_redirect_uris: http://localhost:8250/oidc/callback
   oidc_provider_cert_name: cert/oidc_provider
-  oidc_provider_addr: https://oidc_provider:9443
+
+  # set this to "https://oidc_provider:9443" for tls:
+  oidc_provider_addr: http://oidc_provider:8300
 
   # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
   oidc_issuer_path: /v1/identity/oidc/provider/astral
