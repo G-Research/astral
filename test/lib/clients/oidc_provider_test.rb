@@ -3,12 +3,16 @@ require "test_helper"
 class OidcProviderTest < ActiveSupport::TestCase
   setup do
     @provider = OidcProvider.new
+    @info = @provider.get_info
   end
 
   test ".get_info returns correct info" do
-    info = @provider.get_info
-    assert_equal Config[:oidc_issuer], info.data[:issuer]
-    assert_equal "email", info.data[:scopes_supported][0]
+    assert_equal "email", @info.data[:scopes_supported][0]
+  end
+
+  test ".get_issuer returns correct issuer" do
+    issuer = @provider.get_issuer
+    assert_equal @info.data[:issuer], issuer
   end
 
   test ".get_client_info return correct info" do

@@ -25,7 +25,7 @@ module Clients
         client.logical.write("/sys/auth/oidc", type: "oidc")
         client.logical.write("auth/oidc/config",
                              oidc_discovery_url: issuer,
-                             oidc_discovery_ca_pem: File.read("/workspaces/astral/cert/oidc_provider.pem"),
+                             oidc_discovery_ca_pem: File.read(Config[:oidc_provider_ssl_cert]),
                                    oidc_client_id: client_id,
                                    oidc_client_secret: client_secret,
                                    default_role: "default")

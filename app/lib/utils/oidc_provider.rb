@@ -28,6 +28,10 @@ class OidcProvider
     vault_client.logical.read("identity/oidc/provider/astral")
   end
 
+  def get_issuer
+    Config[:oidc_provider_addr] + Config[:oidc_issuer]
+  end
+
   private
   WEBAPP_NAME = "identity/oidc/client/astral"
 

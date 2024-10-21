@@ -32,9 +32,12 @@ shared:
   oidc_client_secret:
   oidc_redirect_uris: http://localhost:8250/oidc/callback
   oidc_provider_cert_name: cert/oidc_provider
-  oidc_issuer: https://oidc_provider:9443/v1/identity/oidc/provider/astral
   oidc_provider_addr: https://oidc_provider:9443
-  # if oidc_provider_addr is https with self-signed cert, need to provide
+
+  # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
+  oidc_issuer_path: /v1/identity/oidc/provider/astral
+
+# if oidc_provider_addr is https with self-signed cert, need to provide
   # CA cert (path to file) in "oidc_provider_ssl_cert" below:
   oidc_provider_ssl_cert: cert/oidc_provider.pem
   # oidc provider client cert if required (path to file)
@@ -55,6 +58,8 @@ production:
   vault_create_root: false
 
   oidc_provider_addr:
+
+  # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
   oidc_issuer:
 
   initial_user_name:
