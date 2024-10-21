@@ -96,7 +96,7 @@ follows:
 OidcProvider.new.configure creates an OIDC provider
 and user on a separate dedicated Vault instance.  The user created has
 a username/password/email address, that can be accessed with OIDC auth
-from in the principal Vault instance.
+from the principal Vault instance.
 
 Clients::Vault::configure_as_oidc_client creates an OIDC
 client on our Vault instance.  It connects to that provider just
