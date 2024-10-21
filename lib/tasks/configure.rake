@@ -3,7 +3,7 @@ require "rake"
 # Rake tasks for making a vault cert
 namespace :configure do
   desc "Make the server cert for vault"
-  task :ssl, [:cert_name] do |t, args|
+  task :ssl, [ :cert_name ] do |t, args|
     cert_name = args[:cert_name]
     cert_name = "vault" if cert_name.nil?
     sanParam = "subjectAltName=DNS:#{cert_name}"
