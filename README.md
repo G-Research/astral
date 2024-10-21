@@ -72,18 +72,36 @@ file.  Per-environment settings in the config file(development, test,
 production) will override the shared values for that type.
 
 ## mTLS connections
-Astral can connect to Vault with mTLS. Just
-set the following values in `config/astral.yml`:
+Astral can be run as an SSL service and can communicate with Vault via SSL.
+Just set the following values in `config/astral.yml` (or environment) to 
+encrypt Astral-to-Vault :
 ```
   vault_ssl_cert:
   vault_ssl_client_cert:
   vault_ssl_client_key:
 ```
-A self-signed server cert for Vault can be generated with the following 
-command:
+
+To use Vault SSL in the devcontainer, edit
+`.devcontainer/docker-compose.yml` so that the `app` service has
+`VAULT_ADDRESS` of `https://vault:8443`. Client certs can also be
+configured -- in which case Vault needs to be configured to verify with
+a CA cert.
+
+A self-signed server cert for Vault and Astral can be generated with the following 
+command, and initial placeholder certs are already provided.
 ```
 rake configure:ssl
 ```
 
-To use SSL in the devcontainer, edit `.devcontainer/docker-compose.yml` so
-that the `app` service has `VAULT_ADDRESS` of `https://vault:8443`. 
+Astral SSL 
+
+To use SSL in production, provide the necessary environment (SSL_CERT, SSL_KEY) to
+the container environment, and use the `bin/ssl.sh` startup command. Eg:
+```
+docker run -p 3000:3000 \
+-e SSL_CERT=/certs/cert.pem \
+-e SSL_KEY=/certs/key.key \
+-v certs:/certs:cached \
+astral:latest bin/ssl.sh
+```
+
