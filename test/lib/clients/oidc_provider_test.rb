@@ -10,7 +10,7 @@ class OidcProviderTest < ActiveSupport::TestCase
     assert_equal "email", @info.data[:scopes_supported][0]
   end
 
-  test "#get_issuer returns correct issuer" do
+  test "#get_configured_issuer returns correct issuer" do
     issuer = OidcProvider.get_configured_issuer
     assert_equal @info.data[:issuer], issuer
   end
