@@ -48,6 +48,15 @@ services:
             "max_lease_ttl": "720h"
         }
 
+  oidc_provider:
+    image: hashicorp/vault:latest
+    restart: unless-stopped
+    ports:
+      - 8300:8300
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root_token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8300
+
   app_registry:
     image: node:latest
     restart: unless-stopped

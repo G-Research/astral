@@ -40,7 +40,15 @@ module AstralRails
       Clients::Vault.token = Config[:vault_token]
       Clients::Vault.configure_kv
       Clients::Vault.configure_pki
+      get_oidc_config
+      Clients::Vault.configure_as_oidc_client(config.astral.oidc_issuer,
+                                           config.astral.oidc_client_id,
+                                           config.astral.oidc_client_secret)
       Clients::Vault.rotate_token
+    end
+
+    def get_oidc_config
+      config.astral.oidc_client_id, config.astral.oidc_client_secret = OidcProvider.new.get_client_info
     end
   end
 end

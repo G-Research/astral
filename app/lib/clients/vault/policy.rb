@@ -20,6 +20,24 @@ module Clients
         path "#{kv_mount}/data/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
+        path "identity/entity" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/entity/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/entity-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "/sys/auth" {
+          capabilities = ["read"]
+        }
+        path "auth/oidc/config" {
+          capabilities = ["read"]
+        }
+        path "/sys/policy/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
         HCL
 
         client.sys.put_policy("astral_policy", policy)
