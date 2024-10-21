@@ -60,7 +60,7 @@ production:
   oidc_provider_addr:
 
   # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
-  oidc_issuer:
+  oidc_issuer_path:
 
   initial_user_name:
   initial_user_password:

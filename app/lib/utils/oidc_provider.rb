@@ -29,7 +29,7 @@ class OidcProvider
   end
 
   def get_issuer
-    Config[:oidc_provider_addr] + Config[:oidc_issuer]
+    Config[:oidc_provider_addr] + Config[:oidc_issuer_path]
   end
 
   private
