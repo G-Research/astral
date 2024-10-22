@@ -28,7 +28,29 @@ shared:
   # User activity logging
   audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
-# Per-environment overrides of shared configs
+  oidc_client_id:
+  oidc_client_secret:
+  oidc_redirect_uris: http://localhost:8250/oidc/callback
+  oidc_provider_cert_name: cert/oidc_provider
+
+  # set this to "https://oidc_provider:9443" for tls:
+  oidc_provider_addr: http://oidc_provider:8300
+
+  # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
+  oidc_issuer_path: /v1/identity/oidc/provider/astral
+
+# if oidc_provider_addr is https with self-signed cert, need to provide
+  # CA cert (path to file) in "oidc_provider_ssl_cert" below:
+  oidc_provider_ssl_cert: cert/oidc_provider.pem
+  # oidc provider client cert if required (path to file)
+  oidc_provider_ssl_client_cert:
+  oidc_provider_ssl_client_key: 
+
+
+  initial_user_name: test
+  initial_user_password: test
+  initial_user_email: test@example.com
+
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
@@ -36,3 +58,13 @@ development:
 
 production:
   vault_create_root: false
+
+  oidc_provider_addr:
+
+  # This should just contain the issuer path, not the host:port, which should be in the "oidc_provider_addr" above:
+  oidc_issuer_path:
+
+  initial_user_name:
+  initial_user_password:
+  initial_user_email:
+
