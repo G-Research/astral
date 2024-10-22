@@ -98,8 +98,8 @@ To use Astral with SSL in production, provide the necessary environment (SSL_CER
 the container environment, and use the `bin/ssl.sh` startup command. Eg:
 ```
 docker run -p 3000:3000 \
--e SSL_CERT=/certs/cert.pem \
--e SSL_KEY=/certs/key.key \
+-e ASTRAL_SSL_CERT=/certs/cert.pem \
+-e ASTRAL_SSL_KEY=/certs/key.key \
 -v certs:/certs:cached \
 astral:latest bin/ssl.sh
 ```
