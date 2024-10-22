@@ -90,12 +90,12 @@ rake configure:ssl
 To use Vault SSL in the devcontainer, edit
 `.devcontainer/docker-compose.yml` so that the `app` service has
 `VAULT_ADDRESS` of `https://vault:8443`. Client certs can also be
-configured -- in which case Vault needs to be configured to verify
-with a CA cert.
+configured -- in which case Vault needs to supplied with a CA for
+peer verification.
 
-
-To use Astral with SSL in production, provide the necessary environment (SSL_CERT, SSL_KEY) to
-the container environment, and use the `bin/ssl.sh` startup command. Eg:
+To use Astral with SSL in production, provide the necessary
+environment (ASTRAL_SSL_CERT, ASTRAL_SSL_KEY) to the container
+environment, and use the `bin/ssl.sh` startup command. Eg:
 ```
 docker run -p 3000:3000 \
 -e ASTRAL_SSL_CERT=/certs/cert.pem \
