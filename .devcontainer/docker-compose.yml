@@ -48,6 +48,34 @@ services:
             "max_lease_ttl": "720h"
         }
 
+  oidc_provider:
+    image: hashicorp/vault:latest
+    restart: unless-stopped
+    ports:
+      - 8300:8300
+      - 9443:9443
+    volumes:
+      - ../cert:/vault/cert
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: root_token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8300
+      VAULT_LOCAL_CONFIG: >
+        {
+            "listener": [
+                {
+                    "tcp": {
+                        "address": "0.0.0.0:9443",
+                        "tls_disable": "0",
+                        "tls_cert_file": "/vault/cert/oidc_provider.pem",
+                        "tls_key_file": "/vault/cert/oidc_provider.key"
+                    }
+                }
+            ],
+            "default_lease_ttl": "168h",
+            "max_lease_ttl": "720h"
+        }
+
+
   app_registry:
     image: node:latest
     restart: unless-stopped
