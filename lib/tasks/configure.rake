@@ -23,13 +23,18 @@ namespace :configure do
   private
 
   def keygen(name)
+    san_param_file = "/tmp/san_param_#{name}"
+    san_param_content = "subjectAltName=DNS:#{name}"
+    File.write(san_param_file, san_param_content)
     %x(
       openssl req -new -newkey rsa:4096 -nodes \
         -keyout cert/#{name}.key -out cert/#{name}.csr \
-        -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=#{name}"
+        -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=#{name}" \
+        -addext #{san_param_content}
       openssl x509 -req -days 365 -in cert/#{name}.csr \
         -signkey cert/#{name}.key \
-        -out cert/#{name}.pem
+        -out cert/#{name}.pem \
+        -extfile #{san_param_file}
     )
     puts "SSL key for #{name} created"
   end
