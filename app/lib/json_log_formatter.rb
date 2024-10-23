@@ -1,4 +1,4 @@
-class AuditLogFormatter < ActiveSupport::Logger::SimpleFormatter
+class JsonLogFormatter < ActiveSupport::Logger::SimpleFormatter
   def call(severity, timestamp, _progname, message)
     # request_id is unique to the life of the api request
     request_id = Thread.current[:request_id]
