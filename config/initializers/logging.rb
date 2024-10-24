@@ -1,4 +1,5 @@
-Rails.application.config.to_prepare do
-  Rails.logger = ActiveSupport::Logger.new(STDOUT)
-  Rails.logger.formatter = JsonLogFormatter.new
-end
+Rails.logger = JsonTaggedLogger::Logger.new(Rails.logger)
+Rails.configuration.log_tags = JsonTaggedLogger::LogTagsConfig.generate(
+  :request_id
+)
+

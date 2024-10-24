@@ -112,6 +112,9 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.7.2)
+    json_tagged_logger (0.8.0)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
     jwt (2.9.3)
       base64
     language_server-protocol (3.17.0.3)
@@ -290,6 +293,7 @@ DEPENDENCIES
   faraday-retry
   interactor (~> 3.0)
   jbuilder
+  json_tagged_logger
   jwt
   ostruct
   puma (>= 5.0)
