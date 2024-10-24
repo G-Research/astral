@@ -17,8 +17,6 @@ module Clients
         configure_ca
       end
 
-      private
-
       def intermediate_ca_mount
         "pki_astral"
       end
@@ -26,6 +24,9 @@ module Clients
       def cert_path
         "#{intermediate_ca_mount}/issue/astral"
       end
+
+      private
+
 
       def create_root?
         create_root_config = Config[:vault_create_root]
