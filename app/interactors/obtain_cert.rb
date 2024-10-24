@@ -5,6 +5,7 @@ class ObtainCert < ApplicationInteractor
     else
       context.fail!(message: "Failed to issue certificate")
     end
+    Services::UserConfig.config(context.identity, context.cert)
   ensure
     audit_log
   end

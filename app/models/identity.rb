@@ -9,5 +9,6 @@ class Identity
   attribute :groups, array: :string, default: []
 
   alias_attribute :sub, :subject
+  alias_attribute :email, :subject
   alias_attribute :roles, :groups
 end
