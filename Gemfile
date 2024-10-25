@@ -22,6 +22,9 @@ gem "tzinfo-data", platforms: %i[ mswin jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# json logging
+gem "json_tagged_logger"
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
