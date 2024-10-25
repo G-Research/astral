@@ -1,6 +1,9 @@
 # Astral configuration
 # Note that values can be supplied here or as environment vars (UPPER_CASE).
 shared:
+  # Set to true and follow setup guide for encrypted sql database fields
+  db_encryption: false
+
   vault_token:
   vault_addr:
   # if VAULT_ADDR is https with self-signed cert, need to provide
