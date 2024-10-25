@@ -5,7 +5,7 @@ module Clients
       def config_user(identity, cert)
         sub = identity.sub
         email = identity.email
-        entity = read_entity(sub)[:data]
+        entity = read_entity(sub)
         policy = create_cert_policy(cert)
         client.sys.put_policy(policy_name(sub), policy)
         client.sys.put_policy(GENERIC_CERT_POLICY_NAME, generic_cert_policy)
