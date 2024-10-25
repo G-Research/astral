@@ -5,36 +5,22 @@ module Clients
       def config_user(identity, cert)
         sub = identity.sub
         email = identity.email
-        entity = read_entity(sub)
-        if entity.nil?
-          policies = []
-          metadata = nil
-        else
-          policies = entity.data[:policies]
-          metadata = entity.data[:metadata]
-        end
-        policy = create_cert_policy(cert)
-        client.sys.put_policy(policy_name(sub), policy)
+        policies, metadata = get_entity_data(sub)
         client.sys.put_policy(GENERIC_CERT_POLICY_NAME, generic_cert_policy)
-        policies.append(policy_name(sub)).append(GENERIC_CERT_POLICY_NAME).to_set.to_a
+        policies.append(GENERIC_CERT_POLICY_NAME).to_set.to_a
         put_entity(sub, policies, metadata)
         put_entity_alias(sub, email , "oidc")
       end
 
       private
 
-      def create_cert_policy(cert)
-        "path \"#{intermediate_ca_mount}/cert/#{serial_number(cert)}\" {
-          capabilities = [\"read\"]
-        }"
-      end
-
-      def serial_number(cert)
-        cert[:serial_number]
-      end
-
-      def policy_name(sub)
-        "astral-#{sub}-cert-policy"
+      def get_entity_data(sub)
+        entity = read_entity(sub)
+        if entity.nil?
+          [[], nil]
+        else
+          [entity.data[:policies], entity.data[:metadata]]
+        end
       end
 
       GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
