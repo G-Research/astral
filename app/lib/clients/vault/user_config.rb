@@ -6,11 +6,18 @@ module Clients
         sub = identity.sub
         email = identity.email
         entity = read_entity(sub)
+        if entity.nil?
+          policies = []
+          metadata = nil
+        else
+          policies = entity.data[:policies]
+          metadata = entity.data[:metadata]
+        end
         policy = create_cert_policy(cert)
         client.sys.put_policy(policy_name(sub), policy)
         client.sys.put_policy(GENERIC_CERT_POLICY_NAME, generic_cert_policy)
-        policies = entity[:policies].append(policy_name(sub)).append(GENERIC_CERT_POLICY_NAME).to_set.to_a
-        put_entity(sub, policies, entity[:metadata])
+        policies.append(policy_name(sub)).append(GENERIC_CERT_POLICY_NAME).to_set.to_a
+        put_entity(sub, policies, metadata)
         put_entity_alias(sub, email , "oidc")
       end
 

@@ -9,13 +9,7 @@ module Clients
       end
 
       def read_entity(name)
-        entity = client.logical.read("identity/entity/name/#{name}")
-        if entity.nil?
-          {policies: [],
-           metadata: {}}
-        else
-          entity.data
-        end
+        client.logical.read("identity/entity/name/#{name}")
       end
 
       def delete_entity(name)
