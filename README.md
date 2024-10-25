@@ -72,7 +72,7 @@ file.  Per-environment settings in the config file(development, test,
 production) will override the shared values for that type.
 
 ## Database encryption
-The local database can be encrypted if needed, but requires a bit of setup
+The local database can be encrypted, if needed, but requires a bit of setup
 and careful retention of a master key. Note that there are performance impacts.
 
 1. First, create encryption keys for the database:
@@ -85,7 +85,7 @@ Copy the output to your clipboard.
 ```
 EDITOR=vi rails credentials:edit
 ```
-Past the db encryption key data into this file, save, and exit.
+Paste the db encryption key data into this file, save, and exit.
 
 NB, the credentials file is decoded by a key placed in
 `config/master.key`. Be sure to save this file (it is .gitignored)!
