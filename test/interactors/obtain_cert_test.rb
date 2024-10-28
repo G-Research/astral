@@ -21,7 +21,6 @@ class ObtainCertTest < ActiveSupport::TestCase
   test ".call failure" do
     request = Requests::CertIssueRequest.new
     identity = Identity.new
-    identity.sub = "testUser"
     mock = Minitest::Mock.new
     mock.expect :call, nil, [ identity, request ]
     Services::Certificate.stub :issue_cert, mock do
