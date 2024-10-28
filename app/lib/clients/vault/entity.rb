@@ -1,7 +1,7 @@
 module Clients
   class Vault
     module Entity
-      def put_entity(name, policies, metadata={})
+      def put_entity(name, policies, metadata = {})
         client.logical.write("identity/entity",
                              name: name,
                              policies: policies,

@@ -137,7 +137,6 @@ module Clients
                }
         EOH
       end
-
     end
   end
 end

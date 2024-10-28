@@ -8,7 +8,7 @@ module Clients
         policies, metadata = get_entity_data(sub)
         policies.append(Certificate::GENERIC_CERT_POLICY_NAME).to_set.to_a
         put_entity(sub, policies, metadata)
-        put_entity_alias(sub, email , "oidc")
+        put_entity_alias(sub, email, "oidc")
       end
 
       private
@@ -16,9 +16,9 @@ module Clients
       def get_entity_data(sub)
         entity = read_entity(sub)
         if entity.nil?
-          [[], nil]
+          [ [], nil ]
         else
-          [entity.data[:policies], entity.data[:metadata]]
+          [ entity.data[:policies], entity.data[:metadata] ]
         end
       end
     end
