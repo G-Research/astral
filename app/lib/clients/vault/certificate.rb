@@ -15,7 +15,12 @@ module Clients
         enable_ca
         sign_cert
         configure_ca
+        create_generic_cert_policy
       end
+
+      GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
+
+      private
 
       def intermediate_ca_mount
         "pki_astral"
@@ -24,9 +29,6 @@ module Clients
       def cert_path
         "#{intermediate_ca_mount}/issue/astral"
       end
-
-      private
-
 
       def create_root?
         create_root_config = Config[:vault_create_root]
@@ -118,6 +120,24 @@ module Clients
                              ocsp_servers: "{{cluster_path}}/ocsp",
                              enable_templating: true)
       end
+
+      def create_generic_cert_policy
+        client.sys.put_policy(GENERIC_CERT_POLICY_NAME, generic_cert_policy)
+      end
+
+      def generic_cert_policy
+        policy = <<-EOH
+
+               path "#{cert_path}" {
+                 capabilities = ["create", "update"]
+               }
+
+               path "#{intermediate_ca_mount}/revoke-with-key" {
+                 capabilities = ["update"]
+               }
+        EOH
+      end
+
     end
   end
 end
