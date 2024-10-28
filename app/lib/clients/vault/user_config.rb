@@ -2,7 +2,7 @@ require "set"
 module Clients
   class Vault
     module UserConfig
-      def config_user(identity, cert)
+      def config_user(identity)
         sub = identity.sub
         email = identity.email
         policies, metadata = get_entity_data(sub)

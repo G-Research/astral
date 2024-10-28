@@ -1,8 +1,8 @@
 module Services
   class UserConfig
     class << self
-      def config(identity, cert)
-        impl.config_user(identity, cert)
+      def config(identity)
+        impl.config_user(identity)
       end
 
       private

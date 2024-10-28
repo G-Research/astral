@@ -18,6 +18,8 @@ class VaultTest < ActiveSupport::TestCase
     @policies = SecureRandom.hex(4)
     @entity_name = SecureRandom.hex(4)
     @alias_name = SecureRandom.hex(4)
+    @identity = Identity.new
+    @identity.sub = SecureRandom.hex(4)
   end
 
   teardown do
@@ -108,6 +110,15 @@ class VaultTest < ActiveSupport::TestCase
       @client.delete_entity_alias(@entity_name, @alias_name)
     end
     assert_match /no such alias/, err.message
+  end
+
+  test "#config_user creates valid entity" do
+    @client.config_user(@identity)
+    entity = @client.read_entity(@identity.sub)
+    assert entity.data[:policies].any? { |p|
+      p == @client::Certificate::GENERIC_CERT_POLICY_NAME }
+    assert entity.data[:aliases].any? { |a|
+      a[:mount_type] == "oidc"  && a[:name] == @identity.sub }
   end
 
   private
