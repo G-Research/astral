@@ -8,10 +8,12 @@ class ObtainCertTest < ActiveSupport::TestCase
 
   test ".call success" do
     request = Requests::CertIssueRequest.new
+    identity = Identity.new
+    identity.sub = "testUser"
     mock = Minitest::Mock.new
     mock.expect :call, @cert, [ request ]
     Services::Certificate.stub :issue_cert, mock do
-      context = @interactor.call(request: request)
+      context = @interactor.call(identity: identity, request: request)
       assert context.success?
       assert_equal @cert, context.cert
     end
