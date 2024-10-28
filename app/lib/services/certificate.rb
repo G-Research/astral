@@ -1,8 +1,8 @@
 module Services
   class Certificate
     class << self
-      def issue_cert(cert_issue_request)
-        impl.issue_cert(cert_issue_request)
+      def issue_cert(identity, cert_issue_request)
+        impl.issue_cert(identity, cert_issue_request)
       end
 
       private
