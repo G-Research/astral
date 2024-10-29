@@ -2,13 +2,11 @@ require_relative './decoder_factory'
 require 'open-uri'
 class JwksDecoder
   class << self
-    DecoderFactory.register(JwksDecoder)
+    DecoderFactory.register(JwksDecoder.new)
+  end
 
-    def configured(config)
-      if !config[:jwks_url].nil?
-        new
-      end
-    end
+  def configured(config)
+    !config[:jwks_url].nil?
   end
 
   def initialize
