@@ -15,4 +15,32 @@ class DecoderTest < ActiveSupport::TestCase
     assert_equal "john.doe@example.com", identity.sub
     assert_equal "astral", identity.aud
   end
+
+  # test "DecodeFactory.get finds correct decoder" do
+  #   # no registered decoder returns default
+  #   decoder = DecoderFactory.get({})
+  #   assert decoder.instance_of?(DefaultDecoder)
+
+  #   # no configured decoder returns default
+  #   DecoderFactory.register(UnconfiguredDecoder.new)
+  #   decoder = DecoderFactory.get({})
+  #   assert decoder.instance_of?(DefaultDecoder)
+
+  #   # no configured decoder returns itself
+  #   DecoderFactory.register(ConfiguredDecoder.new)
+  #   decoder = DecoderFactory.get({})
+  #   assert decoder.instance_of?(ConfiguredDecoder)
+  # end
+
+  private
+  class ConfiguredDecoder
+    def configured(c)
+      ConfiguredDecoder.new
+    end
+  end
+  class UnconfiguredDecoder
+    def configured(c)
+      nil
+    end
+  end
 end
