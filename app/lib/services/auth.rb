@@ -9,7 +9,7 @@ module Services
         identity
       end
 
-#gbj      private
+      private
 
       def decode(token)
         # Decode a JWT access token using the configured base.
