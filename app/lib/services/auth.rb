@@ -1,3 +1,4 @@
+require 'open-uri'
 module Services
   class Auth
     class << self
@@ -8,11 +9,15 @@ module Services
         identity
       end
 
-      private
+#gbj      private
 
       def decode(token)
         # Decode a JWT access token using the configured base.
-        body = JWT.decode(token, Config[:jwt_signing_key])[0]
+        jwks_hash = URI.open(Config[:jwks_url]) { |f| f.read }
+        jwks = JWT::JWK::Set.new(JSON.parse(jwks_hash))
+        jwks.filter! {|key| key[:use] == 'sig' }
+        algorithms = jwks.map { |key| key[:alg] }.compact.uniq
+        body = JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)[0]
         Identity.new(body)
       rescue => e
         Rails.logger.warn "Unable to decode token: #{e}"

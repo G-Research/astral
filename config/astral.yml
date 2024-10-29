@@ -53,7 +53,7 @@ shared:
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
-
+  jwks_url: test/fixtures/files/keyset.jwks
 development:
 
 production:
