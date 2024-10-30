@@ -5,7 +5,7 @@ require_relative '../../../app/lib/utils/jwks_decoder'
 class DecoderTest < ActiveSupport::TestCase
   test "JwksDecoder returns correct identity" do
     token = File.read("test/fixtures/files/token.jwks")
-    identity = JwksDecoder.new.decode(token)
+    identity = JwksDecoder.new("test/fixtures/files/keyset.jwks").decode(token)
     assert_equal "john.doe@example.com", identity.sub
     assert_equal "astral", identity.aud
   end
