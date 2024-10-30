@@ -1,4 +1,4 @@
-require_relative '../utils/decoder_factory'
+require_relative "../utils/decoder_factory"
 module Services
   class Auth
     class << self

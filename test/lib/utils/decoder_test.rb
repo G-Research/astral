@@ -3,11 +3,10 @@ require "jwt"
 require "openssl"
 require "json"
 require "tempfile"
-require_relative '../../../app/lib/utils/decoder_factory'
-require_relative '../../../app/lib/utils/jwks_decoder'
+require_relative "../../../app/lib/utils/decoder_factory"
+require_relative "../../../app/lib/utils/jwks_decoder"
 
 class DecoderTest < ActiveSupport::TestCase
-
   test "jwksdecoder.decode returns correct identity" do
     jwk = generate_key
     token = generate_token(jwk)
@@ -31,7 +30,7 @@ class DecoderTest < ActiveSupport::TestCase
   end
 
   test "DecodeFactory.get returns configured decoder" do
-    decoders = [UnconfiguredDecoder.new, ConfiguredDecoder.new]
+    decoders = [ UnconfiguredDecoder.new, ConfiguredDecoder.new ]
     DecoderFactory.stub :decoders, decoders do
       decoder = DecoderFactory.get({})
       assert decoder.instance_of?(ConfiguredDecoder)
@@ -40,13 +39,13 @@ class DecoderTest < ActiveSupport::TestCase
 
   private
   def generate_key
-    optional_parameters = { kid: 'kid', use: 'sig', alg: 'RS256' }
+    optional_parameters = { kid: "kid", use: "sig", alg: "RS256" }
     jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
   end
 
   def generate_token(jwk)
-    payload = {"sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
-               "groups"=>["group1", "group2"], "aud"=>"astral"}
+    payload = { "sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
+               "groups"=>[ "group1", "group2" ], "aud"=>"astral" }
 
     JWT.encode(payload, jwk.signing_key, jwk[:alg], kid: jwk[:kid])
   end
