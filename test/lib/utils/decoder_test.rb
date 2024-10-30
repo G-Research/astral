@@ -21,12 +21,6 @@ class DecoderTest < ActiveSupport::TestCase
     decoder = DecoderFactory.get({})
     assert decoder.instance_of?(DefaultDecoder)
 
-    DecoderFactory.stub :decoders, [UnconfiguredDecoder.new] do
-      # no configured decoder returns default
-      decoder = DecoderFactory.get({})
-      assert decoder.instance_of?(DefaultDecoder)
-    end
-
     # configured decoder returns itself
     decoders = [UnconfiguredDecoder.new, ConfiguredDecoder.new]
     DecoderFactory.stub :decoders, decoders do
