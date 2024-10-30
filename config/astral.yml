@@ -18,6 +18,9 @@ shared:
 
   jwt_signing_key:
 
+  # define this to allow jwks decoding of JWT's
+  jwks_url:
+
   # When using AppRegistry for Domain Ownership information
   app_registry_addr:
   app_registry_token:
