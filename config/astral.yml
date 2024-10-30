@@ -58,7 +58,6 @@ test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
-   cert_ttl: <%= 24.hours.in_seconds %>
 
 production:
   vault_create_root: false
