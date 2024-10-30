@@ -1,6 +1,6 @@
 require 'open-uri'
 class JwksDecoder
-  def configured(config)
+  def configured?(config)
     !@url.nil?
   end
 

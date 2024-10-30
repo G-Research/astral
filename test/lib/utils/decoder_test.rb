@@ -60,13 +60,13 @@ class DecoderTest < ActiveSupport::TestCase
   end
 
   class ConfiguredDecoder
-    def configured(c)
+    def configured?(c)
       true
     end
   end
 
   class UnconfiguredDecoder
-    def configured(c)
+    def configured?(c)
       false
     end
   end

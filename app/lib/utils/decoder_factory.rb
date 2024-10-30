@@ -11,7 +11,7 @@ class DecoderFactory
     @@decoders.append(DefaultDecoder.new)
 
     def get(config)
-      decoder = decoders.find { |c| c.configured(config) }
+      decoder = decoders.find { |c| c.configured?(config) }
     end
   end
 end

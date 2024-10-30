@@ -1,5 +1,5 @@
 class DefaultDecoder
-  def configured(config)
+  def configured?(config)
     true
   end
 
