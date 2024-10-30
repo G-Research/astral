@@ -16,21 +16,24 @@ class DecoderTest < ActiveSupport::TestCase
     assert_equal "astral", identity.aud
   end
 
-  # test "DecodeFactory.get finds correct decoder" do
-  #   # no registered decoder returns default
-  #   decoder = DecoderFactory.get({})
-  #   assert decoder.instance_of?(DefaultDecoder)
+  test "DecodeFactory.get finds correct decoder" do
+    # no registered decoder returns default
+    decoder = DecoderFactory.get({})
+    assert decoder.instance_of?(DefaultDecoder)
 
-  #   # no configured decoder returns default
-  #   DecoderFactory.register(UnconfiguredDecoder.new)
-  #   decoder = DecoderFactory.get({})
-  #   assert decoder.instance_of?(DefaultDecoder)
+    DecoderFactory.stub :decoders, [UnconfiguredDecoder.new] do
+      # no configured decoder returns default
+      decoder = DecoderFactory.get({})
+      assert decoder.instance_of?(DefaultDecoder)
+    end
 
-  #   # no configured decoder returns itself
-  #   DecoderFactory.register(ConfiguredDecoder.new)
-  #   decoder = DecoderFactory.get({})
-  #   assert decoder.instance_of?(ConfiguredDecoder)
-  # end
+    # configured decoder returns itself
+    decoders = [UnconfiguredDecoder.new, ConfiguredDecoder.new]
+    DecoderFactory.stub :decoders, decoders do
+      decoder = DecoderFactory.get({})
+      assert decoder.instance_of?(ConfiguredDecoder)
+    end
+  end
 
   private
   class ConfiguredDecoder

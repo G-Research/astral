@@ -5,12 +5,12 @@ class DecoderFactory
     @@decoders = [JwksDecoder.new(Config[:jwks_url])]
     @@default_decoder = DefaultDecoder.new
     def get(config)
-      decoder = @@decoders.find { |c| c.configured(config) }
+      decoder = decoders.find { |c| c.configured(config) }
       decoder ||= @@default_decoder
     end
 
-    def register(decoder)
-      @@decoders.append(decoder)
+    def decoders
+      @@decoders
     end
   end
 end
