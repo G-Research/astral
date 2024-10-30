@@ -1,7 +1,4 @@
 require "rake"
-require "jwt"
-require "openssl"
-require "json"
 
 # Rake tasks for making a vault cert
 namespace :configure do
@@ -21,24 +18,6 @@ namespace :configure do
   desc "Make the server cert for the oidc provider"
   task :oidc_provider_ssl do
     keygen("oidc_provider")
-  end
-
-  desc "Make JWKS and corresponding token"
-  task :jwks do
-    optional_parameters = { kid: 'my-kid', use: 'sig', alg: 'RS256' }
-    jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
-
-    payload = {"sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
-               "groups"=>["group1", "group2"], "aud"=>"astral"}
-
-    token = JWT.encode(payload, jwk.signing_key, jwk[:alg], kid: jwk[:kid])
-    File.write("test/fixtures/files/token.jwks", token)
-    puts "wrote token file test/fixtures/files/token.jwks with payload:\n #{payload}"
-
-    jwks_hash = JWT::JWK::Set.new(jwk).export
-    File.write("test/fixtures/files/keyset.jwks", jwks_hash.to_json)
-    puts "wrote file test/fixtures/files/keyset.jwks with hash:\n #{jwks_hash}"
-
   end
 
   private
