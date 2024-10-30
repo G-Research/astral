@@ -32,12 +32,13 @@ class DecoderTest < ActiveSupport::TestCase
   private
   class ConfiguredDecoder
     def configured(c)
-      ConfiguredDecoder.new
+      true
     end
   end
+
   class UnconfiguredDecoder
     def configured(c)
-      nil
+      false
     end
   end
 end
