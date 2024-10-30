@@ -1,11 +1,11 @@
 require "open-uri"
 class JwksDecoder
-  def configured?(config)
-    !@url.nil?
-  end
-
   def initialize(url)
     @url = url
+  end
+
+  def configured?(config)
+    !@url.nil?
   end
 
   # Decode a JWT token signed with JWKS

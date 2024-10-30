@@ -17,15 +17,11 @@ class DecoderTest < ActiveSupport::TestCase
     assert_equal "astral", identity.aud
   end
 
-  test "defaultdecoder.decode returns correct identity" do
-    identity = DefaultDecoder.new.decode(jwt_authorized)
+  test "secretdecoder.decode returns correct identity" do
+    identity = SecretDecoder.new(Config[:jwt_signing_key]).
+                 decode(jwt_authorized)
     assert_equal "john.doe@example.com", identity.sub
     assert_equal "astral", identity.aud
-  end
-
-  test "DecodeFactory.get returns default if no decoders configured" do
-    decoder = DecoderFactory.get({})
-    assert decoder.instance_of?(DefaultDecoder)
   end
 
   test "DecodeFactory.get returns configured decoder" do
@@ -33,6 +29,16 @@ class DecoderTest < ActiveSupport::TestCase
     DecoderFactory.stub :decoders, decoders do
       decoder = DecoderFactory.get({})
       assert decoder.instance_of?(ConfiguredDecoder)
+    end
+  end
+
+  test "DecodeFactory.get recognizes invalid config" do
+    decoders = [ ConfiguredDecoder.new, ConfiguredDecoder.new ]
+    DecoderFactory.stub :decoders, decoders do
+      assert_raises(
+        RuntimeError, "Exactly one decoder must be configured") do
+        decoder = DecoderFactory.get({})
+      end
     end
   end
 

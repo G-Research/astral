@@ -1,6 +1,10 @@
-class DefaultDecoder
+class SecretDecoder
+  def initialize(secret)
+    @secret = secret
+  end
+
   def configured?(config)
-    true
+    !@secret.nil?
   end
 
   def decode(token)
