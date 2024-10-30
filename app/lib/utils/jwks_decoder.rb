@@ -11,11 +11,10 @@ class JwksDecoder
   # Decode a JWT token signed with JWKS
   def decode(token)
     jwks = get_jwks_keyset_from_configured_url
-
     jwks = filter_out_non_signing_keys(jwks)
-
-    a = get_algorithms_from_keyset(jwks)
-    body = JWT.decode(token, nil, true, algorithms: a, jwks: jwks)[0]
+    body = JWT.decode(token, nil, true,
+                      algorithms: get_algorithms_from_keyset(jwks),
+                      jwks: jwks)[0]
     Identity.new(body)
   rescue => e
     Rails.logger.warn "Unable to decode token: #{e}"
