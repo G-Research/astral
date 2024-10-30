@@ -14,8 +14,8 @@ class JwksDecoder
 
     jwks = filter_out_non_signing_keys(jwks)
 
-    algorithms = get_algorithms_from_keyset(jwks)
-    body = JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)[0]
+    a = get_algorithms_from_keyset(jwks)
+    body = JWT.decode(token, nil, true, algorithms: a, jwks: jwks)[0]
     Identity.new(body)
   rescue => e
     Rails.logger.warn "Unable to decode token: #{e}"
