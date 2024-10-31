@@ -8,15 +8,16 @@ class DecoderFactory
                    SecretDecoder.new(Config[:jwt_signing_key]) ]
 
     def get(config)
-      validateConfig(config)
-      decoder = decoders.find { |c| c.configured?(config) }
+      configured_decoders = getConfiguredDecoders(config)
+      if configured_decoders.length != 1
+        raise "Exactly one decoder must be configured"
+      end
+      configured_decoders[0]
     end
 
     private
-    def validateConfig(config)
-      if decoders.filter  { |c| c.configured?(config) } .length != 1
-        raise "Exactly one decoder must be configured"
-      end
+    def getConfiguredDecoders(config)
+      decoders.filter { |c| c.configured?(config) }
     end
   end
 end
