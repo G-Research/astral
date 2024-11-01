@@ -24,6 +24,17 @@ module Clients
         create_generic_cert_policy
       end
 
+      def config_user(identity)
+        sub = identity.sub
+        email = identity.email
+        policies, metadata = get_entity_data(sub)
+        policies.append(Certificate::GENERIC_CERT_POLICY_NAME).to_set.to_a
+        put_entity(sub, policies, metadata)
+        put_entity_alias(sub, email, "oidc")
+      end
+
+      GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
+
       private
 
       def intermediate_ca_mount
