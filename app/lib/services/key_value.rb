@@ -1,15 +1,15 @@
 module Services
   class KeyValue
     class << self
-      def read(path)
-        impl.kv_read(path)
+      def read(identity, path)
+        impl.kv_read(identity, path)
       end
 
-      def write(path, data)
+      def write(identity, path, data)
         impl.kv_write(path, data)
       end
 
-      def delete(path)
+      def delete(identity, path)
         impl.kv_delete(path)
       end
 

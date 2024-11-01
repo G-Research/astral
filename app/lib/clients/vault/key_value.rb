@@ -1,15 +1,15 @@
 module Clients
   class Vault
     module KeyValue
-      def kv_read(path)
+      def kv_read(identity, path)
         client.kv(kv_mount).read(path)
       end
 
-      def kv_write(path, data)
+      def kv_write(identity, path, data)
         client.logical.write("#{kv_mount}/data/#{path}", data: data)
       end
 
-      def kv_delete(path)
+      def kv_delete(identity, path)
         client.logical.delete("#{kv_mount}/data/#{path}")
       end
 
