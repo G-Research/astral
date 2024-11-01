@@ -1,8 +1,7 @@
 module Clients
   class Vault
     module KeyValue
-      extend Clients::Vault::Entity
-      extend Clients::Vault::Policy
+      extend Policy
 
       def kv_read(identity, path)
         client.kv(kv_mount).read(path)

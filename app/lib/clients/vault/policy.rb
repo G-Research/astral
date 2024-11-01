@@ -1,6 +1,8 @@
 module Clients
   class Vault
     module Policy
+      extend Entity
+
       def rotate_token
         create_astral_policy
         token = create_astral_token

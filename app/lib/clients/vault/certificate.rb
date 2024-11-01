@@ -1,8 +1,7 @@
 module Clients
   class Vault
     module Certificate
-      extend Clients::Vault::Entity
-      extend Clients::Vault::Policy
+      extend Policy
 
       GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
 
