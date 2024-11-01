@@ -6,11 +6,11 @@ module Services
       end
 
       def write(identity, path, data)
-        impl.kv_write(path, data)
+        impl.kv_write(identity, path, data)
       end
 
       def delete(identity, path)
-        impl.kv_delete(path)
+        impl.kv_delete(identity, path)
       end
 
       private

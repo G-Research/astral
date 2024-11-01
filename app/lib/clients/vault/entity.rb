@@ -15,6 +15,15 @@ module Clients
       def delete_entity(name)
         client.logical.delete("identity/entity/name/#{name}")
       end
+
+      def get_entity_data(sub)
+        entity = read_entity(sub)
+        if entity.nil?
+          [ [], nil ]
+        else
+          [ entity.data[:policies], entity.data[:metadata] ]
+        end
+      end
     end
   end
 end

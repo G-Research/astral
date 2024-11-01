@@ -7,6 +7,15 @@ module Clients
         Clients::Vault.token = token
       end
 
+      def assign_policy(identity, policy_path)
+        sub = identity.sub
+        email = identity.email
+        policies, metadata = get_entity_data(sub)
+        policies.append(policy_path).to_set.to_a
+        put_entity(sub, policies, metadata)
+        put_entity_alias(sub, email, "oidc")
+      end
+
       private
 
       def create_astral_policy
