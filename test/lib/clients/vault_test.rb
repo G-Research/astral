@@ -71,7 +71,7 @@ class VaultTest < ActiveSupport::TestCase
     assert_instance_of Vault::Secret, @client.kv_write(@identity, "testing/secret", { password: "sicr3t" })
   end
 
-  test "#entity" do
+  test "entity methods" do
     entity =  @client.read_entity(@entity_name)
     assert_nil entity
 
@@ -84,7 +84,7 @@ class VaultTest < ActiveSupport::TestCase
     assert_nil entity
   end
 
-  test "#entity_alias" do
+  test "entity_alias methods" do
     # confirm no entity yet
     err = assert_raises RuntimeError do
       @client.read_entity_alias(@entity_name, @alias_name)
@@ -112,11 +112,11 @@ class VaultTest < ActiveSupport::TestCase
     assert_match /no such alias/, err.message
   end
 
-  test "#config_user creates valid entity" do
-    @client.config_user(@identity)
+  test ".assign_policy creates valid entity" do
+    @client.assign_policy(@identity, "test_path")
     entity = @client.read_entity(@identity.sub)
     assert entity.data[:policies].any? { |p|
-      p == @client::Certificate::GENERIC_CERT_POLICY_NAME }
+      p == "test_path" }
     assert entity.data[:aliases].any? { |a|
       a[:mount_type] == "oidc"  && a[:name] == @identity.sub }
   end
