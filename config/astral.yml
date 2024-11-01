@@ -49,12 +49,13 @@ shared:
 
   initial_user_name: test
   initial_user_password: test
-  initial_user_email: test@example.com
+  initial_user_email: john.doe@example.com
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
 
 development:
+  cert_ttl: <%= 24.hours.in_seconds %>
 
 production:
   vault_create_root: false

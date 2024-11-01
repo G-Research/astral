@@ -19,6 +19,7 @@ class OidcProvider
 
   def get_client_info
     app = vault_client.logical.read(WEBAPP_NAME)
+    raise "oidc provider not configured." if app.nil?
     @client_id = app.data[:client_id]
     @client_secret = app.data[:client_secret]
     [ @client_id, @client_secret ]
