@@ -11,7 +11,7 @@ module Utils
         if configured_decoders.length != 1
           raise "Exactly one decoder must be configured"
         end
-        configured_decoders[0]
+        configured_decoders.first
       end
 
       private
