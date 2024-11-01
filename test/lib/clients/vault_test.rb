@@ -68,7 +68,7 @@ class VaultTest < ActiveSupport::TestCase
     # now has a new token
     assert_not_equal vault_token, @client.token
     # ensure we can write with the new token
-    assert_instance_of Vault::Secret, @client.kv_write("testing/secret", { password: "sicr3t" })
+    assert_instance_of Vault::Secret, @client.kv_write(@identity, "testing/secret", { password: "sicr3t" })
   end
 
   test "#entity" do
