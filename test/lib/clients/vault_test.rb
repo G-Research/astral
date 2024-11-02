@@ -97,6 +97,12 @@ class VaultTest < ActiveSupport::TestCase
     # check policy is created
     entity = @client.read_entity(@identity.sub)
     assert_equal "kv_policy/#{path}", entity.data[:policies][0]
+
+    # check kv_delete
+    del_secret = @client.kv_delete(@identity, path)
+    assert del_secret
+    read_secret = @client.kv_read(@identity, path)
+    assert_nil read_secret
   end
 
 
