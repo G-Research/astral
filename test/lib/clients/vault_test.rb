@@ -84,6 +84,22 @@ class VaultTest < ActiveSupport::TestCase
     assert_nil entity
   end
 
+  test "kv methods" do
+    # check kv_write
+    path = "test/path/#{SecureRandom.hex}"
+    secret = @client.kv_write(@identity, path, { data: "data" })
+    assert_kind_of Vault::Secret, secret
+
+    # check kv_read
+    read_secret = @client.kv_read(@identity, path)
+    assert_kind_of Vault::Secret, read_secret
+
+    # check policy is created
+    entity = @client.read_entity(@identity.sub)
+    assert_equal "kv_policy/#{path}", entity.data[:policies][0]
+  end
+
+
   test "entity_alias methods" do
     # confirm no entity yet
     err = assert_raises RuntimeError do
