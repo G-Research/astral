@@ -71,6 +71,30 @@ UPPER_CASE). Environment vars will override any values in the config
 file.  Per-environment settings in the config file(development, test,
 production) will override the shared values for that type.
 
+## Database encryption
+The local database can be encrypted, if needed, but requires a bit of setup
+and careful retention of a master key. Note that there are performance impacts.
+
+1. First, create encryption keys for the database:
+```
+rails db:encryption:init
+```
+Copy the output to your clipboard.
+
+2. Next, create a `credentials.yml.enc` file:
+```
+EDITOR=vi rails credentials:edit
+```
+Paste the db encryption key data into this file, save, and exit.
+
+NB, the credentials file is decoded by a key placed in
+`config/master.key`. Be sure to save this file (it is .gitignored)!
+
+3. Finally, set the following Astral configuration to 'true':
+```
+   db_encryption: true
+```
+
 ## mTLS connections
 Astral can be run as an SSL service and can communicate with Vault via SSL.
 Just set the following values in `config/astral.yml` (or environment) to 
