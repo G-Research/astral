@@ -4,6 +4,7 @@ module Clients
       extend Policy
 
       def kv_read(identity, path)
+        verify_policy(identity, policy_path(path))
         client.kv(kv_mount).read(path)
       end
 
@@ -14,6 +15,7 @@ module Clients
       end
 
       def kv_delete(identity, path)
+        verify_policy(identity, policy_path(path))
         client.logical.delete("#{kv_mount}/data/#{path}")
       end
 
@@ -32,7 +34,6 @@ module Clients
       def kv_engine_type
         "kv-v2"
       end
-
 
       def create_kv_policy(path)
         client.sys.put_policy(policy_path(path), kv_policy(path))

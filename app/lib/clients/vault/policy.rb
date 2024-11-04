@@ -18,6 +18,15 @@ module Clients
         put_entity_alias(sub, email, "oidc")
       end
 
+      def verify_policy(identity, policy_name)
+        sub = identity.sub
+        email = identity.email
+        policies, _ = get_entity_data(sub)
+        unless policies.any? { |p| p == policy_name }
+          raise AuthError.new("Policy has not been granted to the identity")
+        end
+      end
+
       private
 
       def create_astral_policy
