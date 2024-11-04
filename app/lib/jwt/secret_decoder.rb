@@ -1,4 +1,4 @@
-module Utils
+module Jwt
   class SecretDecoder
     def initialize(secret)
       @secret = secret

@@ -10,7 +10,7 @@ class JwksDecoderTest < ActiveSupport::TestCase
     token = generate_jwks_token(jwk)
     keyset_path = generate_jwks_keyset(jwk)
 
-    identity = Utils::JwksDecoder.new(keyset_path).decode(token)
+    identity = Jwt::JwksDecoder.new(keyset_path).decode(token)
     assert_equal "john.doe@example.com", identity.sub
     assert_equal "astral", identity.aud
   end

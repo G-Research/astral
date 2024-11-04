@@ -1,5 +1,5 @@
 require "open-uri"
-module Utils
+module Jwt
   class JwksDecoder
     def initialize(url)
       @url = url

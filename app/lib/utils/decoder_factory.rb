@@ -3,8 +3,8 @@ module Utils
     cattr_reader :decoders
     class << self
       # Any new decoders should be added here:
-      @@decoders = [ Utils::JwksDecoder.new(Config[:jwks_url]),
-                     Utils::SecretDecoder.new(Config[:jwt_signing_key]) ]
+      @@decoders = [ Jwt::JwksDecoder.new(Config[:jwks_url]),
+                     Jwt::SecretDecoder.new(Config[:jwt_signing_key]) ]
 
       def get(config)
         configured_decoders = getConfiguredDecoders(config)
