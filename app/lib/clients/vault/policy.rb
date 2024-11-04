@@ -9,11 +9,11 @@ module Clients
         Clients::Vault.token = token
       end
 
-      def assign_policy(identity, policy_path)
+      def assign_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
         policies, metadata = get_entity_data(sub)
-        policies.append(policy_path).to_set.to_a
+        policies.append(policy_name).uniq!
         put_entity(sub, policies, metadata)
         put_entity_alias(sub, email, "oidc")
       end
