@@ -68,10 +68,10 @@ class VaultTest < ActiveSupport::TestCase
     # now has a new token
     assert_not_equal vault_token, @client.token
     # ensure we can write with the new token
-    assert_instance_of Vault::Secret, @client.kv_write("testing/secret", { password: "sicr3t" })
+    assert_instance_of Vault::Secret, @client.kv_write(@identity, "testing/secret", { password: "sicr3t" })
   end
 
-  test "#entity" do
+  test "entity methods" do
     entity =  @client.read_entity(@entity_name)
     assert_nil entity
 
@@ -84,7 +84,29 @@ class VaultTest < ActiveSupport::TestCase
     assert_nil entity
   end
 
-  test "#entity_alias" do
+  test "kv methods" do
+    # check kv_write
+    path = "test/path/#{SecureRandom.hex}"
+    secret = @client.kv_write(@identity, path, { data: "data" })
+    assert_kind_of Vault::Secret, secret
+
+    # check kv_read
+    read_secret = @client.kv_read(@identity, path)
+    assert_kind_of Vault::Secret, read_secret
+
+    # check policy is created
+    entity = @client.read_entity(@identity.sub)
+    assert_equal "kv_policy/#{path}", entity.data[:policies][0]
+
+    # check kv_delete
+    del_secret = @client.kv_delete(@identity, path)
+    assert del_secret
+    read_secret = @client.kv_read(@identity, path)
+    assert_nil read_secret
+  end
+
+
+  test "entity_alias methods" do
     # confirm no entity yet
     err = assert_raises RuntimeError do
       @client.read_entity_alias(@entity_name, @alias_name)
@@ -112,11 +134,11 @@ class VaultTest < ActiveSupport::TestCase
     assert_match /no such alias/, err.message
   end
 
-  test "#config_user creates valid entity" do
-    @client.config_user(@identity)
+  test ".assign_policy creates valid entity" do
+    @client.assign_policy(@identity, "test_path")
     entity = @client.read_entity(@identity.sub)
     assert entity.data[:policies].any? { |p|
-      p == @client::Certificate::GENERIC_CERT_POLICY_NAME }
+      p == "test_path" }
     assert entity.data[:aliases].any? { |a|
       a[:mount_type] == "oidc"  && a[:name] == @identity.sub }
   end

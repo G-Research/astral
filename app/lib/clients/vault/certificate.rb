@@ -1,11 +1,15 @@
 module Clients
   class Vault
     module Certificate
+      extend Policy
+
+      GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
+
       def issue_cert(identity, cert_issue_request)
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
         tls_cert = client.logical.write(cert_path, opts)
-        config_user(identity)
+        assign_policy(identity, GENERIC_CERT_POLICY_NAME)
         OpenStruct.new tls_cert.data
       end
 
@@ -18,17 +22,6 @@ module Clients
         configure_ca
         create_generic_cert_policy
       end
-
-      def config_user(identity)
-        sub = identity.sub
-        email = identity.email
-        policies, metadata = get_entity_data(sub)
-        policies.append(Certificate::GENERIC_CERT_POLICY_NAME).to_set.to_a
-        put_entity(sub, policies, metadata)
-        put_entity_alias(sub, email, "oidc")
-      end
-
-      GENERIC_CERT_POLICY_NAME = "astral-generic-cert-policy"
 
       private
 
@@ -129,15 +122,6 @@ module Clients
                              crl_distribution_points: "{{cluster_aia_path}}/issuer/{{issuer_id}}/crl/der",
                              ocsp_servers: "{{cluster_path}}/ocsp",
                              enable_templating: true)
-      end
-
-      def get_entity_data(sub)
-        entity = read_entity(sub)
-        if entity.nil?
-          [ [], nil ]
-        else
-          [ entity.data[:policies], entity.data[:metadata] ]
-        end
       end
 
       def create_generic_cert_policy
