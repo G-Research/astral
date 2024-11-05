@@ -98,13 +98,22 @@ class VaultTest < ActiveSupport::TestCase
     entity = @client.read_entity(@identity.sub)
     assert_equal "kv_policy/#{path}", entity.data[:policies][0]
 
+    # check kv_read denied to other identity
+    alt_identity = Identity.new
+    alt_identity.sub = SecureRandom.hex(4)
+    err = assert_raises { @client.kv_read(alt_identity, path) }
+    assert_kind_of AuthError, err
+
+    # check kv_delete denied to other identity
+    err = assert_raises { @client.kv_delete(alt_identity, path) }
+    assert_kind_of AuthError, err
+
     # check kv_delete
     del_secret = @client.kv_delete(@identity, path)
     assert del_secret
     read_secret = @client.kv_read(@identity, path)
     assert_nil read_secret
   end
-
 
   test "entity_alias methods" do
     # confirm no entity yet

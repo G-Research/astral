@@ -12,10 +12,20 @@ module Clients
       def assign_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
-        policies, metadata = get_entity_data(sub)
-        policies.append(policy_name).uniq!
-        put_entity(sub, policies, metadata)
-        put_entity_alias(sub, email, "oidc")
+        Domain.with_advisory_lock(sub) do
+          policies, metadata = get_entity_data(sub)
+          policies.append(policy_name).uniq!
+          put_entity(sub, policies, metadata)
+          put_entity_alias(sub, email, "oidc")
+        end
+      end
+
+      def verify_policy(identity, policy_name)
+        sub = identity.sub
+        policies, _ = get_entity_data(sub)
+        unless policies.any? { |p| p == policy_name }
+          raise AuthError.new("Policy has not been granted to the identity")
+        end
       end
 
       private
