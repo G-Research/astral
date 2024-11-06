@@ -201,4 +201,6 @@ the provider settings, so you will need to clear the browser's
   * Vault login failed. Expired or missing OAuth state.
 ```
 
-
+# Decoding JWKS based tokens
+To decode JWKS based tokens, set the astral.yml "jwks_url" parameter to the 
+jwks endpoint of your auth provider.
