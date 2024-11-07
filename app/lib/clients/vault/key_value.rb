@@ -17,6 +17,7 @@ module Clients
       def kv_delete(identity, path)
         verify_policy(identity, policy_path(path))
         client.logical.delete("#{kv_mount}/data/#{path}")
+        remove_policy(identity, policy_path(path))
       end
 
       def configure_kv
