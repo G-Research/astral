@@ -28,6 +28,16 @@ module Clients
         end
       end
 
+      def remove_policy(identity, policy_name)
+        sub = identity.sub
+        Domain.with_advisory_lock(sub) do
+          policies, metadata = get_entity_data(sub)
+          policies.reject! { |p| p == policy_name }
+          put_entity(sub, policies, metadata)
+        end
+        client.sys.delete_policy(policy_name)
+      end
+
       private
 
       def create_astral_policy
