@@ -120,28 +120,28 @@ class VaultTest < ActiveSupport::TestCase
 
   test "entity_alias methods" do
     # confirm no entity yet
+    auth_path = "token"
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such entity/, err.message
 
     # confirm no alias yet
     @client.put_entity(@entity_name, @policies)
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
 
     # create alias
-    auth_method = "token"
-    @client.put_entity_alias(@entity_name, @alias_name, auth_method)
-    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
-    assert_equal auth_method, entity_alias.data[:mount_type]
+    @client.put_entity_alias(@entity_name, @alias_name, auth_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, auth_path)
+    assert_equal auth_path, entity_alias.data[:mount_type]
 
     # confirm deleted alias
-    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name)
+    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     err = assert_raises RuntimeError do
-      @client.delete_entity_alias(@entity_name, @alias_name)
+      @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
   end
