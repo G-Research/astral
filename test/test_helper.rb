@@ -13,11 +13,14 @@ module ActiveSupport
 
     # Helper methods
     def jwt_authorized
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTUxNjIzOTAyMiwiZ3JvdXBzIjpbImdyb3VwMSIsImdyb3VwMiJdLCJhdWQiOiJhc3RyYWwifQ.tfRLXmE_eq-piP88_clwPWrYfMAQbCJAeZQI6OFxZSI"
+      data = {"sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
+               "groups"=>["group1", "group2"], "aud"=>"astral"}
+      JWT.encode(data, Config[:jwt_signing_key])
     end
 
     def jwt_unauthorized
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhcHBsaWNhdGlvbl9uYW1lIiwiY29tbW9uX25hbWUiOiJleGFtcGxlLmNvbSIsImlwX3NhbnMiOiIxMC4wLjEuMTAwIn0.gEUyaZcARiBQNq2RUwZU0MdFXqthyo_oSQ8DAgKvxCs"
+      data = {"sub"=>"application_name", "common_name"=>"example.com", "ip_sans"=>"10.0.1.100"}
+      JWT.encode(data, "bad_secret")
     end
   end
 end
