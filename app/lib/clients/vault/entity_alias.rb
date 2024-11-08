@@ -40,7 +40,7 @@ module Clients
 
       private
       def find_alias(aliases, name, auth_path)
-        aliases.find { |a| a[:name] == name && a[:mount_path] == "auth/#{auth_path}/"}
+        aliases.find { |a| a[:name] == name && a[:mount_path] == "auth/#{auth_path}/" }
       end
     end
   end

@@ -13,14 +13,16 @@ module ActiveSupport
 
     # Helper methods
     def jwt_authorized
-      data = {"sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
-               "groups"=>["group1", "group2"], "aud"=>"astral"}
-      JWT.encode(data, Config[:jwt_signing_key])
+      @@authorized_token ||= JWT.encode(@@authorized_data, Config[:jwt_signing_key])
     end
 
     def jwt_unauthorized
-      data = {"sub"=>"application_name", "common_name"=>"example.com", "ip_sans"=>"10.0.1.100"}
-      JWT.encode(data, "bad_secret")
+      @@unauthorized_token ||= JWT.encode(@@unauthorized_data, "bad_secret")
     end
+
+    private
+    @@authorized_data   = { "sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
+                           "groups"=>[ "group1", "group2" ], "aud"=>"astral" }
+    @@unauthorized_data = { "sub"=>"application_name", "common_name"=>"example.com", "ip_sans"=>"10.0.1.100" }
   end
 end
