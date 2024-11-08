@@ -133,10 +133,21 @@ class VaultTest < ActiveSupport::TestCase
     end
     assert_match /no such alias/, err.message
 
-    # create alias
+    # create token alias
     @client.put_entity_alias(@entity_name, @alias_name, auth_path)
     entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     assert_equal auth_path, entity_alias.data[:mount_type]
+
+    # create different alias type with same name
+    oidc_path = "oidc"
+    @client.put_entity_alias(@entity_name, @alias_name, oidc_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, oidc_path)
+    assert_equal oidc_path, entity_alias.data[:mount_type]
+
+
+    # confirm two aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 2, entity.data[:aliases].size
 
     # confirm deleted alias
     assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
@@ -144,6 +155,10 @@ class VaultTest < ActiveSupport::TestCase
       @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
+
+    # confirm 1 aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 1, entity.data[:aliases].size
   end
 
   test ".assign_policy creates valid entity" do
