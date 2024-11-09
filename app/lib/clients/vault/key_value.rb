@@ -4,20 +4,22 @@ module Clients
       extend Policy
 
       def kv_read(identity, path)
-        verify_policy(identity, policy_path(path))
+        verify_policy(identity, producer_policy_path(path))
         client.kv(kv_mount).read(path)
       end
 
-      def kv_write(identity, path, data)
-        create_kv_policy(path)
-        assign_policy(identity, policy_path(path))
+      def kv_write(identity, groups, path, data)
+        create_kv_policies(path)
+        assign_identity_policy(identity, producer_policy_path(path))
+        assign_groups_policy(groups, consumer_policy_path(path))
         client.logical.write("#{kv_mount}/data/#{path}", data: data)
       end
 
       def kv_delete(identity, path)
-        verify_policy(identity, policy_path(path))
+        verify_policy(identity, producer_policy_path(path))
         client.logical.delete("#{kv_mount}/data/#{path}")
-        remove_policy(identity, policy_path(path))
+        remove_identity_policy(identity, producer_policy_path(path))
+        remove_groups_policy(consumer_policy_path(path))
       end
 
       def configure_kv
@@ -36,18 +38,31 @@ module Clients
         "kv-v2"
       end
 
-      def create_kv_policy(path)
-        client.sys.put_policy(policy_path(path), kv_policy(path))
+      def create_kv_policies(path)
+        client.sys.put_policy(producer_policy_path(path), kv_producer_policy(path))
+        client.sys.put_policy(consumer_policy_path(path), kv_consumer_policy(path))
       end
 
-      def policy_path(path)
-        "kv_policy/#{path}"
+      def producer_policy_path(path)
+        "kv_policy/#{path}/producer"
       end
 
-      def kv_policy(path)
+      def consumer_policy_path(path)
+        "kv_policy/#{path}/consumer"
+      end
+
+      def kv_producer_policy(path)
         policy = <<-EOH
                path "#{path}" {
                  capabilities = ["create", "read", "update", "delete"]
+               }
+        EOH
+      end
+
+      def kv_consumer_policy(path)
+        policy = <<-EOH
+               path "#{path}" {
+                 capabilities = ["read"]
                }
         EOH
       end

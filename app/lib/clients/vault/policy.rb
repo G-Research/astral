@@ -2,6 +2,7 @@ module Clients
   class Vault
     module Policy
       extend Entity
+      extend Oidc
 
       def rotate_token
         create_astral_policy
@@ -9,7 +10,7 @@ module Clients
         Clients::Vault.token = token
       end
 
-      def assign_policy(identity, policy_name)
+      def assign_identity_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
         Domain.with_advisory_lock(sub) do
@@ -20,6 +21,10 @@ module Clients
         end
       end
 
+      def assign_groups_policy(groups, policy_name)
+        create_oidc_role(make_role_name(policy_name), groups, policy_name)
+      end
+
       def verify_policy(identity, policy_name)
         sub = identity.sub
         policies, _ = get_entity_data(sub)
@@ -28,7 +33,7 @@ module Clients
         end
       end
 
-      def remove_policy(identity, policy_name)
+      def remove_identity_policy(identity, policy_name)
         sub = identity.sub
         Domain.with_advisory_lock(sub) do
           policies, metadata = get_entity_data(sub)
@@ -38,7 +43,15 @@ module Clients
         client.sys.delete_policy(policy_name)
       end
 
+      def remove_groups_policy(policy_name)
+        remove_oidc_role(make_role_name(policy_name))
+      end
+
       private
+
+      def make_role_name(policy_name)
+        %Q(#{policy_name.gsub("/", "_")}-role)
+      end
 
       def create_astral_policy
         policy = <<-HCL
@@ -65,6 +78,9 @@ module Clients
         }
         path "auth/oidc/config" {
           capabilities = ["read"]
+        }
+        path "auth/oidc/role/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "/sys/policy/*" {
           capabilities = ["create", "read", "update", "delete", "list"]

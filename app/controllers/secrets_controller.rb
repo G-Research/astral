@@ -39,6 +39,6 @@ class SecretsController < ApplicationController
   private
 
   def params_permitted
-    params.require(:secret).permit(:path, data: {})
+    params.require(:secret).permit(:path, :groups, data: {})
   end
 end

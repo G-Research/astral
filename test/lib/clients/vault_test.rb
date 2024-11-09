@@ -68,7 +68,7 @@ class VaultTest < ActiveSupport::TestCase
     # now has a new token
     assert_not_equal vault_token, @client.token
     # ensure we can write with the new token
-    assert_instance_of Vault::Secret, @client.kv_write(@identity, "testing/secret", { password: "sicr3t" })
+    assert_instance_of Vault::Secret, @client.kv_write(@identity, [], "testing/secret", { password: "sicr3t" })
   end
 
   test "entity methods" do
@@ -87,7 +87,7 @@ class VaultTest < ActiveSupport::TestCase
   test "kv methods" do
     # check kv_write
     path = "test/path/#{SecureRandom.hex}"
-    secret = @client.kv_write(@identity, path, { data: "data" })
+    secret = @client.kv_write(@identity, [], path, { data: "data" })
     assert_kind_of Vault::Secret, secret
 
     # check kv_read
@@ -96,7 +96,7 @@ class VaultTest < ActiveSupport::TestCase
 
     # check policy is created
     entity = @client.read_entity(@identity.sub)
-    assert_includes entity.data[:policies], "kv_policy/#{path}"
+    assert_includes entity.data[:policies], "kv_policy/#{path}/producer"
 
     # check kv_read denied to other identity
     alt_identity = Identity.new
@@ -146,8 +146,8 @@ class VaultTest < ActiveSupport::TestCase
     assert_match /no such alias/, err.message
   end
 
-  test ".assign_policy creates valid entity" do
-    @client.assign_policy(@identity, "test_path")
+  test ".assign_identity_policy creates valid entity" do
+    @client.assign_identity_policy(@identity, "test_path")
     entity = @client.read_entity(@identity.sub)
     assert entity.data[:policies].any? { |p|
       p == "test_path" }

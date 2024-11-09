@@ -5,7 +5,6 @@ class Domain < ApplicationRecord
     encrypts :fqdn, :users, :groups
   end
 
-
   def groups_array
     (groups || "").split(",").sort.uniq
   end
