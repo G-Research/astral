@@ -64,11 +64,13 @@ class VaultTest < ActiveSupport::TestCase
   test ".rotate_token" do
     # begins with default token
     assert_equal vault_token, @client.token
-    assert @client.rotate_token
     # now has a new token
+    assert @client.rotate_token
     assert_not_equal vault_token, @client.token
     # ensure we can write with the new token
-    assert_instance_of Vault::Secret, @client.kv_write(@identity, [], "testing/secret", { password: "sicr3t" })
+    kv_path = "testing/#{SecureRandom.hex}"
+    assert_instance_of Vault::Secret, @client.kv_write(@identity, [], kv_path, { password: "sicr3t" })
+    assert @client.kv_delete(@identity, kv_path)
   end
 
   test "entity methods" do

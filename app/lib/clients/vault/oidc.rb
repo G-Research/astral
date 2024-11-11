@@ -33,6 +33,10 @@ module Clients
         client.logical.delete("auth/oidc/role/#{role_name}")
       end
 
+      def read_oidc_role(role_name)
+        client.logical.read("auth/oidc/role/#{role_name}")
+      end
+
       private
 
       def create_client_config(issuer, client_id, client_secret)
