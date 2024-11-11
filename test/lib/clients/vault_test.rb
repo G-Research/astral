@@ -89,7 +89,7 @@ class VaultTest < ActiveSupport::TestCase
   test "kv methods" do
     # check kv_write
     path = "test/path/#{SecureRandom.hex}"
-    secret = @client.kv_write(@identity, [], path, { data: "data" })
+    secret = @client.kv_write(@identity, [ "group_can_read" ], path, { data: "data" })
     assert_kind_of Vault::Secret, secret
 
     # check kv_read
@@ -100,11 +100,16 @@ class VaultTest < ActiveSupport::TestCase
     entity = @client.read_entity(@identity.sub)
     assert_includes entity.data[:policies], "kv_policy/#{path}/producer"
 
-    # check kv_read denied to other identity
+    # check kv_read denied to other identity by default
     alt_identity = Identity.new
     alt_identity.sub = SecureRandom.hex(4)
     err = assert_raises { @client.kv_read(alt_identity, path) }
     assert_kind_of AuthError, err
+
+    # check kv_read permitted to other identity with group membership
+    alt_identity.groups = [ "group_can_read" ]
+    group_read_secret = @client.kv_read(alt_identity, path)
+    assert_kind_of Vault::Secret, group_read_secret
 
     # check kv_delete denied to other identity
     err = assert_raises { @client.kv_delete(alt_identity, path) }

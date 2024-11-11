@@ -32,9 +32,9 @@ module Clients
         return if policies.any? { |p| p == producer_policy_name }
 
         # check group role
-        if groups.present? && group_role_name.present?
+        if groups.present? && consumer_policy_name.present?
           role = read_oidc_role(make_role_name(consumer_policy_name))
-          return if (role.data["bound_claims"] & groups).any?
+          return if ((role.data.dig(:bound_claims, :groups) || []) & groups).any?
         end
         raise AuthError.new("Policy has not been granted to the identity")
       end
