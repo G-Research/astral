@@ -4,7 +4,7 @@ module Clients
       extend Policy
 
       def kv_read(identity, path)
-        verify_policy(identity, producer_policy_path(path), identity.groups, consumer_policy_path(path))
+        verify_policy(identity, producer_policy_path(path), consumer_policy_path(path))
         client.kv(kv_mount).read(path)
       end
 

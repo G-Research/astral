@@ -25,16 +25,16 @@ module Clients
         create_oidc_role(make_role_name(policy_name), groups, policy_name)
       end
 
-      def verify_policy(identity, producer_policy_name, groups = nil, consumer_policy_name = nil)
+      def verify_policy(identity, producer_policy_name, consumer_policy_name = nil)
         # check identity policies
         sub = identity.sub
         policies, _ = get_entity_data(sub)
         return if policies.any? { |p| p == producer_policy_name }
 
         # check group role
-        if groups.present? && consumer_policy_name.present?
+        if consumer_policy_name.present?
           role = read_oidc_role(make_role_name(consumer_policy_name))
-          return if ((role.data.dig(:bound_claims, :groups) || []) & groups).any?
+          return if ((role&.data&.dig(:bound_claims, :groups) || []) & identity.groups).any?
         end
         raise AuthError.new("Policy has not been granted to the identity")
       end
