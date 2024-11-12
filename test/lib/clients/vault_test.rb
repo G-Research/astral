@@ -111,7 +111,7 @@ class VaultTest < ActiveSupport::TestCase
     group_read_secret = @client.kv_read(alt_identity, path)
     assert_kind_of Vault::Secret, group_read_secret
 
-    # check kv_delete denied to other identity
+    # check kv_delete denied to other identity even with group
     err = assert_raises { @client.kv_delete(alt_identity, path) }
     assert_kind_of AuthError, err
 

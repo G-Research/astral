@@ -31,7 +31,7 @@ module Clients
         policies, _ = get_entity_data(sub)
         return if policies.any? { |p| p == producer_policy_name }
 
-        # check group role
+        # check group membership in consumer policy if given
         if consumer_policy_name.present?
           role = read_oidc_role(make_role_name(consumer_policy_name))
           return if ((role&.data&.dig(:bound_claims, :groups) || []) & identity.groups).any?
