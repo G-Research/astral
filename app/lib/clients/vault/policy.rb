@@ -29,7 +29,7 @@ module Clients
         # check identity policies
         sub = identity.sub
         policies, _ = get_entity_data(sub)
-        return if policies.any? { |p| p == producer_policy_name }
+        return if (policies || []).any? { |p| p == producer_policy_name }
 
         # check group membership in consumer policy if given
         if consumer_policy_name.present?
