@@ -162,9 +162,6 @@ config/astral.yml).
 
 The rails test's configure the OIDC initial user, so if the tests pass,
 you can invoke the oidc login as follows:
-
-To use SSL in production, provide the necessary environment (SSL_CERT, SSL_KEY) to
-the container environment, and use the `bin/ssl.sh` startup command. Eg:
 ```
   export VAULT_ADDR=http://127.0.0.1:8200; vault login -method=oidc
 ```
