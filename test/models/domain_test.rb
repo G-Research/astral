@@ -5,7 +5,7 @@ class DomainTest < ActiveSupport::TestCase
   def setup
     @attributes = {
       fqdn: "example4.com",
-      users: "john.doe@example.com"
+      users: [ "john.doe@example.com" ]
     }
     @domain = Domain.new(@attributes)
   end
@@ -24,15 +24,5 @@ class DomainTest < ActiveSupport::TestCase
     @domain.fqdn = nil
     assert_not @domain.valid?
     assert_includes @domain.errors[:fqdn], "can't be blank"
-  end
-
-  test "#groups_array should convert to array, sort, and dedupe groups" do
-    @domain.groups = "two,two,one"
-    assert_equal [ "one", "two" ], @domain.groups_array
-  end
-
-  test "#users_array should convert to array, sort, and dedupe users" do
-    @domain.users = "two,two,one"
-    assert_equal [ "one", "two" ], @domain.users_array
   end
 end

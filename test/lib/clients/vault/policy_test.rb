@@ -24,10 +24,8 @@ class PolicyTest < ActiveSupport::TestCase
   test "#verify_policy looks for a role corresponding to consumer policy when supplied" do
     producer_policy = "some/policy/name"
     consumer_policy = "some/policy/other"
-    read_oidc_response = OpenStruct.new(data: { bound_claims: { groups: [ "my-group" ] } })
     @client.expects(:get_entity_data).with(@identity.sub).returns([ [], nil ])
-    @client.expects(:read_oidc_role).with("some_policy_other-role").returns(read_oidc_response)
-    err = assert_raises { @client.verify_policy(@identity, producer_policy, consumer_policy) }
+    err = assert_raises { @client.verify_policy(@identity, producer_policy, [ "no-group-match" ], consumer_policy) }
     assert_kind_of AuthError, err
   end
 
@@ -35,9 +33,8 @@ class PolicyTest < ActiveSupport::TestCase
     producer_policy = "some/policy/name"
     consumer_policy = "some/policy/other"
     @identity.groups = [ "my-group" ]
-    read_oidc_response = OpenStruct.new(data: { bound_claims: { groups: [ "my-group" ] } })
     @client.expects(:get_entity_data).with(@identity.sub).returns([ [], nil ])
-    @client.expects(:read_oidc_role).with("some_policy_other-role").returns(read_oidc_response)
-    assert_nil @client.verify_policy(@identity, producer_policy, consumer_policy)
+    @client.expects(:get_group_data).with("my-group").returns([ [ consumer_policy ], {} ])
+    assert_nil @client.verify_policy(@identity, producer_policy, [ "my-group" ], consumer_policy)
   end
 end

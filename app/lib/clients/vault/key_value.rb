@@ -4,11 +4,12 @@ module Clients
       extend Policy
 
       def kv_read(identity, path)
-        verify_policy(identity, producer_policy_path(path), consumer_policy_path(path))
+        s = Secret.find_by(path: path)
+        verify_policy(identity, producer_policy_path(path), s&.read_groups, consumer_policy_path(path))
         client.kv(kv_mount).read(path)
       end
 
-      def kv_write(identity, groups, path, data)
+      def kv_write(identity, read_groups, path, data)
         # only producer can replace existing secret
         if client.kv(kv_mount).read(path)
           verify_policy(identity, producer_policy_path(path))
@@ -16,8 +17,10 @@ module Clients
 
         create_kv_policies(path)
         assign_identity_policy(identity, producer_policy_path(path))
-        assign_groups_policy(groups, consumer_policy_path(path))
-        client.logical.write("#{kv_mount}/data/#{path}", data: data)
+        assign_groups_policy(read_groups, consumer_policy_path(path))
+        s = client.logical.write("#{kv_mount}/data/#{path}", data: data)
+        Secret.find_or_create_by(path: path).update(owner: identity.sub, read_groups: read_groups)
+        s
       end
 
       def kv_delete(identity, path)
@@ -25,9 +28,11 @@ module Clients
           return
         end
         verify_policy(identity, producer_policy_path(path))
+        secret = Secret.find_by(path: path)
         client.logical.delete("#{kv_mount}/data/#{path}")
         remove_identity_policy(identity, producer_policy_path(path))
-        remove_groups_policy(consumer_policy_path(path))
+        remove_groups_policy((secret&.read_groups || []), consumer_policy_path(path))
+        secret.destroy! if secret
       end
 
       def configure_kv

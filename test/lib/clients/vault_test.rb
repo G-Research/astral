@@ -103,7 +103,9 @@ class VaultTest < ActiveSupport::TestCase
     # check kv_read denied to other identity by default
     alt_identity = Identity.new
     alt_identity.sub = SecureRandom.hex(4)
-    err = assert_raises { @client.kv_read(alt_identity, path) }
+    err = assert_raises do
+      @client.kv_read(alt_identity, path)
+    end
     assert_kind_of AuthError, err
 
     # check kv_read permitted to other identity with group membership

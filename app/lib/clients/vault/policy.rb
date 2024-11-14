@@ -22,19 +22,23 @@ module Clients
       end
 
       def assign_groups_policy(groups, policy_name)
-        create_oidc_role(make_role_name(policy_name), groups, policy_name)
+        groups.each do |group|
+          put_group(group, [ policy_name ])
+        end
       end
 
-      def verify_policy(identity, producer_policy_name, consumer_policy_name = nil)
+      def verify_policy(identity, producer_policy_name, consumer_groups = nil, consumer_policy_name = nil)
         # check identity policies
         sub = identity.sub
         policies, _ = get_entity_data(sub)
         return if (policies || []).any? { |p| p == producer_policy_name }
 
         # check group membership in consumer policy if given
-        if consumer_policy_name.present?
-          role = read_oidc_role(make_role_name(consumer_policy_name))
-          return if ((role&.data&.dig(:bound_claims, :groups) || []) & identity.groups).any?
+        if consumer_groups.present? && consumer_policy_name.present?
+          (consumer_groups & identity.groups).each do |group|
+            policies, _ = get_group_data(group)
+            return if (policies || []).any? { |p| p == consumer_policy_name }
+          end
         end
         raise AuthError.new("Policy has not been granted to the identity")
       end
@@ -49,8 +53,19 @@ module Clients
         client.sys.delete_policy(policy_name)
       end
 
-      def remove_groups_policy(policy_name)
-        remove_oidc_role(make_role_name(policy_name))
+      def remove_group_policy(group, policy_name)
+        Domain.with_advisory_lock(group) do
+          policies, metadata = get_group_data(group)
+          policies.reject! { |p| p == policy_name }
+          put_group(group, policies, metadata)
+        end
+        client.sys.delete_policy(policy_name)
+      end
+
+      def remove_groups_policy(groups, policy_name)
+        groups.each do |group|
+          remove_group_policy(group, policy_name)
+        end
       end
 
       private
@@ -79,14 +94,17 @@ module Clients
         path "identity/entity-alias" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
+        path "identity/group/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
         path "/sys/auth" {
           capabilities = ["read"]
         }
         path "auth/oidc/config" {
           capabilities = ["read"]
-        }
-        path "auth/oidc/role/*" {
-          capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "/sys/policy/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
