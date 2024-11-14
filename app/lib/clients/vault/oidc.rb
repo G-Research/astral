@@ -19,24 +19,6 @@ module Clients
         client.logical.read("auth/oidc/config")
       end
 
-      def create_oidc_role(role_name, read_groups, policy_name)
-        client.logical.write("auth/oidc/role/#{role_name}",
-                             user_claim: "sub",
-                             groups_claim: "groups",
-                             bound_claims: { "groups" => read_groups },
-                             policies: policy_name,
-                             oidc_scopes: "email groups",
-                             allowed_redirect_uris: Config[:oidc_redirect_uris])
-      end
-
-      def remove_oidc_role(role_name)
-        client.logical.delete("auth/oidc/role/#{role_name}")
-      end
-
-      def read_oidc_role(role_name)
-        client.logical.read("auth/oidc/role/#{role_name}")
-      end
-
       private
 
       def create_client_config(issuer, client_id, client_secret)
