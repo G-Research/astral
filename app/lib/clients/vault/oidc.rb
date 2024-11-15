@@ -11,7 +11,7 @@ module Clients
 
       def configure_oidc_user(name, email, policy)
         client.sys.put_policy(email, policy)
-        put_entity(name, email)
+        put_entity(name, [ email ])
         put_entity_alias(name, email, "oidc")
       end
 

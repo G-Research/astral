@@ -15,7 +15,7 @@ class VaultTest < ActiveSupport::TestCase
     @root_ca_mount = SecureRandom.hex(4)
     @intermediate_ca_mount = SecureRandom.hex(4)
     @kv_mount = SecureRandom.hex(4)
-    @policies = SecureRandom.hex(4)
+    @policies = [ SecureRandom.hex(4) ]
     @entity_name = SecureRandom.hex(4)
     @alias_name = SecureRandom.hex(4)
     @identity = Identity.new
@@ -79,7 +79,7 @@ class VaultTest < ActiveSupport::TestCase
 
     @client.put_entity(@entity_name, @policies)
     entity =  @client.read_entity(@entity_name)
-    assert_equal @policies, entity.data[:policies][0]
+    assert_equal @policies, entity.data[:policies]
 
     @client.delete_entity(@entity_name)
     entity =  @client.read_entity(@entity_name)

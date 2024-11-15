@@ -24,6 +24,7 @@ module Clients
       def assign_groups_policy(groups, policy_name)
         groups.each do |group|
           put_group(group, [ policy_name ])
+          put_group_alias(group, "oidc")
         end
       end
 
@@ -48,7 +49,7 @@ module Clients
         Domain.with_advisory_lock(sub) do
           policies, metadata = get_entity_data(sub)
           policies.reject! { |p| p == policy_name }
-          put_entity(sub, policies, metadata)
+          write_identity("identity/entity", sub, policies, metadata)
         end
         client.sys.delete_policy(policy_name)
       end
