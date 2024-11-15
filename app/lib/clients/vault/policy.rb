@@ -14,9 +14,7 @@ module Clients
         sub = identity.sub
         email = identity.email
         Domain.with_advisory_lock(sub) do
-          policies, metadata = get_entity_data(sub)
-          policies.append(policy_name).uniq!
-          put_entity(sub, policies, metadata)
+          put_entity(sub, [ policy_name ])
           put_entity_alias(sub, email, "oidc")
         end
       end
@@ -47,18 +45,26 @@ module Clients
       def remove_identity_policy(identity, policy_name)
         sub = identity.sub
         Domain.with_advisory_lock(sub) do
-          policies, metadata = get_entity_data(sub)
+          policies, _ = get_entity_data(sub)
           policies.reject! { |p| p == policy_name }
-          write_identity("identity/entity", sub, policies, metadata)
+          write_identity(path: "identity/entity",
+                         name: sub,
+                         policies: policies,
+                         extra_params: [ :disabled, :metadata ],
+                         merge_policies: false)
         end
         client.sys.delete_policy(policy_name)
       end
 
       def remove_group_policy(group, policy_name)
         Domain.with_advisory_lock(group) do
-          policies, metadata = get_group_data(group)
+          policies, _ = get_group_data(group)
           policies.reject! { |p| p == policy_name }
-          put_group(group, policies, metadata)
+          write_identity(path: "identity/group",
+                         name: group,
+                         policies: policies,
+                         extra_params: [ :disabled, :metadata ],
+                         merge_policies: false)
         end
         client.sys.delete_policy(policy_name)
       end
@@ -89,6 +95,9 @@ module Clients
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/entity-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/group/*" {
