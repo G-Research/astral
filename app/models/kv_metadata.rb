@@ -1,4 +1,4 @@
-class Secret < ApplicationRecord
+class KvMetadata < ApplicationRecord
   validates :path, presence: true
   validates :owner, presence: true
 

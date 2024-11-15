@@ -1,6 +1,6 @@
-class CreateSecrets < ActiveRecord::Migration[7.2]
+class CreateKvMetadata < ActiveRecord::Migration[7.2]
   def change
-    create_table :secrets do |t|
+    create_table :kv_metadata do |t|
       t.string :path, null: false, index: { unique: true }
       t.string :owner, null: false
       t.string :read_groups, null: true
