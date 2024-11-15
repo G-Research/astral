@@ -21,13 +21,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_14_150941) do
     t.index ["fqdn"], name: "index_domains_on_fqdn", unique: true
   end
 
-  create_table "secrets", force: :cascade do |t|
+  create_table "kv_metadata", force: :cascade do |t|
     t.string "path", null: false
     t.string "owner", null: false
     t.string "read_groups"
     t.string "write_groups"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["path"], name: "index_secrets_on_path", unique: true
+    t.index ["path"], name: "index_kv_metadata_on_path", unique: true
   end
 end
