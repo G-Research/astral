@@ -1,68 +1,46 @@
 module Clients
   class Vault
     module Identity
-      def put_entity(name, policies, metadata = {})
-        Domain.with_advisory_lock(name) do
-          original_policies, original_metadata = get_entity_data(name)
-          policies = (policies || []) + original_policies
-          metadata = (metadata || {}).merge((original_metadata || {}))
-          write_identity("identity/entity", name, policies, metadata)
-        end
+      def put_entity_policies(name, policies)
+        write_identity(path: "identity/entity",
+                       name: name,
+                       policies: policies,
+                       extra_params: [:metadata, :disabled])
       end
 
-      def put_group(name, policies, metadata = {})
-        Domain.with_advisory_lock(name) do
-          original_policies, original_metadata = get_group_data(name)
-          policies = (policies || []) + original_policies
-          metadata = metadata.merge((original_metadata || {}))
-          write_identity("identity/group", name, policies.uniq, metadata, type: "external")
-        end
-      end
-
-      def get_group_data(name)
-        get_identity_data("identity/group/name/#{name}")
+      def put_group_policies(name, policies)
+        write_identity(path: "identity/group",
+                       name: name,
+                       policies: policies,
+                       extra_params: [:metadata, :type, :member_group_ids, :member_entity_ids],
+                       defaults: { type: "external" })
       end
 
       def read_entity(sub)
         read_identity("identity/entity/name/#{sub}")
       end
 
-      def get_entity_data(sub)
-        get_identity_data("identity/entity/name/#{sub}")
-      end
-
       def delete_entity(name)
         client.logical.delete("identity/entity/name/#{name}")
       end
 
-      def read_group_alias(entity_name, alias_name)
-        id = read_entity_alias_id(entity_name, alias_name)
-        client.logical.read("identity/entity-alias/id/#{id}")
-      end
-
       private
 
-      def write_identity(path, name, policies, metadata, extra_params = {})
-        params = {
-          name: name,
-          policies: policies,
-          metadata: metadata
-        }.merge(extra_params)
-
-        client.logical.write(path, params)
+      def write_identity(path:, name:, policies:, defaults: {}, extra_params: [])
+        full_path = "#{path}/name/#{name}"
+        Domain.with_advisory_lock(full_path) do
+          identity = read_identity(full_path)
+          policies = (policies || []) + (identity&.data[:policies] || [])
+          params = defaults.merge({
+            name: name,
+            policies: policies.uniq
+          }).merge(identity.slice(*extra_params))
+          client.logical.write(path, params)
+        end
       end
 
       def read_identity(path)
         client.logical.read(path)
-      end
-
-      def get_identity_data(path)
-        identity = read_identity(path)
-        if identity.nil?
-          [ [], {} ]
-        else
-          [ identity.data[:policies], identity.data[:metadata] ]
-        end
       end
     end
   end

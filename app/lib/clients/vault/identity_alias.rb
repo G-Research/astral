@@ -19,6 +19,11 @@ module Clients
         write_identity_alias("group", group_name, auth_method)
       end
 
+      def read_group_alias(group_name, alias_name)
+        id = read_entity_alias_id(group_name, alias_name)
+        client.logical.read("identity/entity-alias/id/#{id}")
+      end
+
       def read_entity_alias_id(entity_name, alias_name)
         e = read_entity(entity_name)
         if e.nil?
