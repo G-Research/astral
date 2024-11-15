@@ -9,7 +9,7 @@ module Clients
         opts = cert_issue_request.attributes
         # Generate the TLS certificate using the intermediate CA
         tls_cert = client.logical.write(cert_path, opts)
-        assign_identity_policy(identity, GENERIC_CERT_POLICY_NAME)
+        assign_entity_policy(identity, GENERIC_CERT_POLICY_NAME)
         OpenStruct.new tls_cert.data
       end
 

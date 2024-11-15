@@ -16,7 +16,7 @@ module Clients
         end
 
         create_kv_policies(path)
-        assign_identity_policy(identity, producer_policy_path(path))
+        assign_entity_policy(identity, producer_policy_path(path))
         assign_groups_policy(read_groups, consumer_policy_path(path))
         s = client.logical.write("#{kv_mount}/data/#{path}", data: data)
         KvMetadata.find_or_create_by(path: path).update(owner: identity.sub, read_groups: read_groups)

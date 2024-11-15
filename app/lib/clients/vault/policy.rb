@@ -10,7 +10,7 @@ module Clients
         Clients::Vault.token = token
       end
 
-      def assign_identity_policy(identity, policy_name)
+      def assign_entity_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
         Domain.with_advisory_lock(sub) do
@@ -70,10 +70,6 @@ module Clients
       end
 
       private
-
-      def make_role_name(policy_name)
-        %Q(#{policy_name.gsub("/", "_")}-role)
-      end
 
       def create_astral_policy
         policy = <<-HCL

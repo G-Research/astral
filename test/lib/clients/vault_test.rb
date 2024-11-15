@@ -155,8 +155,8 @@ class VaultTest < ActiveSupport::TestCase
     assert_match /no such alias/, err.message
   end
 
-  test ".assign_identity_policy creates valid entity" do
-    @client.assign_identity_policy(@identity, "test_path")
+  test ".assign_entity_policy creates valid entity" do
+    @client.assign_entity_policy(@identity, "test_path")
     entity = @client.read_entity(@identity.sub)
     assert entity.data[:policies].any? { |p|
       p == "test_path" }
