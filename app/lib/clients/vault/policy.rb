@@ -1,7 +1,7 @@
 module Clients
   class Vault
     module Policy
-      extend Entity
+      extend Identity
       extend Oidc
 
       def rotate_token

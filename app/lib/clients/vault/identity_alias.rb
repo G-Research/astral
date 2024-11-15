@@ -1,6 +1,6 @@
 module Clients
   class Vault
-    module EntityAlias
+    module IdentityAlias
       def put_entity_alias(entity_name, alias_name, auth_method)
         e = read_entity(entity_name)
         if e.nil?

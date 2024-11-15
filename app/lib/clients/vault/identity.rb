@@ -1,6 +1,6 @@
 module Clients
   class Vault
-    module Entity
+    module Identity
       def put_entity(name, policies, metadata = {})
         Domain.with_advisory_lock(name) do
           original_policies, original_metadata = get_entity_data(name)
