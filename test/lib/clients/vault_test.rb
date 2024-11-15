@@ -129,30 +129,45 @@ class VaultTest < ActiveSupport::TestCase
 
   test "entity_alias methods" do
     # confirm no entity yet
+    auth_path = "token"
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such entity/, err.message
 
     # confirm no alias yet
     @client.put_entity(@entity_name, @policies)
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
 
-    # create alias
-    auth_method = "token"
-    @client.put_entity_alias(@entity_name, @alias_name, auth_method)
-    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
-    assert_equal auth_method, entity_alias.data[:mount_type]
+    # create token alias
+    @client.put_entity_alias(@entity_name, @alias_name, auth_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, auth_path)
+    assert_equal auth_path, entity_alias.data[:mount_type]
+
+    # create different alias type with same name
+    oidc_path = "oidc"
+    @client.put_entity_alias(@entity_name, @alias_name, oidc_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, oidc_path)
+    assert_equal oidc_path, entity_alias.data[:mount_type]
+
+
+    # confirm two aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 2, entity.data[:aliases].size
 
     # confirm deleted alias
-    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name)
+    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     err = assert_raises RuntimeError do
-      @client.delete_entity_alias(@entity_name, @alias_name)
+      @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
+
+    # confirm 1 aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 1, entity.data[:aliases].size
   end
 
   test ".assign_entity_policy creates valid entity" do
