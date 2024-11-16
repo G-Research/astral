@@ -28,7 +28,7 @@ module Clients
       private
 
       def find_identity_alias_id(identity, alias_name, auth_path)
-        aliases = (identity.data[:aliases] || [ identity.data[:alias] ])
+        aliases = identity.data[:aliases] || [ identity.data[:alias] ]
         a = find_alias(aliases, alias_name, auth_path)
         a&.fetch(:id)
       end
