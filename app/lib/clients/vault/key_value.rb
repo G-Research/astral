@@ -4,8 +4,8 @@ module Clients
       extend Policy
 
       def kv_read(identity, path)
-        s = KvMetadata.find_by(path: path)
-        verify_policy(identity, producer_policy_path(path), s&.read_groups, consumer_policy_path(path))
+        kv_metadata = KvMetadata.find_by(path: path)
+        verify_policy(identity, producer_policy_path(path), kv_metadata&.read_groups, consumer_policy_path(path))
         client.kv(kv_mount).read(path)
       end
 
@@ -18,9 +18,9 @@ module Clients
         create_kv_policies(path)
         assign_entity_policy(identity, producer_policy_path(path))
         assign_groups_policy(read_groups, consumer_policy_path(path))
-        s = client.logical.write("#{kv_mount}/data/#{path}", data: data)
+        secret = client.logical.write("#{kv_mount}/data/#{path}", data: data)
         KvMetadata.find_or_create_by(path: path).update(owner: identity.sub, read_groups: read_groups)
-        s
+        secret
       end
 
       def kv_delete(identity, path)
@@ -28,11 +28,11 @@ module Clients
           return
         end
         verify_policy(identity, producer_policy_path(path))
-        secret = KvMetadata.find_by(path: path)
+        kv_metadata = KvMetadata.find_by(path: path)
         client.logical.delete("#{kv_mount}/data/#{path}")
-        remove_identity_policy(identity, producer_policy_path(path))
-        remove_groups_policy((secret&.read_groups || []), consumer_policy_path(path))
-        secret.destroy! if secret
+        remove_entity_policy(identity, producer_policy_path(path))
+        remove_groups_policy((kv_metadata&.read_groups || []), consumer_policy_path(path))
+        kv_metadata.destroy! if kv_metadata
       end
 
       def configure_kv
