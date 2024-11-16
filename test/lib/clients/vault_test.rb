@@ -98,7 +98,7 @@ class VaultTest < ActiveSupport::TestCase
 
     # check policy is created
     entity = @client.read_entity(@identity.sub)
-    assert_includes entity.data[:policies], "kv_policy/#{path}/producer"
+    assert_includes entity.data[:policies], "kv_astral_policy/#{path}/producer"
 
     # check kv_read denied to other identity by default
     alt_identity = Identity.new
@@ -122,7 +122,7 @@ class VaultTest < ActiveSupport::TestCase
     assert del_secret
     # check policy is removed
     entity = @client.read_entity(@identity.sub)
-    assert_not_includes entity.data[:policies], "kv_policy/#{path}"
+    assert_not_includes entity.data[:policies], "kv_astral_policy/#{path}"
     err = assert_raises { @client.kv_read(@identity, path) }
     assert_kind_of AuthError, err
   end

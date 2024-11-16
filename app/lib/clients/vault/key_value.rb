@@ -57,11 +57,11 @@ module Clients
       end
 
       def producer_policy_path(path)
-        "kv_policy/#{path}/producer"
+        "#{kv_mount}_policy/#{path}/producer"
       end
 
       def consumer_policy_path(path)
-        "kv_policy/#{path}/consumer"
+        "#{kv_mount}_policy/#{path}/consumer"
       end
 
       def kv_producer_policy(path)
