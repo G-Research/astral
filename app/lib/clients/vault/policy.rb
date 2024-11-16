@@ -42,7 +42,7 @@ module Clients
         raise AuthError.new("Policy has not been granted to the identity")
       end
 
-      def remove_identity_policy(identity, policy_name)
+      def remove_entity_policy(identity, policy_name)
         sub = identity.sub
         Domain.with_advisory_lock(sub) do
           policies, _ = get_entity_data(sub)
