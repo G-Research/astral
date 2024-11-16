@@ -63,8 +63,9 @@ module Clients
           write_identity(path: "identity/group",
                          name: group,
                          policies: policies,
-                         extra_params: [ :disabled, :metadata ],
-                         merge_policies: false)
+                         extra_params: [ :metadata, :type, :member_group_ids, :member_entity_ids ],
+                         merge_policies: false,
+                         defaults: { type: "external" })
         end
         client.sys.delete_policy(policy_name)
       end

@@ -21,17 +21,17 @@ class PolicyTest < ActiveSupport::TestCase
     assert_nil @client.verify_policy(@identity, policy_name)
   end
 
-  test "#verify_policy looks checks groups for consumer_policy when supplied" do
+  test "#verify_policy checks identity.groups that overlap with supplied groups for the policy" do
     producer_policy = "some/policy/name"
     consumer_policy = "some/policy/other"
-    @identity.groups = [ "my-group" ]
+    @identity.groups = [ "my-group", "some-other-group" ]
     @client.expects(:get_entity_data).with(@identity.sub).returns([ [], nil ])
     @client.expects(:get_group_data).with("my-group").returns([ [], {} ])
-    err = assert_raises { @client.verify_policy(@identity, producer_policy, [ "my-group" ], consumer_policy) }
+    err = assert_raises { @client.verify_policy(@identity, producer_policy, [ "my-group", "yet-another-group" ], consumer_policy) }
     assert_kind_of AuthError, err
   end
 
-  test "#verify_policy permits identity having group which has the consumer policy role" do
+  test "#verify_policy permits identity when one overlapping group (identity.groups and supplied groups) has the policy" do
     producer_policy = "some/policy/name"
     consumer_policy = "some/policy/other"
     @identity.groups = [ "my-group" ]
