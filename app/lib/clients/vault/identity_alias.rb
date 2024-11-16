@@ -9,25 +9,26 @@ module Clients
         write_identity_alias("group", group_name, group_name, auth_method)
       end
 
-
       def read_entity_alias(entity_name, alias_name, auth_path)
-        id = find_identity_alias_id("entity", entity_name, alias_name, auth_path)
-        client.logical.read("identity/entity-alias/id/#{id}")
+        read_identity_alias("entity", entity_name, alias_name, auth_path)
       end
 
       def delete_entity_alias(entity_name, alias_name, auth_path)
-        id = find_identity_alias_id("entity", entity_name, alias_name, auth_path)
+        identity = client.logical.read("identity/entity/name/#{entity_name}")
+        if identity.nil?
+          raise "no such #{type} #{identity_name}"
+        end
+        id = find_identity_alias_id(identity, alias_name, auth_path)
+        if id.nil?
+          raise "no such alias #{alias_name}"
+        end
         client.logical.delete("identity/entity-alias/id/#{id}")
       end
 
       private
 
-      def find_identity_alias_id(type, identity_name, alias_name, auth_path)
-        e = read_identity("identity/#{type}/name/#{identity_name}")
-        if e.nil?
-          raise "no such #{type} #{identity_name}"
-        end
-        aliases = e.data[:aliases]
+      def find_identity_alias_id(identity, alias_name, auth_path)
+        aliases = (identity.data[:aliases] || [ identity.data[:alias] ])
         a = find_alias(aliases, alias_name, auth_path)
         a&.fetch(:id)
       end
@@ -36,15 +37,31 @@ module Clients
         aliases&.find { |a| a[:name] == name && a[:mount_path] == "auth/#{auth_path}/" }
       end
 
+      def read_identity_alias(type, identity_name, alias_name, auth_path)
+        identity = client.logical.read("identity/#{type}/name/#{identity_name}")
+        if identity.nil?
+          raise "no such #{type} #{identity_name}"
+        end
+        id = find_identity_alias_id(identity, alias_name, auth_path)
+        if id.nil?
+          raise "no such alias #{alias_name}"
+        end
+        client.logical.read("identity/#{type}-alias/id/#{id}")
+      end
+
       def write_identity_alias(type, identity_name, alias_name, auth_method)
         auth_sym = "#{auth_method}/".to_sym
         accessor = client.logical.read("/sys/auth")
         accessor = accessor.data[auth_sym][:accessor]
 
-        id = find_identity_alias_id(type, identity_name, alias_name, "oidc")
+        identity = client.logical.read("identity/#{type}/name/#{identity_name}")
+        if identity.nil?
+          raise "no such #{type} #{identity_name}"
+        end
+        aliases = (identity.data[:aliases] || [ identity.data[:alias] ])
+        identity_alias = find_alias(aliases, alias_name, "oidc")
         # only create alias when not existant
-        unless id
-          identity = read_identity("identity/#{type}/name/#{identity_name}")
+        unless identity_alias
           client.logical.write("identity/#{type}-alias",
                                {
                                  name: alias_name,
