@@ -81,9 +81,9 @@ class OidcProvider
   end
 
   def map_userpass_to_entity
-    identity = vault_client.logical.read(
+    entity = vault_client.logical.read(
       "identity/entity/name/#{Config[:initial_user_name]}")
-    entity_id = identity.data[:id]
+    entity_id = entity.data[:id]
     auth_list = vault_client.logical.read("/sys/auth")
     accessor = auth_list.data[:"userpass/"][:accessor]
     vault_client.logical.write("identity/entity-alias",
