@@ -60,4 +60,38 @@ class IdentityTest < ActiveSupport::TestCase
     policies, metadata =  @client.get_group_data(existing_group)
     assert_equal @policies + existing_policies, policies
   end
+
+  test "#put_group retains existing fields (member_entity_ids, type, metadata, etc)" do
+    existing_policies = %w[ policy_from_elsewhere ]
+    existing_group = SecureRandom.hex(4)
+    existing_metadata = { existing_md: "some value" }
+    entity = @client.put_entity(@identity.sub, @policies)
+
+    params = {
+      policies: existing_policies,
+      metadata: existing_metadata,
+      member_entity_ids: [ entity.data[:id] ],
+      type: "internal"
+    }
+    write_identity(
+      path: "identity/group",
+      name: existing_group,
+      params: params
+    )
+    group = @client.read_group(existing_group)
+    assert_equal existing_policies, group.data[:policies]
+
+    @client.put_group(existing_group, @policies)
+    group = @client.read_group(existing_group)
+    assert_equal existing_metadata, group.data[:metadata]
+    assert_equal [ entity.data[:id] ], group.data[:member_entity_ids]
+    assert_equal "internal", group.data[:type]
+  end
+
+  private
+
+  def write_identity(path:, name:, params:)
+    full_path = "#{path}/name/#{name}"
+    @client.send(:client).logical.write(full_path, params)
+  end
 end

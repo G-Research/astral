@@ -28,6 +28,10 @@ module Clients
         get_identity_data("identity/entity/name/#{sub}")
       end
 
+      def read_group(name)
+        client.logical.read("identity/group/name/#{name}")
+      end
+
       def get_group_data(name)
         get_identity_data("identity/group/name/#{name}")
       end
