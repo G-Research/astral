@@ -22,7 +22,7 @@ module Clients
       def assign_groups_policy(groups, policy_name)
         groups.each do |group|
           put_group(group, [ policy_name ])
-          put_group_alias(group, "oidc")
+          put_group_alias(group, "#{group}-alias", "oidc")
         end
       end
 
@@ -98,6 +98,9 @@ module Clients
         path "identity/entity-alias" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
+        path "identity/entity-alias/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
         path "identity/group" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
@@ -105,6 +108,9 @@ module Clients
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/group-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group-alias/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "/sys/auth" {

@@ -5,12 +5,16 @@ module Clients
         write_identity_alias("entity", entity_name, alias_name, auth_method)
       end
 
-      def put_group_alias(group_name, auth_method)
-        write_identity_alias("group", group_name, group_name, auth_method)
+      def put_group_alias(group_name, alias_name, auth_method)
+        write_identity_alias("group", group_name, alias_name, auth_method)
       end
 
       def read_entity_alias(entity_name, alias_name, auth_path)
         read_identity_alias("entity", entity_name, alias_name, auth_path)
+      end
+
+      def read_group_alias(group_name, alias_name, auth_path)
+        read_identity_alias("group", group_name, alias_name, auth_path)
       end
 
       def delete_entity_alias(entity_name, alias_name, auth_path)
