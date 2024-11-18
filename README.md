@@ -11,7 +11,7 @@ Some features of Astral:
 0) Configure Astral-specific Certificate Authority and Key-Value stores in Vault
 1) Authenticate requests for cerficates or secrets using a third party
    trusted source (JWT with signing key, eg)
-2) For certiciates:
+2) For certificates:
 	a) Authorize the request using a Domain Ownership registry, where domain owner 
 	   or authorized groups must match the identity of the requesting client
 	b) When authorized, obtain a certificate for the common name
