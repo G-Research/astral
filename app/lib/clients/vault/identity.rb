@@ -16,16 +16,16 @@ module Clients
                        defaults: { type: "external" })
       end
 
-      def read_entity(sub)
-        client.logical.read("identity/entity/name/#{sub}")
+      def read_entity(name)
+        client.logical.read("identity/entity/name/#{name}")
       end
 
       def delete_entity(name)
         client.logical.delete("identity/entity/name/#{name}")
       end
 
-      def get_entity_data(sub)
-        get_identity_data("identity/entity/name/#{sub}")
+      def get_entity_data(name)
+        get_identity_data("identity/entity/name/#{name}")
       end
 
       def read_group(name)

@@ -1,12 +1,12 @@
 module Clients
   class Vault
     module IdentityAlias
-      def put_entity_alias(entity_name, alias_name, auth_method)
-        write_identity_alias("entity", entity_name, alias_name, auth_method)
+      def put_entity_alias(entity_name, alias_name, auth_path)
+        write_identity_alias("entity", entity_name, alias_name, auth_path)
       end
 
-      def put_group_alias(group_name, alias_name, auth_method)
-        write_identity_alias("group", group_name, alias_name, auth_method)
+      def put_group_alias(group_name, alias_name, auth_path)
+        write_identity_alias("group", group_name, alias_name, auth_path)
       end
 
       def read_entity_alias(entity_name, alias_name, auth_path)
@@ -53,8 +53,8 @@ module Clients
         client.logical.read("identity/#{type}-alias/id/#{id}")
       end
 
-      def write_identity_alias(type, identity_name, alias_name, auth_method)
-        auth_sym = "#{auth_method}/".to_sym
+      def write_identity_alias(type, identity_name, alias_name, auth_path)
+        auth_sym = "#{auth_path}/".to_sym
         accessor = client.logical.read("/sys/auth")
         accessor = accessor.data[auth_sym][:accessor]
 
@@ -63,7 +63,7 @@ module Clients
           raise "no such #{type} #{identity_name}"
         end
         aliases = (identity.data[:aliases] || [ identity.data[:alias] ])
-        identity_alias = find_alias(aliases, alias_name, auth_method)
+        identity_alias = find_alias(aliases, alias_name, auth_path)
         # only create alias when not existant
         unless identity_alias
           client.logical.write("identity/#{type}-alias",

@@ -67,5 +67,8 @@ class IdentityAliasTest < ActiveSupport::TestCase
     assert_nil @client.put_group_alias(@group_name, existing_alias, @auth_path)
     group_alias = @client.read_group_alias(@group_name, existing_alias, @auth_path)
     assert_not_nil group_alias
-  end
+    # verify alias belongs to the group
+    group = @client.read_group(@group_name)
+    assert_equal group_alias.to_h[:data][:canonical_id], group.data[:alias][:canonical_id]
+   end
 end
