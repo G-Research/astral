@@ -19,6 +19,13 @@ class SecretsTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "#update an existing secret with same user is authorized" do
+    existing_path = create_secret
+    assert_response :success
+    create_secret(jwt_authorized, existing_path)
+    assert_response :success
+  end
+
   test "#update an existing secret with a different user is unauthorized" do
     existing_path = create_secret
     assert_response :success
