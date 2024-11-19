@@ -37,8 +37,10 @@ module Clients
           bound_audiences: client_id,
           allowed_redirect_uris: Config[:oidc_redirect_uris],
           user_claim: "email",
+          groups_claim: "groups",
           oidc_scopes: "email",
           token_policies: "default")
+        # add 'verbose_oidc_logging: true` to params for JWT token debugging
       end
 
       def oidc_auth_data

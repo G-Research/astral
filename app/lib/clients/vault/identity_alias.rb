@@ -63,7 +63,7 @@ module Clients
           raise "no such #{type} #{identity_name}"
         end
         aliases = (identity.data[:aliases] || [ identity.data[:alias] ])
-        identity_alias = find_alias(aliases, alias_name, "oidc")
+        identity_alias = find_alias(aliases, alias_name, auth_method)
         # only create alias when not existant
         unless identity_alias
           client.logical.write("identity/#{type}-alias",

@@ -22,7 +22,7 @@ module Clients
       def assign_groups_policy(groups, policy_name)
         groups.each do |group|
           put_group(group, [ policy_name ])
-          put_group_alias(group, "#{group}-alias", "oidc")
+          put_group_alias(group, group, "oidc")
         end
       end
 
