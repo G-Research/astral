@@ -51,6 +51,10 @@ module Clients
                      merge((identity&.data || {}).
                              slice(*extra_params)).
                      compact
+          # cannot supply member ids for external group
+          if params[:type] == "external"
+            params.delete(:member_entity_ids)
+          end
           client.logical.write(path, params)
         end
       end
