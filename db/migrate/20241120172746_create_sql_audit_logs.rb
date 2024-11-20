@@ -8,8 +8,8 @@ class CreateSqlAuditLogs < ActiveRecord::Migration[7.2]
       t.string :subject
       t.string :cert_common_name
       t.string :kv_path
-
       t.timestamps
     end
+    add_index :sql_audit_logs, [:subject, :created_at]
   end
 end

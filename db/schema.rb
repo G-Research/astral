@@ -41,5 +41,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_20_172746) do
     t.string "kv_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["subject", "created_at"], name: "index_sql_audit_logs_on_subject_and_created_at"
   end
 end
