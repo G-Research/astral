@@ -1,0 +1,2 @@
+class SqlAuditLog < ApplicationRecord
+end
