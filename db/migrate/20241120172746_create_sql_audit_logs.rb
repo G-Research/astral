@@ -10,6 +10,6 @@ class CreateSqlAuditLogs < ActiveRecord::Migration[7.2]
       t.string :kv_path
       t.timestamps
     end
-    add_index :sql_audit_logs, [:subject, :created_at]
+    add_index :sql_audit_logs, [ :subject, :created_at ]
   end
 end
