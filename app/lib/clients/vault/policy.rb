@@ -1,7 +1,8 @@
 module Clients
   class Vault
     module Policy
-      extend Entity
+      extend Identity
+      extend Oidc
 
       def rotate_token
         create_astral_policy
@@ -9,33 +10,70 @@ module Clients
         Clients::Vault.token = token
       end
 
-      def assign_policy(identity, policy_name)
+      def assign_entity_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
         Domain.with_advisory_lock(sub) do
-          policies, metadata = get_entity_data(sub)
-          policies.append(policy_name).uniq!
-          put_entity(sub, policies, metadata)
+          put_entity(sub, [ policy_name ])
           put_entity_alias(sub, email, "oidc")
         end
       end
 
-      def verify_policy(identity, policy_name)
-        sub = identity.sub
-        policies, _ = get_entity_data(sub)
-        unless policies.any? { |p| p == policy_name }
-          raise AuthError.new("Policy has not been granted to the identity")
+      def assign_groups_policy(groups, policy_name)
+        groups.each do |group|
+          put_group(group, [ policy_name ])
+          put_group_alias(group, group, "oidc")
         end
       end
 
-      def remove_policy(identity, policy_name)
+      def verify_policy(identity, producer_policy_name, consumer_groups = nil, consumer_policy_name = nil)
+        # check identity policies
+        sub = identity.sub
+        policies, _ = get_entity_data(sub)
+        return if (policies || []).any? { |p| p == producer_policy_name }
+
+        # check group membership in consumer policy if given
+        if consumer_groups.present? && consumer_policy_name.present?
+          (consumer_groups & identity.groups).each do |group|
+            policies, _ = get_group_data(group)
+            return if (policies || []).any? { |p| p == consumer_policy_name }
+          end
+        end
+        raise AuthError.new("Policy has not been granted to the identity")
+      end
+
+      def remove_entity_policy(identity, policy_name)
         sub = identity.sub
         Domain.with_advisory_lock(sub) do
-          policies, metadata = get_entity_data(sub)
+          policies, _ = get_entity_data(sub)
           policies.reject! { |p| p == policy_name }
-          put_entity(sub, policies, metadata)
+          write_identity(path: "identity/entity",
+                         name: sub,
+                         policies: policies,
+                         extra_params: [ :disabled, :metadata ],
+                         merge_policies: false)
         end
         client.sys.delete_policy(policy_name)
+      end
+
+      def remove_group_policy(group, policy_name)
+        Domain.with_advisory_lock(group) do
+          policies, _ = get_group_data(group)
+          policies.reject! { |p| p == policy_name }
+          write_identity(path: "identity/group",
+                         name: group,
+                         policies: policies,
+                         extra_params: [ :metadata, :type, :member_group_ids, :member_entity_ids ],
+                         merge_policies: false,
+                         defaults: { type: "external" })
+        end
+        client.sys.delete_policy(policy_name)
+      end
+
+      def remove_groups_policy(groups, policy_name)
+        groups.each do |group|
+          remove_group_policy(group, policy_name)
+        end
       end
 
       private
@@ -58,6 +96,21 @@ module Clients
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "identity/entity-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/entity-alias/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group/*" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group-alias" {
+          capabilities = ["create", "read", "update", "delete", "list"]
+        }
+        path "identity/group-alias/*" {
           capabilities = ["create", "read", "update", "delete", "list"]
         }
         path "/sys/auth" {

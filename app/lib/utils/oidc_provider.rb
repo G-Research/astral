@@ -57,7 +57,8 @@ class OidcProvider
 
   def create_provider_with_email_scope
     vault_client.logical.write("identity/oidc/scope/email",
-                                template: '{"email": {{identity.entity.metadata.email}}}')
+                                template: '{"groups": {{identity.entity.groups.names}},
+                                            "email": {{identity.entity.metadata.email}}}')
     vault_client.logical.write("identity/oidc/provider/astral",
                                 issuer: Config[:oidc_provider_addr],
                                 allowed_client_ids: @client_id,
@@ -90,5 +91,9 @@ class OidcProvider
                                 name: Config[:initial_user_name],
                                 canonical_id: entity_id,
                                 mount_accessor: accessor)
+    # setup a group membership for intial user
+    vault_client.logical.write("identity/group",
+                                name: "read_group",
+                                member_entity_ids: entity_id)
   end
 end

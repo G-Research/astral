@@ -31,6 +31,7 @@ services:
     volumes:
       - ../cert:/vault/cert
     environment:
+      VAULT_LOG_LEVEL: debug
       VAULT_DEV_ROOT_TOKEN_ID: root_token
       VAULT_LOCAL_CONFIG: >
         {

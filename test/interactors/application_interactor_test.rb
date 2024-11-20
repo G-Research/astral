@@ -3,7 +3,7 @@ require "test_helper"
 class ApplicationInteractorTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:owner_match)
-    @identity = Identity.new(subject: @domain.users_array.first)
+    @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @log = Tempfile.new("log-test")
     Config[:audit_log_file] = @log.path
