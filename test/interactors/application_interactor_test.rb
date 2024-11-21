@@ -5,6 +5,7 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
     @domain = domains(:owner_match)
     @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
+    Thread.current[:request_id] = "request_id"
   end
 
   test ".call will be logged as success" do
