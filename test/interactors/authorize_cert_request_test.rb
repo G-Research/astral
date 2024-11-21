@@ -3,7 +3,7 @@ require "test_helper"
 class AuthorizeCertRequestTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:group_match)
-    @identity = Identity.new(subject: @domain.users_array.first)
+    @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @interactor = AuthorizeCertRequest
   end
@@ -21,14 +21,14 @@ class AuthorizeCertRequestTest < ActiveSupport::TestCase
   end
 
   test ".call with matching group" do
-    @domain.update(users: "different_owner@example.com")
-    @identity.groups = [ @domain.groups_array.first ]
+    @domain.update(users: [ "different_owner@example.com" ])
+    @identity.groups = [ @domain.groups.first ]
     rslt = @interactor.call(identity: @identity, request: @cr)
     assert rslt.success?
   end
 
   test ".call with non-matching group" do
-    @domain.update(users: "different_owner@example.com")
+    @domain.update(users: [ "different_owner@example.com" ])
     @identity.groups = [ "different_group" ]
     rslt = @interactor.call(identity: @identity, request: @cr)
     assert_not rslt.success?

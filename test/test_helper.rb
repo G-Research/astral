@@ -2,6 +2,8 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 require "minitest/mock"
+require "minitest/spec"
+require "mocha/minitest"
 
 module ActiveSupport
   class TestCase
@@ -20,9 +22,16 @@ module ActiveSupport
       @@unauthorized_token ||= JWT.encode(@@unauthorized_data, "bad_secret")
     end
 
+    def jwt_read_group
+      @@read_group_token ||= JWT.encode(@@read_group_data, Config[:jwt_signing_key])
+    end
+
     private
+
     @@authorized_data   = { "sub"=>"john.doe@example.com", "name"=>"John Doe", "iat"=>1516239022,
-                           "groups"=>[ "group1", "group2" ], "aud"=>"astral" }
+                            "groups"=>[ "group1", "group2" ], "aud"=>"astral" }
     @@unauthorized_data = { "sub"=>"application_name", "common_name"=>"example.com", "ip_sans"=>"10.0.1.100" }
+    @@read_group_data   = { "sub"=>"exene.cervenka@example.com", "name"=>"Exene Cervenka", "iat"=>1516239022,
+                            "groups"=>[ "read_group" ], "aud"=>"astral" }
   end
 end

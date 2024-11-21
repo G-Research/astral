@@ -3,7 +3,7 @@ require "test_helper"
 class RefreshDomainTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:owner_match)
-    @identity = Identity.new(subject: @domain.users_array.first)
+    @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @interactor = RefreshDomain
   end

@@ -10,5 +10,5 @@
 
 # this seed is for development only
 if Rails.env.development?
-  Domain.find_or_create_by!(fqdn: "example.com", users: "john.doe@example.com")
+  Domain.find_or_create_by!(fqdn: "example.com", users: [ "john.doe@example.com" ])
 end

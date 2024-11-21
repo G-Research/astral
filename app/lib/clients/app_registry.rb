@@ -27,8 +27,8 @@ module Clients
         OpenStruct.new(
           fqdn: domain_info["fullyQualifiedDomainName"],
           group_delegation: domain_info["ownerDelegatedRequestsToTeam"],
-          groups: domain_info["autoApprovedGroups"],
-          users: domain_info["autoApprovedServiceAccounts"]
+          groups: domain_info["autoApprovedGroups"]&.split(","),
+          users: domain_info["autoApprovedServiceAccounts"]&.split(",")
         )
       end
 

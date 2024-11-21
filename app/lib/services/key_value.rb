@@ -5,8 +5,8 @@ module Services
         impl.kv_read(identity, path)
       end
 
-      def write(identity, path, data)
-        impl.kv_write(identity, path, data)
+      def write(identity, read_groups, path, data)
+        impl.kv_write(identity, read_groups, path, data)
       end
 
       def delete(identity, path)
