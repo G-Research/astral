@@ -1,19 +1,16 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+cert_success:
+  request_id: MyString
+  action: MyString
+  result: MyString
+  subject: MyString
+  cert_common_name: MyString
 
-one:
+
+cert_error:
   request_id: MyString
   action: MyString
   result: MyString
   error: MyString
   subject: MyString
   cert_common_name: MyString
-  kv_path: MyString
 
-two:
-  request_id: MyString
-  action: MyString
-  result: MyString
-  error: MyString
-  subject: MyString
-  cert_common_name: MyString
-  kv_path: MyString

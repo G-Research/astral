@@ -32,11 +32,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_20_172746) do
   end
 
   create_table "sql_audit_logs", force: :cascade do |t|
-    t.string "request_id"
-    t.string "action"
-    t.string "result"
+    t.string "request_id", null: false
+    t.string "action", null: false
+    t.string "result", null: false
     t.string "error"
-    t.string "subject"
+    t.string "subject", null: false
     t.string "cert_common_name"
     t.string "kv_path"
     t.datetime "created_at", null: false
