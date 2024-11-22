@@ -18,6 +18,12 @@ class AuditLogTest < ActiveSupport::TestCase
     end
   end
 
+  test "#new should not set attributes not in attributes argument" do
+    [:error, :kv_path].each do |key|
+      assert_nil @audit_log.send(key), "Attribute #{key} was not set correctly"
+    end
+  end
+
   test "#valid? should be valid with valid attributes" do
     assert @audit_log.valid?
   end
