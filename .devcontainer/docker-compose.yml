@@ -1,5 +1,8 @@
 version: '3'
 
+volumes:
+  postgres-data:
+
 services:
   app:
     build:
@@ -21,6 +24,23 @@ services:
       JWT_SIGNING_KEY: jwt_secret
       APP_REGISTRY_ADDR: http://app_registry:8800
       APP_REGISTRY_TOKEN: app_reg_token
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: astral
+      DB_HOST: db
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: astral
+      POSTGRES_HOSTNAME: localhost
+    command:
+      - postgres
     
   vault:
     image: hashicorp/vault:latest
@@ -75,7 +95,6 @@ services:
             "default_lease_ttl": "168h",
             "max_lease_ttl": "720h"
         }
-
 
   app_registry:
     image: node:latest
