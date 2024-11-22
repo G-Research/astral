@@ -64,7 +64,7 @@ docker run -p 3000:3000 astral:latest
 ```
 
 # Configuration
-Astral is configured in `config/astral.yml` -- availble configuration
+Astral is configured in `config/astral.yml` -- available configuration
 options are listed in the `shared` section. Note that
 configuration values can be supplied in this file or as process
 environment variables with the same names (but
