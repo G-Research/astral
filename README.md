@@ -22,8 +22,9 @@ Some features of Astral:
 
 # Running in development
 
-This Rails app is most easily run and developed in its devcontainer, which includes Vault
-and a Domain Ownership registry (AppRegistry) in the compose environment.
+This Rails app is most easily run and developed in its devcontainer,
+which includes Vault, the Postgres database, a Domain Ownership
+registry (AppRegistry), and an Oidc Provider in the compose environment.
 
 1) Open in devcontainer (automatic in vscode)
 2) Launch server using vscode launch config, or in the terminal run:
@@ -63,13 +64,16 @@ docker run -p 3000:3000 astral:latest
 ```
 
 # Configuration
-Astral is configured in `config/astral.yml` -- all availble
-configuration options are listed in the `shared` section. Note that
+Astral is configured in `config/astral.yml` -- availble configuration
+options are listed in the `shared` section. Note that
 configuration values can be supplied in this file or as process
 environment variables with the same names (but
 UPPER_CASE). Environment vars will override any values in the config
 file.  Per-environment settings in the config file(development, test,
 production) will override the shared values for that type.
+
+Database-specific configuration is found in `config/database.yml`, for
+which environment var overrides are setup to use `DB_` prefix.
 
 ## Database encryption
 The local database can be encrypted, if needed, but requires a bit of setup
