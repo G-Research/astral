@@ -6,6 +6,7 @@ class AuthorizeCertRequestTest < ActiveSupport::TestCase
     @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
     @interactor = AuthorizeCertRequest
+    Thread.current[:request_id] = "request_id"
   end
 
   test ".call with matching owner" do
