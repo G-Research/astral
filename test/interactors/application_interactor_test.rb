@@ -17,7 +17,7 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
                      end)
     rslt = SuccessAction.call(identity: @identity, request: @cr)
     assert rslt.success?
-    log = SqlAuditLog.last
+    log = AuditLog.last
     expected = { "action"=>"SuccessAction", "result"=>"success", "subject"=>"john.doe@example.com", "cert_common_name"=>"example.com" }
     assert expected <= log.attributes
   end
@@ -32,7 +32,7 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
                      end)
     rslt = FailAction.call(identity: @identity, request: @cr)
     assert_not rslt.success?
-    log = SqlAuditLog.last
+    log = AuditLog.last
     expected = { "action"=>"FailAction", "result"=>"failure", "subject"=>"john.doe@example.com", "cert_common_name"=>"example.com" }
     assert expected <= log.attributes
   end

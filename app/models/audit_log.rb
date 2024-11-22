@@ -1,4 +1,4 @@
-class SqlAuditLog < ApplicationRecord
+class AuditLog < ApplicationRecord
   validates :request_id, :action, :result, :subject, presence: true
 
   if Config[:db_encryption]

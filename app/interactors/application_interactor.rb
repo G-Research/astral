@@ -13,6 +13,6 @@ class ApplicationInteractor
       cert_common_name: context.request&.try(:common_name),
       kv_path: context.request&.try(:kv_path)
     }.compact!
-    SqlAuditLog.create!(payload)
+    AuditLog.create!(payload)
   end
 end
