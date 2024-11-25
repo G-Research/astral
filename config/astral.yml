@@ -31,9 +31,6 @@ shared:
   app_registry_client_cert:
   app_registry_client_key:
 
-  # User activity logging
-  audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
-
   oidc_client_id:
   oidc_client_secret:
   oidc_redirect_uris: http://localhost:8250/oidc/callback
