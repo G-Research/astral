@@ -3,15 +3,9 @@ require "test_helper"
 class ApplicationInteractorTest < ActiveSupport::TestCase
   def setup
     @domain = domains(:owner_match)
-    @identity = Identity.new(subject: @domain.users_array.first)
+    @identity = Identity.new(subject: @domain.users.first)
     @cr = Requests::CertIssueRequest.new(common_name: @domain.fqdn)
-    @log = Tempfile.new("log-test")
-    Config[:audit_log_file] = @log.path
-  end
-
-  def teardown
-    @log.close
-    @log.unlink
+    Thread.current[:request_id] = "request_id"
   end
 
   test ".call will be logged as success" do
@@ -23,7 +17,9 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
                      end)
     rslt = SuccessAction.call(identity: @identity, request: @cr)
     assert rslt.success?
-    assert_match %Q("action":"SuccessAction","result":"success","subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
+    log = AuditLog.last
+    expected = { "action"=>"SuccessAction", "result"=>"success", "subject"=>"john.doe@example.com", "cert_common_name"=>"example.com" }
+    assert expected <= log.attributes
   end
 
   test ".call will be logged as failure" do
@@ -36,6 +32,8 @@ class ApplicationInteractorTest < ActiveSupport::TestCase
                      end)
     rslt = FailAction.call(identity: @identity, request: @cr)
     assert_not rslt.success?
-    assert_match %Q("action":"FailAction","result":"failure","subject":"john.doe@example.com","cert_common_name":"example.com"), @log.readlines.last
+    log = AuditLog.last
+    expected = { "action"=>"FailAction", "result"=>"failure", "subject"=>"john.doe@example.com", "cert_common_name"=>"example.com" }
+    assert expected <= log.attributes
   end
 end

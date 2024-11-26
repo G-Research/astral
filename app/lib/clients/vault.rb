@@ -3,8 +3,8 @@ module Clients
     extend Clients::Vault::Certificate
     extend Clients::Vault::KeyValue
     extend Clients::Vault::Policy
-    extend Clients::Vault::Entity
-    extend Clients::Vault::EntityAlias
+    extend Clients::Vault::Identity
+    extend Clients::Vault::IdentityAlias
     extend Clients::Vault::Oidc
 
     class_attribute :token

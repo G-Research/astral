@@ -4,6 +4,7 @@ class AuthenticateIdentityTest < ActiveSupport::TestCase
   def setup
     @interactor = AuthenticateIdentity
     @identity = Identity.new(subject: "test@example.com", groups: [ "admin_group" ])
+    Thread.current[:request_id] = "request_id"
   end
 
   test ".call success" do

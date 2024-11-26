@@ -15,7 +15,7 @@ class VaultTest < ActiveSupport::TestCase
     @root_ca_mount = SecureRandom.hex(4)
     @intermediate_ca_mount = SecureRandom.hex(4)
     @kv_mount = SecureRandom.hex(4)
-    @policies = SecureRandom.hex(4)
+    @policies = [ SecureRandom.hex(4) ]
     @entity_name = SecureRandom.hex(4)
     @alias_name = SecureRandom.hex(4)
     @identity = Identity.new
@@ -64,59 +64,117 @@ class VaultTest < ActiveSupport::TestCase
   test ".rotate_token" do
     # begins with default token
     assert_equal vault_token, @client.token
-    assert @client.rotate_token
     # now has a new token
+    assert @client.rotate_token
     assert_not_equal vault_token, @client.token
     # ensure we can write with the new token
-    assert_instance_of Vault::Secret, @client.kv_write("testing/secret", { password: "sicr3t" })
+    kv_path = "testing/#{SecureRandom.hex}"
+    assert_instance_of Vault::Secret, @client.kv_write(@identity, [], kv_path, { password: "sicr3t" })
+    assert @client.kv_delete(@identity, kv_path)
   end
 
-  test "#entity" do
+  test "entity methods" do
     entity =  @client.read_entity(@entity_name)
     assert_nil entity
 
     @client.put_entity(@entity_name, @policies)
     entity =  @client.read_entity(@entity_name)
-    assert_equal @policies, entity.data[:policies][0]
+    assert_equal @policies, entity.data[:policies]
 
     @client.delete_entity(@entity_name)
     entity =  @client.read_entity(@entity_name)
     assert_nil entity
   end
 
-  test "#entity_alias" do
+  test "kv methods" do
+    # check kv_write
+    path = "test/path/#{SecureRandom.hex}"
+    secret = @client.kv_write(@identity, [ "group_can_read" ], path, { data: "data" })
+    assert_kind_of Vault::Secret, secret
+
+    # check kv_read
+    read_secret = @client.kv_read(@identity, path)
+    assert_kind_of Vault::Secret, read_secret
+
+    # check policy is created
+    entity = @client.read_entity(@identity.sub)
+    assert_includes entity.data[:policies], "kv_astral_policy/#{path}/producer"
+
+    # check kv_read denied to other identity by default
+    alt_identity = Identity.new
+    alt_identity.sub = SecureRandom.hex(4)
+    err = assert_raises do
+      @client.kv_read(alt_identity, path)
+    end
+    assert_kind_of AuthError, err
+
+    # check kv_read permitted to other identity with group membership
+    alt_identity.groups = [ "group_can_read" ]
+    group_read_secret = @client.kv_read(alt_identity, path)
+    assert_kind_of Vault::Secret, group_read_secret
+
+    # check kv_delete denied to other identity even with group
+    err = assert_raises { @client.kv_delete(alt_identity, path) }
+    assert_kind_of AuthError, err
+
+    # check kv_delete
+    del_secret = @client.kv_delete(@identity, path)
+    assert del_secret
+    # check policy is removed
+    entity = @client.read_entity(@identity.sub)
+    assert_not_includes entity.data[:policies], "kv_astral_policy/#{path}"
+    err = assert_raises { @client.kv_read(@identity, path) }
+    assert_kind_of AuthError, err
+  end
+
+  test "entity_alias methods" do
     # confirm no entity yet
+    auth_path = "token"
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such entity/, err.message
 
     # confirm no alias yet
     @client.put_entity(@entity_name, @policies)
     err = assert_raises RuntimeError do
-      @client.read_entity_alias(@entity_name, @alias_name)
+      @client.read_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
 
-    # create alias
-    auth_method = "token"
-    @client.put_entity_alias(@entity_name, @alias_name, auth_method)
-    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name)
-    assert_equal auth_method, entity_alias.data[:mount_type]
+    # create token alias
+    @client.put_entity_alias(@entity_name, @alias_name, auth_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, auth_path)
+    assert_equal auth_path, entity_alias.data[:mount_type]
+
+    # create different alias type with same name
+    oidc_path = "oidc"
+    @client.put_entity_alias(@entity_name, @alias_name, oidc_path)
+    entity_alias =  @client.read_entity_alias(@entity_name, @alias_name, oidc_path)
+    assert_equal oidc_path, entity_alias.data[:mount_type]
+
+
+    # confirm two aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 2, entity.data[:aliases].size
 
     # confirm deleted alias
-    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name)
+    assert_equal true, @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     err = assert_raises RuntimeError do
-      @client.delete_entity_alias(@entity_name, @alias_name)
+      @client.delete_entity_alias(@entity_name, @alias_name, auth_path)
     end
     assert_match /no such alias/, err.message
+
+    # confirm 1 aliases
+    entity =  @client.read_entity(@entity_name)
+    assert_equal 1, entity.data[:aliases].size
   end
 
-  test "#config_user creates valid entity" do
-    @client.config_user(@identity)
+  test ".assign_entity_policy creates valid entity" do
+    @client.assign_entity_policy(@identity, "test_path")
     entity = @client.read_entity(@identity.sub)
     assert entity.data[:policies].any? { |p|
-      p == @client::Certificate::GENERIC_CERT_POLICY_NAME }
+      p == "test_path" }
     assert entity.data[:aliases].any? { |a|
       a[:mount_type] == "oidc"  && a[:name] == @identity.sub }
   end

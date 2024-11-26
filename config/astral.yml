@@ -21,15 +21,15 @@ shared:
 
   jwt_signing_key:
 
+  # define this to allow jwks decoding of JWT's
+  jwks_url:
+
   # When using AppRegistry for Domain Ownership information
   app_registry_addr:
   app_registry_token:
   app_registry_ca_file:
   app_registry_client_cert:
   app_registry_client_key:
-
-  # User activity logging
-  audit_log_file: <%= "#{Rails.root.join('log')}/astral-audit.log" %>
 
   oidc_client_id:
   oidc_client_secret:
@@ -52,7 +52,7 @@ shared:
 
   initial_user_name: test
   initial_user_password: test
-  initial_user_email: john.doe@example.com
+  initial_user_email: test2024@example.com
 
 test:
   cert_ttl: <%= 24.hours.in_seconds %>
