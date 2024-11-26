@@ -12,6 +12,13 @@ docker run -p 3000:3000 astral:latest
 
 A dockerhub image will be available soon!
 
+# Dependencies
+Astral depends on Vault, Postges, AppRegistry, and an oidc
+provider. These dependencies are supplied and configured in the
+devcontainer, but in production will need to be specified in the
+configuration.
+
+Each dependency has a group of configuration params.
 
 # Configuration
 Astral is configured in `config/astral.yml` -- all availble
@@ -30,6 +37,20 @@ Database-specific configuration is found in `config/database.yml`, for
 which environment var overrides are setup to use the `DB_` prefix. We
 recommend PostgreSQL for all deployments of Astral, but any
 Rails-supported database (sqlite, mysql, Oracle, etc) can be used.
+
+## Vault Token and Root Certificate
+Astral operates with wide but not complete permissions in Vault. These
+can be seen in `app/lib/clients/vault/policy.rb` in the
+`create_astral_policy` section.
+
+An initial bootstrap token is rotated to an `astral` token having only
+this policy -- but the initial token needs the ability to create the
+policy and the auth token.
+
+The root certificate path and PKI mount point are specified in the
+`vault_root_ca_ref` and related configuration params. A self-signed
+root cert can be created by Astral (`vault_create_root: true`), but
+you will most likely want to point to a trusted root.
 
 ## Database encryption
 The Astral database can be encrypted, if needed, but requires a bit of setup
