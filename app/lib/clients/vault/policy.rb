@@ -21,8 +21,10 @@ module Clients
 
       def assign_groups_policy(groups, policy_name)
         groups.each do |group|
-          put_group(group, [ policy_name ])
-          put_group_alias(group, group, "oidc")
+          Domain.with_advisory_lock(group) do
+            put_group(group, [ policy_name ])
+            put_group_alias(group, group, "oidc")
+          end
         end
       end
 

@@ -75,8 +75,4 @@ class SecretsTest < ActionDispatch::IntegrationTest
          params: { secret: { path: path, data: { password: "sicr3t" }, groups: "read_group" } }
     path
   end
-
-  def remove_pki_engine
-    vault_client.sys.unmount "pki_astral"
-  end
 end
