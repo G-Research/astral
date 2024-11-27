@@ -14,8 +14,13 @@ module ActiveSupport
     fixtures :all
 
     # Helper methods
+
+    def make_signed_jwt(json)
+      JWT.encode(json, Config[:jwt_signing_key])
+    end
+
     def jwt_authorized
-      @@authorized_token ||= JWT.encode(@@authorized_data, Config[:jwt_signing_key])
+      @@authorized_token ||= make_signed_jwt(@@authorized_data)
     end
 
     def jwt_unauthorized
@@ -23,7 +28,7 @@ module ActiveSupport
     end
 
     def jwt_read_group
-      @@read_group_token ||= JWT.encode(@@read_group_data, Config[:jwt_signing_key])
+      @@read_group_token ||= make_signed_jwt(@@read_group_data)
     end
 
     private
