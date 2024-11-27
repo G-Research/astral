@@ -13,18 +13,14 @@ module Clients
       def assign_entity_policy(identity, policy_name)
         sub = identity.sub
         email = identity.email
-        Domain.with_advisory_lock(sub) do
-          put_entity(sub, [ policy_name ])
-          put_entity_alias(sub, email, "oidc")
-        end
+        put_entity(sub, [ policy_name ])
+        put_entity_alias(sub, email, "oidc")
       end
 
       def assign_groups_policy(groups, policy_name)
         groups.each do |group|
-          Domain.with_advisory_lock(group) do
-            put_group(group, [ policy_name ])
-            put_group_alias(group, group, "oidc")
-          end
+          put_group(group, [ policy_name ])
+          put_group_alias(group, group, "oidc")
         end
       end
 
