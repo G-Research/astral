@@ -12,13 +12,19 @@ Some features of Astral:
 1) Authenticate requests for cerficates or secrets using a third party
    trusted source (JWT with signing key, eg)
 2) For certificates:
-	a) Authorize the request using a Domain Ownership registry, where domain owner 
+	1) Authorize the request using a Domain Ownership registry, where domain owner 
 	   or authorized groups must match the identity of the requesting client
-	b) When authorized, obtain a certificate for the common name
+	2) When authorized, obtain a certificate for the common name
 3) For secrets:
-	a) Create secrets with a policy for reading
-	b) Read only when the requesting client identity has the policy.
-4) Log all transactions in audit infrastructure (ELK, etc).
+	1) Create, read, update, and delete secrets with an arbitrary subpath.
+	2) Create secrets with read-only groups for consuming.
+	2) Owner/producer has full control.
+4) Log all transactions in audit table.
+
+# Running in production
+
+See our [deployment guide](DEPLOYMENT.md) for configuration and deployment information.
+
 
 # Running in development
 
@@ -51,85 +57,6 @@ curl http://localhost:3000/secrets/some/path \
 5) Run the tests from devcontainer terminal:
 ```
 rails test
-```
-
-# Running the prod image (local build):
-1) Build the prod image:
-```
-docker build -t astral:latest .
-```
-2) Run the prod image:
-```
-docker run -p 3000:3000 astral:latest
-```
-
-# Configuration
-Astral is configured in `config/astral.yml` -- available configuration
-options are listed in the `shared` section. Note that
-configuration values can be supplied in this file or as process
-environment variables with the same names (but
-UPPER_CASE). Environment vars will override any values in the config
-file.  Per-environment settings in the config file(development, test,
-production) will override the shared values for that type.
-
-Database-specific configuration is found in `config/database.yml`, for
-which environment var overrides are setup to use `DB_` prefix.
-
-## Database encryption
-The local database can be encrypted, if needed, but requires a bit of setup
-and careful retention of a master key. Note that there are performance impacts.
-
-1. First, create encryption keys for the database:
-```
-rails db:encryption:init
-```
-Copy the output to your clipboard.
-
-2. Next, create a `credentials.yml.enc` file:
-```
-EDITOR=vi rails credentials:edit
-```
-Paste the db encryption key data into this file, save, and exit.
-
-NB, the credentials file is decoded by a key placed in
-`config/master.key`. Be sure to save this file (it is .gitignored)!
-
-3. Finally, set the following Astral configuration to 'true':
-```
-   db_encryption: true
-```
-
-## mTLS connections
-Astral can be run as an SSL service and can communicate with Vault via SSL.
-Just set the following values in `config/astral.yml` (or environment) to 
-encrypt Astral-to-Vault :
-```
-  vault_ssl_cert:
-  vault_ssl_client_cert:
-  vault_ssl_client_key:
-```
-
-A self-signed server cert for Vault, Astral, and the OIDC provider can be 
-generated with the following command, and initial placeholder certs are already provided.
-```
-rake configure:ssl
-```
-
-To use Vault SSL in the devcontainer, edit
-`.devcontainer/docker-compose.yml` so that the `app` service has
-`VAULT_ADDRESS` of `https://vault:8443`. Client certs can also be
-configured -- in which case Vault needs to supplied with a CA for
-peer verification.
-
-To use Astral with SSL in production, provide the necessary
-environment (ASTRAL_SSL_CERT, ASTRAL_SSL_KEY) to the container
-environment, and use the `bin/ssl.sh` startup command. Eg:
-```
-docker run -p 3000:3000 \
--e ASTRAL_SSL_CERT=/certs/cert.pem \
--e ASTRAL_SSL_KEY=/certs/key.key \
--v certs:/certs:cached \
-astral:latest bin/ssl.sh
 ```
 
 ## OIDC configuration
